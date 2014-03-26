@@ -4,6 +4,7 @@ A video.js plugin that turns a video element into a HTML5 Panoramic 360 video pl
 
 ## Getting Started
 Download [videojs](http://www.videojs.com/)
+(*Note*: The plugin requires uncompressed video.js unless you are using version > 4.1.0)
 
 In your web page:
 
@@ -25,14 +26,18 @@ In your web page:
 Host on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
 
 ## Oculus Rift Support
-
+Documentation upcoming.
 
 ## Examples
 Check out example.html to see VR in action.
 
 ## Credits ##
 
-Credit goes to @benvanik to his outstanding vr.js plugin and Three.js Oculus Rift affects: https://github.com/benvanik/vr.js/tree/master
+This project is a conglomeration of a few amazing open source libraries.
+
+* [VideoJS](http://www.videojs.com)
+* [VR.js](https://github.com/benvanik/vr.js)
+* [Three.js](https://threejs.org)
 
 ## Release History
 _(Nothing yet)_
