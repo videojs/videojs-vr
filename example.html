@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head><title>VR Plugin Example</title></head>
+<style>
+.example-description {
+  background-color: #ddd;
+  border: thin solid #333;
+  padding: 5px;
+}
+</style>
+
+<link rel="stylesheet" href="libs/video-js-4.1.0/video-js.css">
+<script src="libs/video-js-4.1.0/video.dev.js"></script>
+<script src="libs/three.min.js"></script>
+
+<body>
+
+<video class="video-js vjs-default-skin" src="./vids/bears.mp4" data-setup="{}" controls>
+  <source src="vids/sintel.mp4" type="video/mp4">
+  <source src="vids/sintel.ogv" type="video/ogv">
+</video>
+
+<script src="src/videojs.vr.js"></script>
+
+<!--
+  video.js will automatically initialize the video element since it's loaded in
+  the head of the document but you still need to configure and initialize the
+  plugin.
+-->
+<script>
+  // save a reference to the video element
+  var video = document.querySelector('video');
+
+  // save a reference to the video.js player for that element
+  var player = videojs(video, {
+    width: 800,
+    height: 600
+  });
+
+  // initialize the plugin with some custom options:
+  player.vr({projection: "Sphere"}); //'Plane' projection by default
+</script>
+</body>
+</html>
