@@ -1,4 +1,4 @@
-/*! videojs-vr - v0.1.0 - 2014-03-26
+/*! videojs-vr - v0.1.0 - 2014-03-27
 * Copyright (c) 2014 Sean Lawrence; Licensed  */
 THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
 
@@ -481,6 +481,34 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
             player.controlBar.projectionSelection = player.controlBar.addChild( projectionSelection );
         }
         addMenu();
+
+        function initVRControls () {
+            var controlEl = container.getElementsByClassName('vjs-control-bar')[0];
+            var left = vjs.Component.prototype.createEl( null, {
+                className : 'box left',
+                innerHTML : '<div></div>',
+                tabIndex  : 0
+            });
+            var right = vjs.Component.prototype.createEl( null, {
+                className : 'box right',
+                innerHTML : '<div></div>',
+                tabIndex  : 0
+            });
+
+            //copy controlEl
+            var controlElRight = new vjs.ControlBar(player, {name: 'controlBar'}).el();
+
+            //insert nodes into left and right
+            left.insertBefore(controlEl, left.firstChild);
+            right.insertBefore(controlElRight, right.firstChild);
+
+            //insert left and right nodes into DOM
+            container.insertBefore(left, container.firstChild);
+            container.insertBefore(right, container.firstChild);
+        }
+        if (vrEnabled) {
+            initVRControls();
+        }
     };
 
   // register the plugin with video.js

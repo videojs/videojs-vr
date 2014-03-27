@@ -507,11 +507,11 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
             //insert left and right nodes into DOM
             container.insertBefore(left, container.firstChild);
             container.insertBefore(right, container.firstChild);
-        };
+        }
         if (vrEnabled) {
             initVRControls();
         }
-    }
+    };
 
   // register the plugin with video.js
   vjs.plugin('vr', plugin);
