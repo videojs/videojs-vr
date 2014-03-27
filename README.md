@@ -48,7 +48,7 @@ This project is a conglomeration of a few amazing open source libraries.
 
 * [VideoJS](http://www.videojs.com)
 * [VR.js](https://github.com/benvanik/vr.js)
-* [Three.js](https://threejs.org)
+* [Three.js](http://threejs.org)
 
 ## Release History
 _(Nothing yet)_

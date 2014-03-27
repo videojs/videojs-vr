@@ -2,13 +2,27 @@
 <html>
 <head><title>VR Plugin Example</title></head>
 <style>
-.example-description {
-  background-color: #ddd;
-  border: thin solid #333;
-  padding: 5px;
+div .video-js {
+    margin: 0 auto;
 }
+div .box {
+    position: absolute;
+    top: 80%;
+    height: 50px;
+    width: 40%;
+    margin: -25px 0 0 -20%;
+}
+
+div .left {
+    left: 25%;
+}
+div .right {
+    left: 75%;
+}
+
 </style>
 
+<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
 <link rel="stylesheet" href="libs/video-js-4.1.0/video-js.css">
 <script src="libs/video-js-4.1.0/video.dev.js"></script>
 <script src="libs/three.min.js"></script>
@@ -20,10 +34,12 @@
 
 <body>
 
+<div id="container">
 <video class="video-js vjs-default-skin" src="./vids/bears.mp4" data-setup="{}" controls>
   <source src="vids/sintel.mp4" type="video/mp4">
   <source src="vids/sintel.ogv" type="video/ogv">
 </video>
+</div>
 
 <script src="src/videojs.vr.js"></script>
 
