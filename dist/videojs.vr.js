@@ -460,7 +460,7 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
         }
         initMenu();
 
-        function addMenu() {
+        function addMenu(cb) {
             player.getCurrentRes = function() {
                 return player.current_proj || '';
             };
@@ -478,29 +478,43 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
             });
 
             // Add the button to the control bar object and the DOM
-            player.controlBar.projectionSelection = player.controlBar.addChild( projectionSelection );
+            cb.projectionSelection = cb.addChild( projectionSelection );
         }
-        addMenu();
+        addMenu(player.controlBar);
 
         function initVRControls () {
             var controlEl = container.getElementsByClassName('vjs-control-bar')[0];
             var left = vjs.Component.prototype.createEl( null, {
-                className : 'box left',
+                className : 'videojs-vr-controls',
                 innerHTML : '<div></div>',
                 tabIndex  : 0
             });
             var right = vjs.Component.prototype.createEl( null, {
-                className : 'box right',
+                className : 'videojs-vr-controls',
                 innerHTML : '<div></div>',
                 tabIndex  : 0
             });
 
+            function addStyle(theEl) {
+                theEl.style.position = "absolute";
+                theEl.style.top = "50%";
+                theEl.style.height = "50px";
+                theEl.style.width = "30%";
+                theEl.style.margin = "-25px 0 0 -20%";
+                return theEl;
+            }
+            left = addStyle(left);
+            left.style.left = "35%";
+            right = addStyle(right);
+            right.style.left = "75%";
+
             //copy controlEl
-            var controlElRight = new vjs.ControlBar(player, {name: 'controlBar'}).el();
+            var controlElRight = new vjs.ControlBar(player, {name: 'controlBar'});
+            addMenu(controlElRight);
 
             //insert nodes into left and right
             left.insertBefore(controlEl, left.firstChild);
-            right.insertBefore(controlElRight, right.firstChild);
+            right.insertBefore(controlElRight.el(), right.firstChild);
 
             //insert left and right nodes into DOM
             container.insertBefore(left, container.firstChild);
