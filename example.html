@@ -1,6 +1,11 @@
 <!doctype html>
 <html>
 <head><title>VR Plugin Example</title></head>
+<style>
+div .video-js {
+    margin: 0 auto;
+}
+</style>
 
 <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
 <link rel="stylesheet" href="libs/video-js-4.1.0/video-js.css">
@@ -15,7 +20,7 @@
 <body>
 
 <div id="container">
-<video class="video-js vjs-default-skin" src="./vids/bears.mp4" data-setup="{}" controls>
+<video class="video-js vjs-default-skin" width="800" height="600" src="./vids/bears.mp4" data-setup="{}" controls>
   <source src="vids/sintel.mp4" type="video/mp4">
   <source src="vids/sintel.ogv" type="video/ogv">
 </video>
@@ -33,10 +38,7 @@
   var video = document.querySelector('video');
 
   // save a reference to the video.js player for that element
-  var player = videojs(video, {
-    width: 800,
-    height: 600
-  });
+  var player = videojs(video);
 
   // initialize the plugin with some custom options:
   player.vr({projection: "Sphere"}); //'Plane' projection by default
