@@ -231,6 +231,27 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
         }
     },
 
+    /**
+     * Initialize VR is vr.js if provided
+     */
+    initVR = function() {
+        var vrEnabled = false;
+        if (typeof vr !== "undefined") {
+            vrEnabled = true;
+            if (!vr.isInstalled()) {
+                console.error('NPVR plugin not installed!');
+                vrEnabled = false;
+            }
+            vr.load(function(error) {
+                if (error) {
+                    console.error('Plugin load failed: ' + error.toString());
+                    vrEnabled = false;
+                }
+            });
+        }
+        return vrEnabled;
+    },
+
     projections = ["Sphere", "Cube", "Plane"],
 
     defaults = {
@@ -244,7 +265,7 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
         //vars global (via closure) to the plugin
         var player = this,
             settings = extend({}, defaults, options || {}),
-            vrEnabled = false,
+            vrEnabled = initVR(),
             videoEl = this.el().getElementsByTagName('video')[0],
             container = this.el(),
             current_proj = settings.projection,

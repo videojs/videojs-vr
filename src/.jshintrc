@@ -11,5 +11,5 @@
   "boss": true,
   "eqnull": true,
   "browser": true,
-  "predef": ["vr", "videojs", "THREE"]
+  "predef": ["console", "vr", "videojs", "THREE"]
 }
