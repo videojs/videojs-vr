@@ -487,15 +487,28 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
         function initVRControls () {
             var controlEl = container.getElementsByClassName('vjs-control-bar')[0];
             var left = vjs.Component.prototype.createEl( null, {
-                className : 'box left',
+                className : 'videojs-vr-controls',
                 innerHTML : '<div></div>',
                 tabIndex  : 0
             });
             var right = vjs.Component.prototype.createEl( null, {
-                className : 'box right',
+                className : 'videojs-vr-controls',
                 innerHTML : '<div></div>',
                 tabIndex  : 0
             });
+
+            function addStyle(theEl) {
+                theEl.style.position = "absolute";
+                theEl.style.top = "80%";
+                theEl.style.height = "50px";
+                theEl.style.width = "40%";
+                theEl.style.margin = "-25px 0 0 -20%";
+                return theEl;
+            }
+            left = addStyle(left);
+            left.style.left = "25%";
+            right = addStyle(right);
+            right.style.left = "75%";
 
             //copy controlEl
             var controlElRight = new vjs.ControlBar(player, {name: 'controlBar'}).el();
