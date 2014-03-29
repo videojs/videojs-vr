@@ -2,7 +2,7 @@
 
 A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift.
 
-[View Demo](http://www.ishallbereleased.com/projects/video/)
+[View Demo](http://www.ishallbereleased.com/static/projects/video/)
 
 ## Getting Started
 Download [videojs](http://www.videojs.com/)
