@@ -1,4 +1,4 @@
-/*! videojs-vr - v0.1.0 - 2014-03-27
+/*! videojs-vr - v0.1.0 - 2014-03-29
 * Copyright (c) 2014 Sean Lawrence; Licensed  */
 THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
 
@@ -252,7 +252,7 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
         return vrEnabled;
     },
 
-    projections = ["Sphere", "Cube", "Plane"],
+    projections = ["Sphere", "Cylinder", "Cube", "Plane"],
 
     defaults = {
         projection: "Plane"
@@ -288,6 +288,8 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
             }
             if (projection === "Sphere") {
                 movieGeometry = new THREE.SphereGeometry( 256, 32, 32 );
+            } else if (projection === "Cylinder") {
+                movieGeometry = new THREE.CylinderGeometry( 256, 256, 256, 50, 50, true );
             } else if (projection === "Cube") {
                 movieGeometry = new THREE.CubeGeometry( 256, 256, 256 );
             } else if (projection === "Plane") {
