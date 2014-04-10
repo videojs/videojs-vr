@@ -1,4 +1,4 @@
-/*! videojs-vr - v0.1.0 - 2014-03-29
+/*! videojs-vr - v0.1.0 - 2014-04-09
 * Copyright (c) 2014 Sean Lawrence; Licensed  */
 THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
 
@@ -345,7 +345,7 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
             container.insertBefore(renderedCanvas, container.firstChild);
             videoEl.style.display = "none";
 
-            function animate() {
+            (function animate() {
                 if ( videoEl.readyState === videoEl.HAVE_ENOUGH_DATA ) {
                     if (videoTexture) {
                         videoTexture.needsUpdate = true;
@@ -354,20 +354,18 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
 
                 if (vrEnabled) {
                     //TODO: requestId in dispose
-                    requestId = vr.requestAnimationFrame(newAnimate);
+                    requestId = vr.requestAnimationFrame(animate);
                     var polled = vr.pollState(vrstate);
                     controls3d.update( Date.now() - time, polled ? vrstate : null );
                     effect.render( scene, camera, polled ? vrstate : null );
                 } else {
-                    requestId = window.requestAnimationFrame(newAnimate);
+                    requestId = window.requestAnimationFrame(animate);
                     controls3d.update( Date.now() - time );
                     renderer.render( scene, camera );
                 }
 
                 time = Date.now();
-            }
-            var newAnimate = animate.bind(this);
-            newAnimate();
+            }());
 
             if (!vrEnabled) {
                 pointerLock(function () {
@@ -525,6 +523,9 @@ THREE.PointerLockControls = THREE.PointerLockControls || function ( camera ) {
         if (vrEnabled) {
             initVRControls();
         }
+        return {
+            changeProjection: changeProjection
+        };
     };
 
   // register the plugin with video.js
