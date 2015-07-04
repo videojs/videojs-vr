@@ -1,4 +1,8 @@
+
 # VR
+
+*Note: This project is now outdated.* I recommend checking out this one
+[elevr](https://github.com/hawksley/eleVR-Web-Player).
 
 A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift.
 
