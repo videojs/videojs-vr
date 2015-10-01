@@ -1,32 +1,26 @@
 <!doctype html>
 <html>
 <head><title>VR Plugin Example</title></head>
-<style>
-div .video-js {
-    margin: 0 auto;
-}
-</style>
 
-<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
-<link rel="stylesheet" href="libs/video-js-4.1.0/video-js.css">
-<script src="libs/video-js-4.1.0/video.dev.js"></script>
-<script src="libs/three.min.js"></script>
+<link rel="stylesheet" href="dist/videojs.css">
+<script src="dist/video.dev.js"></script>
+<script src="dist/js/three.js"></script>
 
 <!-- vr stuff is optional, must be after THREE is defined -->
-<script src="libs/vr/vr.js"></script>
-<script src="libs/vr/OculusRiftControls.js"></script>
-<script src="libs/vr/OculusRiftEffect.js"></script>
+<script src="dist/js/VRControls.js"></script>
+<script src="dist/js/VREffect.js"></script>
+<script type="text/javascript" src="dist/js/webvr-polyfill.js"></script>
+<script type="text/javascript" src="dist/js/webvr-manager.js"></script>
+
+<script src="src/videojs.vr.js"></script>
 
 <body>
 
 <div id="container">
-<video class="video-js vjs-default-skin" width="800" height="600" src="./vids/bears.mp4" data-setup="{}" controls>
-  <source src="vids/sintel.mp4" type="video/mp4">
-  <source src="vids/sintel.ogv" type="video/ogv">
+<video id="video-container" class="video-js vjs-default-skin" width="640" height="360" preload="auto" crossOrigin="anonymous" data-setup="{}" controls>
+  <source src="http://cdn-au-stage.metacdn.com/vorjbrr/1xWFzlz/360_Tours_Iceland_original_mp4-MEDIUM-MP4.mp4" type="video/mp4">
 </video>
 </div>
-
-<script src="src/videojs.vr.js"></script>
 
 <!--
   video.js will automatically initialize the video element since it's loaded in
@@ -34,14 +28,12 @@ div .video-js {
   plugin.
 -->
 <script>
-  // save a reference to the video element
-  var video = document.querySelector('video');
-
-  // save a reference to the video.js player for that element
-  var player = videojs(video);
-
-  // initialize the plugin with some custom options:
-  player.vr({projection: "Sphere"}); //'Plane' projection by default
+    (function(){
+        var player = videojs( '#video-container', {
+            techOrder: ['html5']
+        });
+        player.vr({projection: "Sphere"});
+    })();
 </script>
 </body>
 </html>

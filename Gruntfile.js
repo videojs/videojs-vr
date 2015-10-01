@@ -1,87 +1,59 @@
-'use strict';
-
 module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    // Metadata.
     pkg: grunt.file.readJSON('package.json'),
-    banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-      ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
-    // Task configuration.
-    clean: {
-      files: ['dist']
-    },
-    concat: {
-      options: {
-        banner: '<%= banner %>',
-        stripBanners: true
-      },
-      dist: {
-        src: ['src/videojs.vr.js'],
-        dest: 'dist/videojs.vr.js'
-      },
-    },
-    uglify: {
-      options: {
-        banner: '<%= banner %>'
-      },
-      dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/videojs.vr.min.js'
-      },
-    },
-    qunit: {
-      files: ['test/**/*.html']
-    },
-    jshint: {
-      gruntfile: {
-        options: {
-          jshintrc: '.jshintrc'
-        },
-        src: 'Gruntfile.js'
-      },
-      src: {
-        options: {
-          jshintrc: 'src/.jshintrc'
-        },
-        src: ['src/**/*.js']
-      },
-      test: {
-        options: {
-          jshintrc: 'test/.jshintrc'
-        },
-        src: ['test/**/*.js']
-      }
-    },
-    watch: {
-      gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
-      },
-      src: {
-        files: '<%= jshint.src.src %>',
-        tasks: ['jshint:src', 'qunit']
-      },
-      test: {
-        files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test', 'qunit']
-      }
-    },
+      
+    bowercopy: {
+       options: {
+         srcPrefix: 'bower_components'
+       },
+       'video.js': {
+         options: {
+            destPrefix: 'dist'
+         },
+         files: {
+           'video.dev.js': 'video.js/dist/video-js/video.dev.js',
+           'videojs.css': 'video.js/dist/video-js/video-js.css',
+           'font/vjs.eot': 'video.js/dist/video-js/font/vjs.eot',
+           'font/vjs.svg': 'video.js/dist/video-js/font/vjs.svg',
+           'font/vjs.ttf': 'video.js/dist/video-js/font/vjs.ttf',
+           'font/vjs.woff': 'video.js/dist/video-js/font/vjs.woff',
+           'swf/video-js.swf': 'video.js/dist/video-js/video-js.swf'
+         }
+       },
+       'threejs': {
+         options: {
+            destPrefix: 'dist'
+         },
+         files: {
+           'js/three.js': 'threejs/build/three.js',
+           'js/VRControls.js': 'threejs/examples/js/controls/VRControls.js',
+           'js/VREffect.js': 'threejs/examples/js/effects/VREffect.js'
+         }
+       },
+       'webvr-polyfill': {
+         options: {
+            destPrefix: 'dist'
+         },
+         files: {
+           'js/webvr-polyfill.js': 'webvr-polyfill/build/webvr-polyfill.js'
+         }
+       },
+       'webvr-boilerplate': {
+         options: {
+            destPrefix: 'dist'
+         },
+         files: {
+           'js/webvr-manager.js': 'webvr-boilerplate/build/webvr-manager.js'
+         }
+       }
+   }
   });
 
-  // These plugins provide necessary tasks.
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-
-  // Default task.
-  grunt.registerTask('default', ['jshint', 'qunit', 'clean', 'concat', 'uglify']);
+  grunt.loadNpmTasks('grunt-bowercopy');
+  
+  // Default task(s).
+  grunt.registerTask('default', ['bowercopy']);
 
 };

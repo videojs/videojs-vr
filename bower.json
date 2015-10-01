@@ -1,0 +1,27 @@
+{
+  "name": "videojs-vr",
+  "version": "0.1.1",
+  "authors": [
+    "Sean Lawrence <lawrensm@gmail.com>",
+    "James Broberg <james.broberg@metacdn.com>"
+  ],
+  "description": "A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift.",
+  "license": "MIT",
+  "homepage": "https://github.com/MetaCDN/videojs-vr",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "video.js": "~4.12.15",
+    "threejs": "dev",
+    "webvr-polyfill": "~0.1.0",
+    "webvr-boilerplate": "~0.1.1"
+  },
+  "resolutions": {
+    "threejs": "dev"
+  }
+}
