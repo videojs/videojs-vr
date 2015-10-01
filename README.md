@@ -29,7 +29,7 @@ In your web page:
 Host on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
 
 ## Oculus Rift Support
-Thus plugin leverages the [webvr-boilerplate][WebVR Boilerplate] project (which in turn uses [webvr-polyfill] and [three.js]) to create a 'responsive VR' experience across multiple devices.
+Thus plugin leverages the [webvr-boilerplate](WebVR Boilerplate) project (which in turn uses [webvr-polyfill](WebVR Polyfill) and [three.js](Three.js)) to create a 'responsive VR' experience across multiple devices.
 
 Oculus Rift playback requires Firefox Nightly with the WebVR addon, or experimental WebVR-enabled builds of Chromium. Go to [WebVR.info](http://www.webvr.info) for more info.
 
@@ -43,8 +43,21 @@ Oculus Rift playback requires Firefox Nightly with the WebVR addon, or experimen
     <script type="text/javascript" src="dist/js/webvr-polyfill.js"></script>
     <script type="text/javascript" src="dist/js/webvr-manager.js"></script>    
 
+### Build
+Build script requires npm, bower and grunt.
+
+If you don't have bower or grunt, run:
+
+```
+sudo npm install grunt
+sudo npm install grunt-cli
+sudo npm install bower
+```
+
+Finally, run ./build.sh
+
 ## Examples
-Check out example.html to see VR in action.
+After you have built the project, check out example.html to see VR in action.
 
 ## Credits ##
 
@@ -52,8 +65,8 @@ This project is a conglomeration of a few amazing open source libraries.
 
 * [VideoJS](http://www.videojs.com)
 * [Three.js](http://threejs.org)
-* [webvr-boilerplate][WebVR Boilerplate]
-* [webvr-polyfill][WebVR Polyfill]
+* [webvr-boilerplate](WebVR Boilerplate)
+* [webvr-polyfill](WebVR Polyfill)
 
 
 ## Release History
