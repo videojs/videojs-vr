@@ -65,6 +65,9 @@
             movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
             movieScreen.position.set(position.x, position.y, position.z);
             movieScreen.scale.x = -1;
+            if ((projection === "Sphere") || (projection === "Cylinder")) {
+                movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
+            }
             scene.add(movieScreen);
         }
 
