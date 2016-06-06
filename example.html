@@ -2,23 +2,14 @@
 <html>
 <head><title>VR Plugin Example</title></head>
 
-<link rel="stylesheet" href="dist/videojs.css">
-<script src="dist/video.dev.js"></script>
-<script src="dist/js/three.js"></script>
-
-<!-- vr stuff is optional, must be after THREE is defined -->
-<script src="dist/js/VRControls.js"></script>
-<script src="dist/js/VREffect.js"></script>
-<script type="text/javascript" src="dist/js/webvr-polyfill.js"></script>
-<script type="text/javascript" src="dist/js/webvr-manager.js"></script>
-
-<script src="src/videojs.vr.js"></script>
+<script src="./dist/player-skin.js"></script>
+<script src="./dist/player.full.js"></script>
 
 <body>
 
 <div id="container">
 <video id="video-container" class="video-js vjs-default-skin" width="640" height="360" preload="auto" crossOrigin="anonymous" data-setup="{}" controls>
-  <source src="http://cdn-au-stage.metacdn.com/vorjbrr/1xWFzlz/360_Tours_Iceland_original_mp4-MEDIUM-MP4.mp4" type="video/mp4">
+  <source src="http://cdn-au-stage.metacdn.com/vorjbrr/1Ionyx4/360_Tours_Iceland_original_mp4-HIGH-WEBM_VP9.webm" type="video/webm">
 </video>
 </div>
 
@@ -27,6 +18,7 @@
   the head of the document but you still need to configure and initialize the
   plugin.
 -->
+
 <script>
     (function(){
         var player = videojs( '#video-container', {

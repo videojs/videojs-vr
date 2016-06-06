@@ -1,0 +1,1 @@
+require('../css/player.css');

@@ -47,6 +47,11 @@
             controls3d,
             scene;
 
+        if (videoEl == undefined || videoEl == null) {
+            // Player is not using HTML5 tech, so don't init it.
+            return ;
+        }
+
         function changeProjection(projection) {
             var position = {x:0, y:0, z:0 };
             if (scene) {
@@ -118,12 +123,32 @@
 
             // Handle window resizes
             function onWindowResize() {
-                  camera.aspect = window.innerWidth / window.innerHeight;
-                  camera.updateProjectionMatrix();
-                  effect.setSize( window.innerWidth, window.innerHeight );
+                if (window.orientation == undefined) {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    effect.setSize(window.innerWidth, window.innerHeight);
+                }
             }
 
 			window.addEventListener('resize', onWindowResize, false);
+			
+            // Handle window rotate
+            function onWindowRotate() {
+                if (window.orientation == -90 || window.orientation == 90) {
+                    // in iOS, width and height never changes regardless orientation
+                    // so when in a horizontal mode, height still greater than width
+                    if (screen.height > screen.width) {
+                        camera.aspect = screen.height / screen.width;
+                    } else {
+                    // in Android, width and height will swap value depending on orientation
+                        camera.aspect = screen.width / screen.height;
+                    }
+                } else {
+                    camera.aspect = screen.width / screen.height;
+                }
+                camera.updateProjectionMatrix();
+            }
+            window.addEventListener('orientationchange', onWindowRotate, false);			
 
             (function animate() {
                 if ( videoEl.readyState === videoEl.HAVE_ENOUGH_DATA ) {
@@ -241,7 +266,7 @@
             // Add the resolution selector button
             var projectionSelection = new vjs.ProjectionSelector( player, {
                 el : vjs.Component.prototype.createEl( null, {
-                    className : 'vjs-res-button vjs-menu-button vjs-control',
+                    className : 'vjs-vr-button vjs-res-button vjs-menu-button vjs-control',
                     role    : 'button',
                     'aria-live' : 'polite', // let the screen reader user know that the text of the button may change
                     tabIndex  : 0
