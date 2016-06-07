@@ -1,7 +1,7 @@
 
 # VR
 
-A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift.
+A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
 
 [View Demo](http://stage.metacdn.com/r/v/vorjbrr/Er866Cp)
 
@@ -10,28 +10,32 @@ Download [videojs](http://www.videojs.com/)
 (*Note*: The plugin requires uncompressed video.js unless you are using version > 4.1.0)
 
 In your web page:
-
-    <link rel="stylesheet" href="video-js.css">
+    <script src="./dist/player-skin.js"></script>
+    <script src="./dist/player.full.js"></script>
     <video id="video"
            class="video-js vjs-default-skin"
            src="movie.mp4"
            controls>
     </video>
-    <script src="video.js"></script>
-    <script src="dist/videojs.vr.min.js"></script>
     <script>
-    videojs('video', {}, function() {
-      var player = this;
-      player.vr({projection: 'Sphere'}); // initialize the plugin, 'Plane' projection by default
-    });
+    (function(){
+        var player = videojs( '#video', {
+            techOrder: ['html5']
+        });
+        player.vr({projection: "Sphere"}); // initialize the plugin, 'Plane' projection by default
+    })();
     </script>
 
 Host on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
 
-## Oculus Rift Support
+## Oculus Rift and HTC Vive Support
 This plugin leverages the [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate) project (which in turn uses [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js)) to create a 'responsive VR' experience across multiple devices.
 
 Oculus Rift playback requires Firefox Nightly with the WebVR addon, or experimental WebVR-enabled builds of Chromium. Go to [WebVR.info](http://www.webvr.info) for more info.
+
+HTC Vive playback requires an experimental WebVR-enabled build of Chromium. Firefox does not support the HTC Vive at this time.
+
+GearVR playback requires the latest Samsung Internet for Gear VR with WebVR support enabled. Go [here](https://mail.mozilla.org/pipermail/web-vr-discuss/2016-April/001054.html) for more info.
 
     <link rel="stylesheet" href="dist/videojs.css">
     <script src="dist/video.dev.js"></script>
@@ -44,20 +48,14 @@ Oculus Rift playback requires Firefox Nightly with the WebVR addon, or experimen
     <script type="text/javascript" src="dist/js/webvr-manager.js"></script>    
 
 ### Build
-Build script requires npm, bower and grunt.
+npm install
+npm run build
 
-If you don't have bower or grunt, run:
-
-```
-sudo npm install grunt
-sudo npm install grunt-cli
-sudo npm install bower
-```
-
-Finally, run ./build.sh
+### Run
+npm run serve
 
 ## Examples
-After you have built the project, check out example.html to see VR in action.
+To test locally, visit localhost:3000/example.html
 
 ## Credits ##
 
@@ -71,4 +69,3 @@ This project is a conglomeration of a few amazing open source libraries.
 
 ## Release History
 _(Nothing yet)_
-
