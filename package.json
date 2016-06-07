@@ -30,7 +30,7 @@
     "browserify-css": "0.9.1",
     "video.js": "^4.2.15",
     "three": "^0.77.1",
-    "webvr-boilerplate": "^0.4.3",
+    "webvr-boilerplate": "https://github.com/MetaCDN/webvr-boilerplate",
     "webvr-polyfill": "^0.9.14",
     "express": "4.13.4",
     "express-http-proxy": "0.6.0",

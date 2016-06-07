@@ -48,8 +48,10 @@ GearVR playback requires the latest Samsung Internet for Gear VR with WebVR supp
     <script type="text/javascript" src="dist/js/webvr-manager.js"></script>    
 
 ### Build
+```
 npm install
 npm run build
+```
 
 ### Run
 npm run serve
