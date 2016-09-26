@@ -8,8 +8,8 @@
 <body>
 
 <div id="container">
-<video id="video-container" class="video-js vjs-default-skin" width="100%" height="100%" preload="auto" crossOrigin="anonymous" data-setup="{}" controls>
-  <source src="http://cdn-au-stage.metacdn.com/vorjbrr/1Ionyx4/360_Tours_Iceland_original_mp4-HIGH-WEBM_VP9.webm" type="video/webm">
+<video id="video-container" class="video-js vjs-default-skin" playsinline webkit-playsinline width="640" height="360" preload="auto" crossOrigin="anonymous" data-setup="{}" controls>
+  <source src="https://cdn-au-stage.metacdn.com/vorjbrr/1Ionyx4/360_Tours_Iceland_original_mp4-HIGH-WEBM_VP9.webm" type="video/webm">
 </video>
 </div>
 
@@ -24,7 +24,7 @@
         var player = videojs( '#video-container', {
             techOrder: ['html5']
         });
-        player.vr({projection: "Sphere"});
+        player.vr({projection: "360"});
     })();
 </script>
 </body>

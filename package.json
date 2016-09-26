@@ -2,13 +2,13 @@
   "name": "videojs-vr",
   "version": "0.2.0",
   "author": {
-    "name": "Sean Lawrence",
-    "email": "lawrensm@gmail.com"
+    "name": "James Broberg",
+    "email": "james.broberg@metacdn.com"
   },
   "contributors": [
     {
-      "name": "James Broberg",
-      "email": "james.broberg@metacdn.com"
+      "name": "Sean Lawrence",
+      "email": "lawrensm@gmail.com"
     }
   ],
   "engines": {
@@ -28,10 +28,10 @@
   "devDependencies": {
     "browserify": "13.0.0",
     "browserify-css": "0.9.1",
-    "video.js": "^4.2.15",
-    "three": "^0.77.1",
-    "webvr-boilerplate": "https://github.com/MetaCDN/webvr-boilerplate",
-    "webvr-polyfill": "^0.9.14",
+    "video.js": "^5.11.6",
+    "three": "^0.81.2",
+    "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
+    "webvr-polyfill": "^0.9.20",
     "express": "4.13.4",
     "express-http-proxy": "0.6.0",
     "cors": "2.7.1",

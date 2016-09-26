@@ -22,7 +22,7 @@ In your web page:
         var player = videojs( '#video', {
             techOrder: ['html5']
         });
-        player.vr({projection: "Sphere"}); // initialize the plugin, 'Plane' projection by default
+        player.vr({projection: "360"}); // initialize the plugin, 'Plane' projection by default
     })();
     </script>
 
