@@ -1,30 +1,41 @@
 {
   "name": "videojs-vr",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": {
-    "name": "Sean Lawrence",
-    "email": "lawrensm@gmail.com"
+    "name": "James Broberg",
+    "email": "james.broberg@metacdn.com"
   },
   "contributors": [
     {
-      "name": "James Broberg",
-      "email": "james.broberg@metacdn.com"
+      "name": "Sean Lawrence",
+      "email": "lawrensm@gmail.com"
     }
   ],
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 5.0.0"
+  },
+  "license" : "MIT",
+   "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/MetaCDN/videojs-vr"
   },
   "scripts": {
-    "test": "grunt qunit"
+    "build": "mkdir -p dist & npm run build-js & npm run build-css",
+    "build-js": "browserify ./src/js/player.js > ./dist/player.full.js",
+    "build-css": "browserify -g browserify-css ./src/js/player-skin.js -o ./dist/player-skin.js",
+    "serve": "npm run build & nodemon ./server.js",
+    "clean": "rm -rf dist & rm -rf node_modules"
   },
   "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-bowercopy": "^1.2.3",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-jshint": "~0.6.0",
-    "grunt-contrib-qunit": "~0.2.0",
-    "grunt-contrib-uglify": "~0.2.0",
-    "grunt-contrib-watch": "~0.4.0"
+    "browserify": "13.0.0",
+    "browserify-css": "0.9.1",
+    "video.js": "^5.11.7",
+    "three": "^0.81.2",
+    "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
+    "webvr-polyfill": "^0.9.20",
+    "express": "4.13.4",
+    "express-http-proxy": "0.6.0",
+    "cors": "2.7.1",
+    "nodemon": "1.9.1"
   }
 }

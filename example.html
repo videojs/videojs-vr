@@ -1,38 +1,45 @@
-<!doctype html>
-<html>
-<head><title>VR Plugin Example</title></head>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<title>videojs-vr example</title>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<link rel="stylesheet" href="dist/videojs.css">
-<script src="dist/video.dev.js"></script>
-<script src="dist/js/three.js"></script>
+<script src="./dist/player-skin.js"></script>
+<script src="./dist/player.full.js"></script>
 
-<!-- vr stuff is optional, must be after THREE is defined -->
-<script src="dist/js/VRControls.js"></script>
-<script src="dist/js/VREffect.js"></script>
-<script type="text/javascript" src="dist/js/webvr-polyfill.js"></script>
-<script type="text/javascript" src="dist/js/webvr-manager.js"></script>
+<style>
+html{height:100%;width:100%;padding:0;margin:0}
+body{height:100%;width:100%;padding:0;margin:0;overflow:hidden}
+object{height:100%;width:100%}
+#video-container {width:100%;height:100%}
+</style>
 
-<script src="src/videojs.vr.js"></script>
+</head>
 
 <body>
 
-<div id="container">
-<video id="video-container" class="video-js vjs-default-skin" width="640" height="360" preload="auto" crossOrigin="anonymous" data-setup="{}" controls>
-  <source src="http://cdn-au-stage.metacdn.com/vorjbrr/1xWFzlz/360_Tours_Iceland_original_mp4-MEDIUM-MP4.mp4" type="video/mp4">
+<video id="video-container" class="video-js vjs-default-skin" preload="auto" crossOrigin="anonymous" width="100%" height="100%" data-setup="{}" controls playsinline webkit-playsinline>
+  <source src="https://cdn-au.metacdn.com/jumipqxo/1u2Jh28/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-WEBM_VP9.webm" type="video/webm">
+  <source src="https://cdn-au.metacdn.com/jumipqxo/1lgi0Am/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-MP4.mp4" type="video/mp4">
+  <!-- iOS devices need a local/relative source (same host/domain) due to CORS bug -->
 </video>
-</div>
 
 <!--
   video.js will automatically initialize the video element since it's loaded in
   the head of the document but you still need to configure and initialize the
   plugin.
 -->
+
 <script>
     (function(){
         var player = videojs( '#video-container', {
             techOrder: ['html5']
         });
-        player.vr({projection: "Sphere"});
+        player.vr({projection: "360"});
     })();
 </script>
 </body>
