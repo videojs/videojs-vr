@@ -41,7 +41,6 @@ GearVR playback requires the latest Samsung Internet for Gear VR with WebVR supp
     <script src="dist/video.dev.js"></script>
     <script src="dist/js/three.js"></script>
 
-    <!-- vr stuff is optional, must be after THREE is defined -->
     <script type="text/javascript" src="dist/js/VRControls.js"></script>
     <script type="text/javascript" src="dist/js/VREffect.js"></script>
     <script type="text/javascript" src="dist/js/webvr-polyfill.js"></script>

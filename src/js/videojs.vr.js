@@ -1,13 +1,14 @@
-/*! videojs-vr - v0.1.0 - 2014-04-09
-* Copyright (c) 2014 Sean Lawrence; Licensed  */
+/*! videojs-vr - v0.2.0 - 2016-09-10 */
 /*
  * vr
- * https://github.com/slawrence/videojs-vr
+ * https://github.com/MetaCDN/videojs-vr
  *
  * Copyright (c) 2014 Sean Lawrence
+ * Copyright (c) 2015 James Broberg
+ * Copyright (c) 2016 Brightcove Inc., HapYak Inc., MetaCDN Pty. Ltd.
  * Licensed under the MIT license.
  */
-(function(videojs) {
+(function(vjs) {
 
     /**
      * Copies properties from one or more objects onto an original.
@@ -250,12 +251,12 @@
       * Add the menu options
       */
      function initMenu() {
-         var ProjectionSelector = videojs.extend(videojs.getComponent('MenuButton'), {
+         var ProjectionSelector = vjs.extend(vjs.getComponent('MenuButton'), {
              constructor : function(player, options) {
                  player.availableProjections = options.availableProjections || [];
-                 videojs.getComponent('MenuButton').call(this, player, options);
+                 vjs.getComponent('MenuButton').call(this, player, options);
                  var items = this.el().firstChild
-                 var wrapper = videojs.createEl("div", {
+                 var wrapper = vjs.createEl("div", {
                      className : 'vjs-control-content'
                  })
                  this.el().replaceChild(wrapper, items)
@@ -263,9 +264,9 @@
              }
          });
 
-         videojs.registerComponent('ProjectionSelector', ProjectionSelector);
+         vjs.registerComponent('ProjectionSelector', ProjectionSelector);
 
-         var ProjectionSelection = videojs.extend(videojs.getComponent('Button'), {
+         var ProjectionSelection = vjs.extend(vjs.getComponent('Button'), {
              constructor : function(player, options) {
                this.availableProjections = options.availableProjections || [];
              },
@@ -275,27 +276,27 @@
              tabIndex  : 0
          });
 
-         videojs.registerComponent('ProjectionSelection', ProjectionSelection);
+         vjs.registerComponent('ProjectionSelection', ProjectionSelection);
 
          //Top Item - not selectable
-         var ProjectionTitleMenuItem = videojs.extend(videojs.getComponent('MenuItem'), {
+         var ProjectionTitleMenuItem = vjs.extend(vjs.getComponent('MenuItem'), {
              constructor : function(player, options) {
-                 videojs.getComponent('MenuItem').call(this, player, options);
+                 vjs.getComponent('MenuItem').call(this, player, options);
                  this.off('click'); //no click handler
              }
          });
 
-         videojs.registerComponent('ProjectionTitleMenuItem', ProjectionTitleMenuItem);
+         vjs.registerComponent('ProjectionTitleMenuItem', ProjectionTitleMenuItem);
 
          //Menu Item
-         var ProjectionMenuItem = videojs.extend(videojs.getComponent('MenuItem'), {
+         var ProjectionMenuItem = vjs.extend(vjs.getComponent('MenuItem'), {
              constructor : function(player, options){
                  options.label = options.res;
                  options.selected = (options.res.toString() === player.getCurrentRes().toString());
-                 videojs.getComponent('MenuItem').call(this, player, options);
+                 vjs.getComponent('MenuItem').call(this, player, options);
                  this.resolution = options.res;
                  this.on('click', this.onClick);
-                 player.on('changeProjection', videojs.bind(this, function() {
+                 player.on('changeProjection', vjs.bind(this, function() {
                      if (this.resolution === player.getCurrentRes()) {
                          this.selected(true);
                      } else {
@@ -326,16 +327,16 @@
              }
          };
 
-         videojs.registerComponent('ProjectionMenuItem', ProjectionMenuItem);
+         vjs.registerComponent('ProjectionMenuItem', ProjectionMenuItem);
 
          // Create a menu item for each available projection
-         videojs.getComponent('ProjectionSelector').prototype.createItems = function() {
+         vjs.getComponent('ProjectionSelector').prototype.createItems = function() {
              var player = this.player(),
              items = [];
 
              // Add the menu title item
-             items.push( new videojs.getComponent('ProjectionTitleMenuItem')( player, {
-                 el : videojs.createEl( 'li', {
+             items.push( new vjs.getComponent('ProjectionTitleMenuItem')( player, {
+                 el : vjs.createEl( 'li', {
                      className : 'vjs-menu-title vjs-res-menu-title',
                      innerHTML : 'Projections'
                  })
@@ -343,7 +344,7 @@
 
              // Add an item for each available resolution
              player.availableProjections.forEach(function (proj) {
-                 items.push( new videojs.getComponent('ProjectionMenuItem')( player, {
+                 items.push( new vjs.getComponent('ProjectionMenuItem')( player, {
                      res : proj
                  }));
              });
