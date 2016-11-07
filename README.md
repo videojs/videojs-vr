@@ -28,7 +28,7 @@ Download:
 * [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate)
 * [webvr-polyfill](https://github.com/borismus/webvr-polyfill)
 
-In your web page (adjust to match the location of your downloaded libs - order is important!):
+In your web page (adjust to match the location/layout of your downloaded libs - order is important!):
 
     <link rel="stylesheet" href="dist/videojs.css">
     <script src="dist/video.js"></script>
@@ -39,14 +39,15 @@ In your web page (adjust to match the location of your downloaded libs - order i
     <script type="text/javascript" src="dist/js/webvr-polyfill.js"></script>
     <script type="text/javascript" src="dist/js/webvr-manager.js"></script>
 
+    <script type="text/javascript" src="dist/js/videojs.vr.js"></script>
+    <script type="text/javascript" src="dist/js/webvr.config.js"></script>
+
 Host on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
 
 ## Oculus Rift and HTC Vive Support
 This plugin leverages the [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate) project (which in turn uses [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js)) to create a 'responsive VR' experience across multiple devices.
 
-Oculus Rift playback requires Firefox Nightly with the WebVR addon, or experimental WebVR-enabled builds of Chromium. Go to [WebVR.info](http://www.webvr.info) for more info.
-
-HTC Vive playback requires Firefox Nightly with the WebVR addon, or experimental WebVR-enabled builds of Chromium. Go to [WebVR.info](http://www.webvr.info) for more info.
+Oculus Rift and HTC Vive playback requires Firefox Nightly with the WebVR addon, or experimental WebVR-enabled builds of Chromium. Go to [WebVR.info](http://www.webvr.info) for more info.
 
 GearVR playback requires the latest Samsung Internet for Gear VR with WebVR support enabled. Go [here](https://mail.mozilla.org/pipermail/web-vr-discuss/2016-April/001054.html) for more info.
 
@@ -64,4 +65,4 @@ This work is sponsored by [Brightcove](https://www.brightcove.com), [HapYak](htt
 
 
 ## Release History
-_(Nothing yet)_
+0.2.0
