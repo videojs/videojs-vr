@@ -25,7 +25,10 @@ object{height:100%;width:100%}
 <video id="video-container" class="video-js vjs-default-skin" preload="auto" crossOrigin="anonymous" width="100%" height="100%" data-setup="{}" controls playsinline webkit-playsinline>
   <source src="https://cdn-au.metacdn.com/jumipqxo/1u2Jh28/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-WEBM_VP9.webm" type="video/webm">
   <source src="https://cdn-au.metacdn.com/jumipqxo/1lgi0Am/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-MP4.mp4" type="video/mp4">
-  <!-- iOS devices need a local/relative source (same host/domain) due to CORS bug -->
+  <!--
+  <source src="http://cdn-au.metacdn.com/jumipqxo/24CqTuS/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-PLAYLIST_1478220740600.mpd" type="application/dash+xml"
+  -->
+  <!-- iOS devices need a local/relative source (same host/domain) due to CORS bug: https://bugs.webkit.org/show_bug.cgi?id=135379 -->
 </video>
 
 <!--

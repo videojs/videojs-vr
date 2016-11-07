@@ -19,12 +19,19 @@
     "type" : "git",
     "url" : "https://github.com/MetaCDN/videojs-vr"
   },
+  "main": "src/js/videojs.vr.js",
   "scripts": {
     "build": "mkdir -p dist & npm run build-js & npm run build-css",
     "build-js": "browserify ./src/js/player.js > ./dist/player.full.js",
     "build-css": "browserify -g browserify-css ./src/js/player-skin.js -o ./dist/player-skin.js",
     "serve": "npm run build & nodemon ./server.js",
     "clean": "rm -rf dist & rm -rf node_modules"
+  },
+  "dependencies": {
+    "video.js": "^5.11.7",
+    "three": "^0.82.0",
+    "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
+    "webvr-polyfill": "^0.9.20"
   },
   "devDependencies": {
     "browserify": "13.0.0",
@@ -33,6 +40,8 @@
     "three": "^0.82.0",
     "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
     "webvr-polyfill": "^0.9.20",
+    "dashjs": "^2.2.0",
+    "videojs-contrib-dash": "^2.5.1",
     "express": "4.13.4",
     "express-http-proxy": "0.6.0",
     "cors": "2.7.1",
