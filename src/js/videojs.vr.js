@@ -26,7 +26,7 @@
         return obj;
     },
 
-    projections = ["360", "360_LR", "360_TB", "360_CUBE"],
+    projections = ["360", "360_LR", "360_TB", "360_CUBE", "NONE"],
 
     defaults = {
         projection: "360_LR"
@@ -46,11 +46,21 @@
             movieGeometry,
             movieScreen,
             controls3d,
-            scene;
+            scene,
+            cameraVector,
+            x,
+            y,
+            z;
+
 
         if (videoEl == undefined || videoEl == null) {
             // Player is not using HTML5 tech, so don't init it.
             return ;
+        }
+
+        if (current_proj === "NONE") {
+           // Show raw 360 video.
+           return ;
         }
 
         function changeProjection(projection) {
@@ -162,6 +172,8 @@
 
             camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 
+            cameraVector = new THREE.Vector3(); // Store vector representing the direction in which the camera is looking, in world space.
+
             if ((current_proj === "360_LR") || (current_proj === "360_TB")) {
                 camera.layers.enable( 1 ); // Render left eye when not in VR mode
             }
@@ -175,6 +187,12 @@
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
             videoTexture.format = THREE.RGBFormat;
+            // iOS HLS fix/hack
+            // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
+            // https://github.com/mrdoob/three.js/issues/9754
+            // Uncomment below two lines - color space is wrong and picture is (obviously) flipped on Y axis
+            // videoTexture.format = THREE.RGBAFormat;
+            // videoTexture.flipY = false;
 
             movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
             changeProjection(current_proj);
@@ -191,6 +209,9 @@
             effect = new THREE.VREffect(renderer);
             effect.setSize(window.innerWidth, window.innerHeight);
 
+            var vrDisplay = null;
+            var frameData = null;
+
             var manager = new WebVRManager(renderer, effect, {hideButton: false});
 
             renderedCanvas = renderer.domElement;
@@ -202,14 +223,32 @@
 
             // Handle window resizes
             function onWindowResize() {
-                if (window.orientation == undefined) {
+                //if (window.orientation == undefined) {
+                    effect.setSize(window.innerWidth, window.innerHeight);
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
-                    effect.setSize(window.innerWidth, window.innerHeight);
-                }
+                //}
             }
 
             window.addEventListener('resize', onWindowResize, false);
+            window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
+
+            if (navigator.getVRDisplays) {
+                frameData = new VRFrameData();
+                navigator.getVRDisplays().then(function (displays) {
+                    if (displays.length > 0) {
+                        console.log("WebVR supported, VRDisplays found.");
+                        vrDisplay = displays[0];
+                        console.log(vrDisplay);
+                    } else {
+                        console.log("WebVR supported, but no VRDisplays found.");
+                    }
+                });
+            } else if (navigator.getVRDevices) {
+                console.log("Your browser supports WebVR but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info.");
+            } else {
+                console.log("Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance.");
+            }
 
             // Handle window rotate
             function onWindowRotate() {
@@ -238,10 +277,43 @@
                 }
 
                 controls3d.update();
-                requestId = window.requestAnimationFrame(animate)
+                //requestId = window.requestAnimationFrame(animate)
                 manager.render( scene, camera );
+                effect.render( scene, camera );
 
+                if (vrDisplay) {
+                    vrDisplay.requestAnimationFrame(animate);
+                    //vrDisplay.getFrameData(frameData);
+
+                    //if (vrDisplay.isPresenting) {
+                    //   vrDisplay.submitFrame();
+                    //}
+                }  else {
+                    window.requestAnimationFrame(animate);
+                }
+
+                camera.getWorldDirection( cameraVector );
+                x = getCameraAngle( cameraVector, "x");
+                y = getCameraAngle( cameraVector, "y");
+
+                //console.log('X camera angle:' + getCameraAngle( cameraVector, "x") );
+                //console.log('Y camera angle:' + getCameraAngle( cameraVector, "y") );
+                //console.log(cameraVector.x, cameraVector.y, cameraVector.z);
             }());
+
+            function getCameraAngle(cameraVector, axis) {
+               if (axis == "x") {
+                    return 180-radiansToDegrees(Math.atan2(cameraVector.x, cameraVector.z));
+                    //return cameraVector.x * 114.59155902616465;
+               } else if (axis == "y") {
+                    return 180-radiansToDegrees(Math.atan2(cameraVector.y, cameraVector.z));
+                    //return cameraVector.y * 114.59155902616465;
+               }
+            }
+
+            function radiansToDegrees(radians) {
+               return radians * 180 / Math.PI;
+            }
 
 
         }

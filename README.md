@@ -12,6 +12,11 @@ npm install
 npm run build
 ```
 
+### Download Local Samples
+```
+npm run local-samples
+```
+
 ### Run
 ```
 npm run serve
@@ -19,6 +24,10 @@ npm run serve
 
 ## Examples
 To test locally, visit localhost:3000/example.html
+
+For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html 
+
+To test iOS devices, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html
 
 ## Setting up your own player
 

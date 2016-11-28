@@ -23,11 +23,11 @@ object{height:100%;width:100%}
 <body>
 
 <video id="video-container" class="video-js vjs-default-skin" preload="auto" crossOrigin="anonymous" width="100%" height="100%" data-setup="{}" controls playsinline webkit-playsinline>
-  <source src="https://cdn-au.metacdn.com/jumipqxo/1u2Jh28/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-WEBM_VP9.webm" type="video/webm">
-  <source src="https://cdn-au.metacdn.com/jumipqxo/1lgi0Am/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-MP4.mp4" type="video/mp4">
-  <!-- VP9 Dash Example
-  <source src="http://cdn-au.metacdn.com/jumipqxo/24CqTuS/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-PLAYLIST_1478220740600.mpd" type="application/dash+xml"
-  -->
+  <!-- Even with local/relative source, HLS will result in blank screen. This means no Live 360 on iOS - thanks Apple! https://bugs.webkit.org/show_bug.cgi?id=163866#c3 -->
+  <!-- There is a hack in src/jsi/videojs.vr.js - see comments -->
+  <source src="samples/milford-sound.m3u8" type="application/x-mpegURL">
+</video>
+
 <!--
   video.js will automatically initialize the video element since it's loaded in
   the head of the document but you still need to configure and initialize the
