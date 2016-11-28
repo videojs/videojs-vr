@@ -23,11 +23,11 @@ npm run serve
 ```
 
 ## Examples
-To test locally, visit localhost:3000/example.html
+To test locally, visit localhost:3000/example.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.1/example.html)
 
-For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html 
+For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.1/iframe.html)
 
-To test iOS devices, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html
+To test iOS devices, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.1/example-local.html)
 
 ## Setting up your own player
 
