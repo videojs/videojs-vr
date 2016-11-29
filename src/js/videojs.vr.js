@@ -233,8 +233,22 @@
             window.addEventListener('resize', onWindowResize, false);
             window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
 
+            function onVRRequestPresent() {
+               manager.enterVRMode_();
+               manager.setMode_(3);
+            }
+
+            function onVRExitPresent() {
+                if (!vrDisplay.isPresenting)
+                    return;
+                vrDisplay.exitPresent();
+            }
+
+            window.addEventListener('vrdisplayactivate', onVRRequestPresent, true);
+            window.addEventListener('vrdisplaydeactivate', onVRExitPresent, true);
+
             if (navigator.getVRDisplays) {
-                frameData = new VRFrameData();
+                //frameData = new VRFrameData();
                 navigator.getVRDisplays().then(function (displays) {
                     if (displays.length > 0) {
                         console.log("WebVR supported, VRDisplays found.");
@@ -277,9 +291,7 @@
                 }
 
                 controls3d.update();
-                //requestId = window.requestAnimationFrame(animate)
                 manager.render( scene, camera );
-                effect.render( scene, camera );
 
                 if (vrDisplay) {
                     vrDisplay.requestAnimationFrame(animate);
