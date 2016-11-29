@@ -3,7 +3,7 @@
 
 A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
 
-[View Demo](http://stage.metacdn.com/r/v/vorjbrr/Er866Cp)
+[View Demo](https://videojs-vr.s3.amazonaws.com/0.2.2/example.html)
 
 
 ### Build
@@ -23,11 +23,11 @@ npm run serve
 ```
 
 ## Examples
-To test locally, visit localhost:3000/example.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.1/example.html)
+To test locally, visit localhost:3000/example.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/example.html)
 
-For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.1/iframe.html)
+For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/iframe.html)
 
-To test macOS and iOS devices with Safari, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.1/example-local.html)
+To test macOS and iOS devices with Safari, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/example-local.html)
 
 ## Setting up your own player
 
@@ -74,4 +74,5 @@ This work is sponsored by [Brightcove](https://www.brightcove.com), [HapYak](htt
 
 
 ## Release History
+0.2.2
 0.2.0
