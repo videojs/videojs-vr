@@ -24,6 +24,7 @@ npm run serve
 
 ## Examples
 To test locally, visit localhost:3000/example.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/example.html)
+<a href="ovrweb:https://videojs-vr.s3.amazonaws.com/0.2.2/example.html">Click here to open in Oculus Carmel VR Browser (Gear VR)</a>
 
 For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/iframe.html)
 
