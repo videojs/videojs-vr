@@ -2,6 +2,7 @@ var videojs = global.videojs = require('video.js');
 require('dashjs');
 require('videojs-contrib-dash');
 require('videojs-contrib-hls');
+require('videojs-errors/dist/videojs-errors.js');
 global.THREE = require('three');
 require('three/examples/js/controls/VRControls.js');
 require('three/examples/js/effects/VREffect.js');

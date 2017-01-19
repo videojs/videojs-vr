@@ -186,15 +186,69 @@
             videoTexture.generateMipmaps = false;
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
-            videoTexture.format = THREE.RGBFormat;
-            // iOS HLS fix/hack
+            
+            // iOS and macOS HLS fix/hacks
             // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
             // https://github.com/mrdoob/three.js/issues/9754
-            // Uncomment below two lines - color space is wrong and picture is (obviously) flipped on Y axis
-            // videoTexture.format = THREE.RGBAFormat;
-            // videoTexture.flipY = false;
+            // On iOS with HLS, color space is wrong and texture is flipped on Y axis
+            // On macOS, just need to flip texture Y axis
 
-            movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+            if (isHLS() && isSafari() && isIOS()) {
+                console.log("Safari + iOS + HLS = flipY and colorspace hack");
+                videoTexture.format = THREE.RGBAFormat;
+                videoTexture.flipY = false;
+            } else if (isHLS() && isSafari()) {
+                console.log("Safari + HLS = flipY hack");
+                videoTexture.format = THREE.RGBFormat;
+                videoTexture.flipY = false;
+            } else {
+                videoTexture.format = THREE.RGBFormat;
+            }
+
+            if (videoTexture.format === THREE.RGBAFormat && videoTexture.flipY === false) {
+                movieMaterial = new THREE.ShaderMaterial({
+                    uniforms: {
+                        texture: { value: videoTexture }
+                    },
+                    vertexShader: [
+                        "varying vec2 vUV;",
+                        "void main() {",
+                        "	vUV = vec2( uv.x, 1.0 - uv.y );",
+                        "	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                        "}"
+                    ].join("\n"),
+                    fragmentShader: [
+                        "uniform sampler2D texture;",
+                        "varying vec2 vUV;",
+                        "void main() {",
+                        " gl_FragColor = texture2D( texture, vUV  ).bgra;",
+                        "}"
+                    ].join("\n")
+                });
+            } else if (videoTexture.format === THREE.RGBFormat && videoTexture.flipY === false) {
+                 movieMaterial = new THREE.ShaderMaterial({
+                    uniforms: {
+                        texture: { value: videoTexture }
+                    },
+                    vertexShader: [
+                        "varying vec2 vUV;",
+                        "void main() {",
+                        "	vUV = vec2( uv.x, 1.0 - uv.y );",
+                        "	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                        "}"
+                    ].join("\n"),
+                    fragmentShader: [
+                        "uniform sampler2D texture;",
+                        "varying vec2 vUV;",
+                        "void main() {",
+                        " gl_FragColor = texture2D( texture, vUV  );",
+                        "}"
+                    ].join("\n")
+                });
+            } else {
+                movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+            }
+
             changeProjection(current_proj);
             camera.position.set(0,0,0);
 
@@ -262,6 +316,34 @@
                 console.log("Your browser supports WebVR but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info.");
             } else {
                 console.log("Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance.");
+            }
+            
+            function isIOS() {
+                return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+                console.log("Detected iOS");
+
+            };
+
+            function isSafari() {
+                return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                //return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+            };
+            
+            function isHLS(videoElement) {
+                var videoSources = videoEl.querySelectorAll("source");
+                var currentSource = videoEl.src;
+                var result = false;
+                for (var i = 0; i < videoSources.length; i++) {
+                var currentVideoSource = videoSources[i];
+                    if (currentVideoSource.src === currentSource) {
+                        if (currentVideoSource.type == "application/x-mpegURL") {
+                            result = true;
+                            console.log("Detected HLS Stream");
+                        }
+                        break;
+                    }
+                }
+                return result;
             }
 
             // Handle window rotate

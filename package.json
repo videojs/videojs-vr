@@ -35,7 +35,8 @@
     "webvr-polyfill": "^0.9.23",
     "dashjs": "^2.2.0",
     "videojs-contrib-hls": "^4.0.1",
-    "videojs-contrib-dash": "^2.5.1"
+    "videojs-contrib-dash": "^2.5.1",
+    "videojs-errors": "^1.1.2"
   },
   "devDependencies": {
     "browserify": "13.0.0",
@@ -48,6 +49,7 @@
     "dashjs": "^2.2.0",
     "videojs-contrib-hls": "^4.0.1",
     "videojs-contrib-dash": "^2.5.1",
+    "videojs-errors": "^1.1.2",
     "express": "4.13.4",
     "express-http-proxy": "0.6.0",
     "cors": "2.7.1",

@@ -22,7 +22,7 @@ object{height:100%;width:100%}
 
 <body>
 
-<video id="video-container" class="video-js vjs-default-skin" preload="auto" crossOrigin="anonymous" width="100%" height="100%" data-setup="{}" controls playsinline webkit-playsinline>
+<video id="video-container" class="video-js vjs-default-skin" preload="auto" autoplay="autoplay" crossOrigin="anonymous" width="100%" height="100%" data-setup="{}" controls playsinline webkit-playsinline>
   <source src="https://cdn-au.metacdn.com/jumipqxo/1u2Jh28/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-WEBM_VP9.webm" type="video/webm">
   <source src="https://cdn-au.metacdn.com/jumipqxo/1lgi0Am/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-MP4.mp4" type="video/mp4">
   <!-- VP9 Dash Example
@@ -33,6 +33,12 @@ object{height:100%;width:100%}
   the head of the document but you still need to configure and initialize the
   plugin.
 -->
+
+<script>
+if ('SamsungChangeSky' in window) {
+  window.SamsungChangeSky({ sphere: 'samples/milford-sound.jpg' });
+}
+</script>
 
 <script>
     (function(){
