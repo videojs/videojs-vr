@@ -21,8 +21,9 @@
   },
   "main": "src/js/videojs.vr.js",
   "scripts": {
-    "build": "mkdir -p dist & npm run build-js & npm run build-css",
-    "build-js": "browserify ./src/js/player.js > ./dist/player.full.js",
+    "build": "mkdir -p dist & npm run build-js-no-min & npm run build-css",
+    "build-js": "browserify ./src/js/player.js -v -d -p [minifyify --no-map] > ./dist/player.js",
+    "build-js-no-min": "browserify ./src/js/player.js > ./dist/player.full.js",
     "build-css": "browserify -g browserify-css ./src/js/player-skin.js -o ./dist/player-skin.js",
     "local-samples": "cat urls.txt | download --out samples",
     "serve": "npm run build & nodemon ./server.js",
@@ -54,6 +55,7 @@
     "express-http-proxy": "0.6.0",
     "cors": "2.7.1",
     "nodemon": "1.9.1",
+    "minifyify": "7.3.4",
     "download-cli": "1.0.1"
   }
 }
