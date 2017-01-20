@@ -32,25 +32,8 @@ To test macOS and iOS devices with Safari, you need a local/same domain source f
 
 ## Setting up your own player
 
-Download:
-* [VideoJS](http://www.videojs.com)
-* [Three.js](http://threejs.org)
-* [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate)
-* [webvr-polyfill](https://github.com/borismus/webvr-polyfill)
-
-In your web page (adjust to match the location/layout of your downloaded libs - order is important!):
-
-    <link rel="stylesheet" href="dist/videojs.css">
-    <script src="dist/video.js"></script>
-    <script src="dist/js/three.js"></script>
-
-    <script type="text/javascript" src="dist/js/VRControls.js"></script>
-    <script type="text/javascript" src="dist/js/VREffect.js"></script>
-    <script type="text/javascript" src="dist/js/webvr-polyfill.js"></script>
-    <script type="text/javascript" src="dist/js/webvr-manager.js"></script>
-
-    <script type="text/javascript" src="dist/js/videojs.vr.js"></script>
-    <script type="text/javascript" src="dist/js/webvr.config.js"></script>
+    <script src="./dist/player-skin.js"></script>
+    <script src="./dist/player.full.js"></script>
 
 Host on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
 
