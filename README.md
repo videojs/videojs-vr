@@ -24,11 +24,11 @@ npm run serve
 
 ## Examples
 To test locally, visit localhost:3000/example.html
-[Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/example.html)
+[Hosted example](https://videojs-vr.s3.amazonaws.com/0.3.0/example.html)
 
-For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/iframe.html)
+For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.3.0/iframe.html)
 
-To test macOS and iOS devices with Safari, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/example-local.html)
+To test macOS and iOS devices with Safari, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html an MP4 sample [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/example-local.html) OR visit localhost:3000/example-local-hls.html for a HLS sample [Hosted example](https://videojs-vr.s3.amazonaws.com/0.3.0/example-local-hls.html)
 
 ## Setting up your own player
 
