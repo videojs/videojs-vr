@@ -1,6 +1,6 @@
 {
   "name": "videojs-vr",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "author": {
     "name": "James Broberg",
     "email": "james.broberg@metacdn.com"
@@ -21,8 +21,9 @@
   },
   "main": "src/js/videojs.vr.js",
   "scripts": {
-    "build": "mkdir -p dist & npm run build-js & npm run build-css",
-    "build-js": "browserify ./src/js/player.js > ./dist/player.full.js",
+    "build": "mkdir -p dist & npm run build-js-no-min & npm run build-css",
+    "build-js": "browserify ./src/js/player.js -v -d -p [minifyify --no-map] > ./dist/player.js",
+    "build-js-no-min": "browserify ./src/js/player.js > ./dist/player.full.js",
     "build-css": "browserify -g browserify-css ./src/js/player-skin.js -o ./dist/player-skin.js",
     "local-samples": "cat urls.txt | download --out samples",
     "serve": "npm run build & nodemon ./server.js",
@@ -30,28 +31,31 @@
   },
   "dependencies": {
     "video.js": "^5.11.9",
-    "three": "^0.82.1",
+    "three": "0.83.0",
     "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
-    "webvr-polyfill": "^0.9.23",
+    "webvr-polyfill": "0.9.23",
     "dashjs": "^2.2.0",
     "videojs-contrib-hls": "^4.0.1",
-    "videojs-contrib-dash": "^2.5.1"
+    "videojs-contrib-dash": "^2.5.1",
+    "videojs-errors": "^1.1.2"
   },
   "devDependencies": {
     "browserify": "13.0.0",
     "browserify-css": "0.9.1",
     "browserify-shim": "3.8.12",
     "video.js": "^5.11.9",
-    "three": "^0.82.1",
+    "three": "0.83.0",
     "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
-    "webvr-polyfill": "^0.9.23",
+    "webvr-polyfill": "0.9.23",
     "dashjs": "^2.2.0",
     "videojs-contrib-hls": "^4.0.1",
     "videojs-contrib-dash": "^2.5.1",
+    "videojs-errors": "^1.1.2",
     "express": "4.13.4",
     "express-http-proxy": "0.6.0",
     "cors": "2.7.1",
     "nodemon": "1.9.1",
+    "minifyify": "7.3.4",
     "download-cli": "1.0.1"
   }
 }
