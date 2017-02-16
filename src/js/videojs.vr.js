@@ -330,19 +330,14 @@
             };
             
             function isHLS(videoElement) {
-                var videoSources = videoEl.querySelectorAll("source");
-                var currentSource = videoEl.src;
                 var result = false;
-                for (var i = 0; i < videoSources.length; i++) {
-                var currentVideoSource = videoSources[i];
-                    if (currentVideoSource.src === currentSource) {
-                        if (currentVideoSource.type == "application/x-mpegURL") {
-                            result = true;
-                            console.log("Detected HLS Stream");
-                        }
-                        break;
-                    }
+                var currentType = player.currentType();
+
+                if (currentType == "application/x-mpegURL") {
+                    result = true;
+                    console.log("Detected HLS Stream");
                 }
+
                 return result;
             }
 

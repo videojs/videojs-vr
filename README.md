@@ -3,7 +3,7 @@
 
 A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
 
-[View Demo](https://videojs-vr.s3.amazonaws.com/0.2.2/example.html)
+[View Demo](https://videojs-vr.s3.amazonaws.com/latest/example.html)
 
 
 ### Build
@@ -24,11 +24,11 @@ npm run serve
 
 ## Examples
 To test locally, visit localhost:3000/example.html
-[Hosted example](https://videojs-vr.s3.amazonaws.com/0.3.0/example.html)
+[Hosted example](https://videojs-vr.s3.amazonaws.com/latest/example.html)
 
-For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/0.3.0/iframe.html)
+For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/latest/iframe.html)
 
-To test macOS and iOS devices with Safari, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html an MP4 sample [Hosted example](https://videojs-vr.s3.amazonaws.com/0.2.2/example-local.html) OR visit localhost:3000/example-local-hls.html for a HLS sample [Hosted example](https://videojs-vr.s3.amazonaws.com/0.3.0/example-local-hls.html)
+To test macOS and iOS devices with Safari, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html an MP4 sample [Hosted example](https://videojs-vr.s3.amazonaws.com/latest/example-local.html) OR visit localhost:3000/example-local-hls.html for a HLS sample [Hosted example](https://videojs-vr.s3.amazonaws.com/latest/example-local-hls.html)
 
 ## Setting up your own player
 
@@ -59,6 +59,7 @@ This work is sponsored by [Brightcove](https://www.brightcove.com), [HapYak](htt
 
 ## Release History
 
+* 0.3.1
 * 0.3.0
 * 0.2.2
 * 0.2.0
