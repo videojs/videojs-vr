@@ -266,6 +266,9 @@
             var vrDisplay = null;
             var frameData = null;
 
+            // Previous timestamps for gamepad updates
+            var prevTimestamps = [];
+
             var manager = new WebVRManager(renderer, effect, {hideButton: false});
 
             renderedCanvas = renderer.domElement;
@@ -359,6 +362,15 @@
             }
             window.addEventListener('orientationchange', onWindowRotate, false);
 
+            function togglePlay() {
+                // Doesn't currently cater for case where paused due to buffering
+                // and/or lack of data
+                if (player.paused()) {
+                    player.play();
+                } else {
+                    player.pause();
+                }
+            }
 
             (function animate() {
                 if ( videoEl.readyState === videoEl.HAVE_ENOUGH_DATA ) {
@@ -372,6 +384,25 @@
 
                 if (vrDisplay) {
                     vrDisplay.requestAnimationFrame(animate);
+
+                    // Grab all gamepads
+                    var gamepads = navigator.getGamepads();
+                    for (var i = 0; i < gamepads.length; ++i) {
+                        var gamepad = gamepads[i];
+                        // Make sure gamepad is defined
+                        if (gamepad) {
+                            // Only take input if state has changed since we checked last
+                            if (gamepad.timestamp && !(gamepad.timestamp === prevTimestamps[i])) {
+                                for (var j = 0; j < gamepad.buttons.length; ++j) {
+                                    if (gamepad.buttons[j].pressed) {
+                                        togglePlay();
+                                        prevTimestamps[i] = gamepad.timestamp;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                     //vrDisplay.getFrameData(frameData);
 
                     //if (vrDisplay.isPresenting) {
