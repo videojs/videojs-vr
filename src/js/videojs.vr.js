@@ -186,7 +186,7 @@
             videoTexture.generateMipmaps = false;
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
-            
+
             // iOS and macOS HLS fix/hacks
             // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
             // https://github.com/mrdoob/three.js/issues/9754
@@ -320,7 +320,7 @@
             } else {
                 console.log("Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance.");
             }
-            
+
             function isIOS() {
                 return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
                 console.log("Detected iOS");
@@ -331,7 +331,7 @@
                 return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                 //return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
             };
-            
+
             function isHLS(videoElement) {
                 var result = false;
                 var currentType = player.currentType();
@@ -416,9 +416,9 @@
                 x = getCameraAngle( cameraVector, "x");
                 y = getCameraAngle( cameraVector, "y");
 
-                //console.log('X camera angle:' + getCameraAngle( cameraVector, "x") );
-                //console.log('Y camera angle:' + getCameraAngle( cameraVector, "y") );
-                //console.log(cameraVector.x, cameraVector.y, cameraVector.z);
+                // console.log('X camera angle:' + getCameraAngle( cameraVector, "x") );
+                // console.log('Y camera angle:' + getCameraAngle( cameraVector, "y") );
+                // console.log(cameraVector.x, cameraVector.y, cameraVector.z);
             }());
 
             function getCameraAngle(cameraVector, axis) {
@@ -435,9 +435,15 @@
                return radians * 180 / Math.PI;
             }
 
-
+            var testing = "testing string";
+            player.vr = {
+              testing: testing,
+              cameraVector: cameraVector
+            };
         }
         initScene();
+
+
 
      /**
       * Add the menu options
