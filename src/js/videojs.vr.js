@@ -435,7 +435,7 @@
                return radians * 180 / Math.PI;
             }
 
-            var testing = "testing string";
+            var testing = "testing exposed variable";
             player.vr = {
               testing: testing,
               cameraVector: cameraVector

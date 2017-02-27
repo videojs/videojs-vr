@@ -46,19 +46,12 @@ if ('SamsungChangeSky' in window) {
             techOrder: ['html5']
         });
         player.vr({projection: "360"});
-
-        //        player.vr().cameraVector; //DOES NOT WORK
-
-        //        player.vr().cameraVector(); //DOES NOT WORK
-        console.log("player.vr.testing;");
-        player.vr.testing;
-        
-        console.log("player.vr.cameraVector;");
-        player.vr.cameraVector; // does not raise error
-
-        //        player.vr.cameraVector(); DOES NOT WORK
-
     })();
+
+    setInterval( function() {
+      console.log("cameraVector");
+      console.log(document.getElementById('video-container').player.vr.cameraVector);
+    }, 1000);
 </script>
 </body>
 </html>
