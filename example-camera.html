@@ -47,6 +47,11 @@ if ('SamsungChangeSky' in window) {
         });
         player.vr({projection: "360"});
     })();
+
+    setInterval( function() {
+      console.log("cameraVector");
+      console.log(document.getElementById('video-container').player.vr.cameraVector);
+    }, 1000);
 </script>
 </body>
 </html>
