@@ -44,6 +44,13 @@ Oculus Rift and HTC Vive playback requires Firefox Nightly with the WebVR addon,
 
 GearVR playback requires the latest Samsung Internet for Gear VR with WebVR support enabled. Go [here](https://mail.mozilla.org/pipermail/web-vr-discuss/2016-April/001054.html) for more info.
 
+## Accessing the Camera Position
+The Three.js camera is exposed as a property `cameraVector` on the `vr` plugin namespace. For example, assuming the parent element for your Video.js is `#video-container` the following code would display the current cameraVector value:
+
+    document.getElementById('video-container').player.vr.cameraVector
+
+See `example-camera.html` for a working demo that spits out camera position to the console every second.
+
 ## Credits ##
 
 This project is a conglomeration of a few amazing open source libraries.
