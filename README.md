@@ -66,6 +66,7 @@ This work is sponsored by [Brightcove](https://www.brightcove.com), [HapYak](htt
 
 ## Release History
 
+* 0.3.2
 * 0.3.1
 * 0.3.0
 * 0.2.2
