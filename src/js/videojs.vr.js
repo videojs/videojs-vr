@@ -436,6 +436,7 @@
             }
 
             player.vr = {
+              camera: camera,
               cameraVector: cameraVector
             };
         }
