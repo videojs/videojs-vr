@@ -435,7 +435,9 @@
                return radians * 180 / Math.PI;
             }
 
+            // Expose the Three.js perspective camera and rotation values on the player under the 'vr' namespace:
             player.vr = {
+              camera: camera,
               cameraVector: cameraVector
             };
         }

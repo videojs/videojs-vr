@@ -41,8 +41,10 @@ if ('SamsungChangeSky' in window) {
 </script>
 
 <script>
+    var player;
+
     (function(){
-        var player = videojs( '#video-container', {
+        player = videojs( '#video-container', {
             techOrder: ['html5']
         });
         player.vr({projection: "360"});
@@ -50,7 +52,9 @@ if ('SamsungChangeSky' in window) {
 
     setInterval( function() {
       console.log("cameraVector");
-      console.log(document.getElementById('video-container').player.vr.cameraVector);
+      console.log(player.vr.cameraVector);
+      console.log("Three JS perspective camera");
+      console.log(player.vr.camera);
     }, 1000);
 </script>
 </body>
