@@ -45,19 +45,31 @@ Oculus Rift and HTC Vive playback requires Firefox Nightly with the WebVR addon,
 GearVR playback requires the latest Samsung Internet for Gear VR with WebVR support enabled. Go [here](https://mail.mozilla.org/pipermail/web-vr-discuss/2016-April/001054.html) for more info.
 
 ## Accessing the Camera Position
-The Three.js perspective camera and rotation values are exposed as the properties `camera` and `cameraVector` on the `vr` plugin namespace.
+The Three.js rotation values are exposed under the property `cameraVector` on the `vr` plugin namespace.
 
-For example, assuming the parent element for Video.js is `#video-container` the following code would return the current `camera` object:
-
-    document.getElementById('video-container').player.vr.camera
-
-and:
+For example, assuming the parent element for Video.js is `#video-container` the following code would return the current `cameraVector` values:
 
     document.getElementById('video-container').player.vr.cameraVector
  
- would return the current `cameraVector` value:
-
 See `example-camera.html` for a working demo that logs camera object and rotation to the console every second.
+
+## Accessing THREE.js objects
+The Three.js Scene, renderer, and perspective camera are exposed under the `threeJs` object as the properties `scene`, `renderer`, and `camera` on the `vr` plugin namespace.
+
+For example, assuming the parent element for Video.js is `#video-container` the following code would return the current `camera` object:
+
+    document.getElementById('video-container').player.vr.threeJs.camera
+
+ while:
+
+    document.getElementById('video-container').player.vr.threeJs.scene
+ 
+ would return the THREE.js Scene, and:
+
+    document.getElementById('video-container').player.vr.threeJs.renderer
+ 
+ would return the THREE.js renderer.
+ 
 
 ## Credits ##
 
