@@ -437,8 +437,12 @@
 
             // Expose the Three.js perspective camera and rotation values on the player under the 'vr' namespace:
             player.vr = {
-              camera: camera,
-              cameraVector: cameraVector
+              cameraVector: cameraVector,
+              threeJs: {
+                  scene: scene,
+                  camera: camera,
+                  renderer: renderer
+              }
             };
         }
         initScene();
