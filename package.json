@@ -24,6 +24,7 @@
     "build": "mkdir -p dist & npm run build-js-no-min & npm run build-css",
     "build-js": "browserify ./src/js/player.js -v -d -p [minifyify --no-map] > ./dist/player.js",
     "build-js-no-min": "browserify ./src/js/player.js > ./dist/player.full.js",
+    "build-js-no-min-no-videojs": "browserify ./src/js/player-no-videojs.js > ./dist/player-no-videojs.full.js",
     "build-css": "browserify -g browserify-css ./src/js/player-skin.js -o ./dist/player-skin.js",
     "local-samples": "cat urls.txt | download --out samples",
     "serve": "npm run build & nodemon ./server.js",
