@@ -1,6 +1,3 @@
-require('dashjs');
-require('videojs-contrib-dash');
-require('videojs-contrib-hls');
 global.THREE = require('three');
 require('three/examples/js/controls/VRControls.js');
 require('three/examples/js/effects/VREffect.js');
