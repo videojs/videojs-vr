@@ -29,7 +29,8 @@
     projections = ["360", "360_LR", "360_TB", "360_CUBE", "NONE"],
 
     defaults = {
-        projection: "360_LR"
+        projection: "360_LR",
+        debug: false
     },
 
     /**
@@ -51,6 +52,12 @@
             x,
             y,
             z;
+
+        var log = function(msg){
+            if(settings.debug) {
+                console.log(msg);
+            }
+        };
 
 
         if (videoEl == undefined || videoEl == null) {
@@ -194,11 +201,11 @@
             // On macOS, just need to flip texture Y axis
 
             if (isHLS() && isSafari() && isIOS()) {
-                console.log("Safari + iOS + HLS = flipY and colorspace hack");
+                log("Safari + iOS + HLS = flipY and colorspace hack");
                 videoTexture.format = THREE.RGBAFormat;
                 videoTexture.flipY = false;
             } else if (isHLS() && isSafari()) {
-                console.log("Safari + HLS = flipY hack");
+                log("Safari + HLS = flipY hack");
                 videoTexture.format = THREE.RGBFormat;
                 videoTexture.flipY = false;
             } else {
@@ -308,22 +315,22 @@
                 //frameData = new VRFrameData();
                 navigator.getVRDisplays().then(function (displays) {
                     if (displays.length > 0) {
-                        console.log("WebVR supported, VRDisplays found.");
+                        log("WebVR supported, VRDisplays found.");
                         vrDisplay = displays[0];
-                        console.log(vrDisplay);
+                        log(vrDisplay);
                     } else {
-                        console.log("WebVR supported, but no VRDisplays found.");
+                        log("WebVR supported, but no VRDisplays found.");
                     }
                 });
             } else if (navigator.getVRDevices) {
-                console.log("Your browser supports WebVR but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info.");
+                log("Your browser supports WebVR but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info.");
             } else {
-                console.log("Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance.");
+                log("Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance.");
             }
 
             function isIOS() {
                 return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
-                console.log("Detected iOS");
+                log("Detected iOS");
 
             };
 
@@ -338,7 +345,7 @@
 
                 if (currentType == "application/x-mpegURL") {
                     result = true;
-                    console.log("Detected HLS Stream");
+                    log("Detected HLS Stream");
                 }
 
                 return result;
@@ -416,9 +423,9 @@
                 x = getCameraAngle( cameraVector, "x");
                 y = getCameraAngle( cameraVector, "y");
 
-                // console.log('X camera angle:' + getCameraAngle( cameraVector, "x") );
-                // console.log('Y camera angle:' + getCameraAngle( cameraVector, "y") );
-                // console.log(cameraVector.x, cameraVector.y, cameraVector.z);
+                // log('X camera angle:' + getCameraAngle( cameraVector, "x") );
+                // log('Y camera angle:' + getCameraAngle( cameraVector, "y") );
+                // log(cameraVector.x, cameraVector.y, cameraVector.z);
             }());
 
             function getCameraAngle(cameraVector, axis) {

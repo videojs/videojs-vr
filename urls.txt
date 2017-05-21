@@ -1,5 +1,0 @@
-https://videojs-vr.s3.amazonaws.com/0.2.2/samples/milford-sound.mp4
-https://videojs-vr.s3.amazonaws.com/0.2.2/samples/milford-sound.ts
-https://videojs-vr.s3.amazonaws.com/0.2.2/samples/milford-sound.m3u8
-https://videojs-vr.s3.amazonaws.com/0.2.2/samples/milford-sound.jpg
-https://videojs-vr.s3.amazonaws.com/0.2.2/samples/milford-sound.webm

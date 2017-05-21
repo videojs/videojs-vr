@@ -2,3 +2,4 @@
 /bower_components/
 .DS_Store
 /samples/
+yarn.lock

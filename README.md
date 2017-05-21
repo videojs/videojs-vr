@@ -12,11 +12,6 @@ npm install
 npm run build
 ```
 
-### Download Local Samples
-```
-npm run local-samples
-```
-
 ### Run
 ```
 npm run serve
@@ -24,22 +19,12 @@ npm run serve
 
 ## Examples
 To test locally, visit localhost:3000/example.html
-[Hosted example](https://videojs-vr.s3.amazonaws.com/latest/example.html)
-
-For an iframe example using the allowvr attribute, visit localhost:3000/iframe.html [Hosted example](https://videojs-vr.s3.amazonaws.com/latest/iframe.html)
-
-To test macOS and iOS devices with Safari, you need a local/same domain source file. After running `npm run local-samples`, visit localhost:3000/example-local.html an MP4 sample [Hosted example](https://videojs-vr.s3.amazonaws.com/latest/example-local.html) OR visit localhost:3000/example-local-hls.html for a HLS sample [Hosted example](https://videojs-vr.s3.amazonaws.com/latest/example-local-hls.html)
 
 ## Setting up your own player
 
 Include the following script imports:
 
-    <script src="./dist/player-skin.js"></script>
-    <script src="./dist/player.full.js"></script>
-
-If you want to roll your own VideoJS instance and just want the plugin and supporting libraries (e.g. to use as a Brightcove plugin), import the below instead:
-
-    <script src="./dist/player-no-videojs.full.js</script>
+    <script src="./dist/videocloud.vr.js"></script>
 
 Host all video content on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
 
