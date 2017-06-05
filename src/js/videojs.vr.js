@@ -26,10 +26,10 @@
         return obj;
     },
 
-    projections = ["360", "360_LR", "360_TB", "360_CUBE", "NONE"],
+    projections = ["360", "360_LR", "360_TB", "360_CUBE", "NONE", "AUTO"],
 
     defaults = {
-        projection: "360_LR",
+        projection: "AUTO",
         debug: false
     },
 
@@ -99,7 +99,16 @@
             if (scene) {
                 scene.remove(movieScreen);
             }
-            if (projection === "360") {
+            if (projection === "AUTO"){
+                if(player.mediainfo && player.mediainfo.projection && player.mediainfo.projection === "equirectangular"){
+                    current_proj = "360";
+                    changeProjection("360");
+                }
+                else{
+                    current_proj = "NONE";
+                }
+            }
+            else if (projection === "360") {
                 movieGeometry = new THREE.SphereBufferGeometry( 256, 32, 32 );
 
                 movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
@@ -281,6 +290,12 @@
             }
 
             changeProjection(current_proj);
+
+            if(current_proj === "NONE") {
+                log("Projection is NONE, dont init");
+                return;
+            }
+
             camera.position.set(0,0,0);
 
             renderer = new THREE.WebGLRenderer({

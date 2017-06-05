@@ -17,40 +17,24 @@
   </head>
   <body>
 
-
     <video id="video-container"
            data-account="1872491397001"
+           data-video-id="5459766183001"
            data-player="HkgaBk7yZb"
            data-embed="default"
            data-application-id
            class="video-js"
            crossOrigin="anonymous"
            controls>
-      <source src="https://cdn-au.metacdn.com/jumipqxo/1u2Jh28/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-WEBM_VP9.webm" type="video/webm">
-      <source src="https://cdn-au.metacdn.com/jumipqxo/1lgi0Am/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-MP4.mp4" type="video/mp4">
-
     </video>
 
     <script src="//players.brightcove.net/1872491397001/HkgaBk7yZb_default/index.min.js"></script>
     <script src="dist/videocloud.vr.js"></script>
 
     <script>
-    if ('SamsungChangeSky' in window) {
-      window.SamsungChangeSky({ sphere: 'samples/milford-sound.jpg' });
-    }
-    </script>
-
-    <script>
         (function(){
             var player = videojs( '#video-container');
-            player.vr({projection: "360",debug:true});
-
-    //        setInterval( function() {
-    //            console.log("cameraVector",player.vr.cameraVector);
-    //            console.log("Three JS perspective camera",player.vr.threeJs.camera);
-    //            console.log("Three JS Scene",player.vr.threeJs.scene);
-    //            console.log("Three JS renderer",player.vr.threeJs.renderer);
-    //        }, 1000);
+            player.vr({debug:true});
         })();
 
     </script>

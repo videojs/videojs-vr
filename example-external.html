@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>videojs-vr example</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="stylesheet" href="dist/videocloud.br.css">
+    <style>
+      html{height:100%;width:100%;padding:0;margin:0}
+      body{height:100%;width:100%;padding:0;margin:0;overflow:hidden}
+      object{height:100%;width:100%}
+      #video-container {width:100%;height:100%}
+    </style>
+  </head>
+  <body>
+
+
+    <video id="video-container"
+           data-account="1872491397001"
+           data-player="HkgaBk7yZb"
+           data-embed="default"
+           data-application-id
+           class="video-js"
+           crossOrigin="anonymous"
+           controls>
+      <source src="https://cdn-au.metacdn.com/jumipqxo/1u2Jh28/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-WEBM_VP9.webm" type="video/webm">
+      <source src="https://cdn-au.metacdn.com/jumipqxo/1lgi0Am/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-MP4.mp4" type="video/mp4">
+
+    </video>
+
+    <script src="//players.brightcove.net/1872491397001/HkgaBk7yZb_default/index.min.js"></script>
+    <script src="dist/videocloud.vr.js"></script>
+
+    <script>
+        (function(){
+            var player = videojs( '#video-container');
+            player.vr({projection: "360",debug:true});
+        })();
+
+    </script>
+  </body>
+</html>

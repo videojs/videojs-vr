@@ -18,7 +18,8 @@ npm run serve
 ```
 
 ## Examples
-To test locally, visit localhost:3000/example.html
+To test locally, visit localhost:3000/example-external.html or localhost:3000/example-videocloud.html
+
 
 ## Setting up your own player
 
@@ -27,6 +28,14 @@ Include the following script imports:
     <script src="./dist/videocloud.vr.js"></script>
 
 Host all video content on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
+
+### Projections
+- 360
+- 360_LR
+- 360_TB
+- CUBE
+- AUTO - will attempt to retrieve metadata from VideoCloud Video, and if present will start plugin otherwise defaults to NONE
+- NONE - plugin doesnt run and renders the video flat
 
 ## Oculus Rift and HTC Vive Support
 This plugin leverages the [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate) project (which in turn uses [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js)) to create a 'responsive VR' experience across multiple devices.
