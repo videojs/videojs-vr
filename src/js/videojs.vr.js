@@ -59,6 +59,30 @@
             }
         };
 
+        function registerErrorMessages() {
+          player.errors({
+              "errors": {
+                  "web-vr-no-devices-found": {
+                      "headline": "No WebVR devices found",
+                      "type": "WEBVR_NO_DEVICES_FOUND",
+                      "message": "Your browser supports WebVR, but no VR displays found."
+                  },
+                  "web-vr-out-of-date": {
+                      "headline": "WebVR is out of date",
+                      "type": "WEBVR_OUT_OF_DATE",
+                      "message": "Your browser supports WebVR but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info."
+                  },
+                  "web-vr-not-supported": {
+                      "headline": "WebVR not supported on this device",
+                      "type": "WEBVR_NOT_SUPPORTED",
+                      "message": "Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance."
+                  }
+              }
+          });
+        }
+
+        registerErrorMessages();
+
 
         if (videoEl == undefined || videoEl == null) {
             // Player is not using HTML5 tech, so don't init it.
@@ -319,19 +343,18 @@
                         vrDisplay = displays[0];
                         log(vrDisplay);
                     } else {
-                        log("WebVR supported, but no VRDisplays found.");
+                        player.error({code: 'web-vr-no-devices-found', dismiss: false});
                     }
                 });
             } else if (navigator.getVRDevices) {
-                log("Your browser supports WebVR but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info.");
+                player.error({code: 'web-vr-out-of-date', dismiss: false});
             } else {
-                log("Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance.");
+                player.error({code: 'web-vr-not-supported', dismiss: false});
             }
 
             function isIOS() {
                 return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
                 log("Detected iOS");
-
             };
 
             function isSafari() {
@@ -452,9 +475,10 @@
               }
             };
         }
-        initScene();
 
-
+        player.on('loadstart', function () {
+           initScene();
+        });
 
      /**
       * Add the menu options
