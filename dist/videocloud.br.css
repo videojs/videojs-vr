@@ -1,0 +1,15 @@
+.video-js .vjs-big-play-button {
+  background: url(http://brightcove360.s3-website-us-east-1.amazonaws.com/assets/360-video.svg);
+  background-size: contain;
+  background-color: rgba(0, 0, 0, 0.5); }
+  :hover.video-js .vjs-big-play-button {
+    -webkit-transition: border-color 0.4s, outline 0.4s, background-color 0.4s;
+    -moz-transition: border-color 0.4s, outline 0.4s, background-color 0.4s;
+    -ms-transition: border-color 0.4s, outline 0.4s, background-color 0.4s;
+    -o-transition: border-color 0.4s, outline 0.4s, background-color 0.4s;
+    transition: border-color 0.4s, outline 0.4s, background-color 0.4s; }
+  .video-js .vjs-big-play-button::before {
+    content: ''; }
+
+.video-js canvas {
+  cursor: move; }

@@ -1,0 +1,32 @@
+@mixin transition($transition...)
+{
+  -webkit-transition: $transition;
+  -moz-transition:$transition;
+  -ms-transition: $transition;
+  -o-transition: $transition;
+  transition: $transition;
+}
+
+
+
+.video-js {
+  .vjs-big-play-button {
+    background: url(http://brightcove360.s3-website-us-east-1.amazonaws.com/assets/360-video.svg);
+    background-size: contain;
+    background-color: rgba(0,0,0,0.5);
+
+    @at-root :hover#{&}
+    {
+      @include transition(border-color .4s,outline .4s,background-color .4s);
+      // background-color:blue !important;
+    }
+
+    &::before{
+      content:'';
+    }
+  }
+
+  canvas {
+    cursor: move;
+  }
+}
