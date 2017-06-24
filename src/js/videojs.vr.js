@@ -63,19 +63,19 @@
           player.errors({
               "errors": {
                   "web-vr-no-devices-found": {
-                      "headline": "No WebVR devices found",
-                      "type": "WEBVR_NO_DEVICES_FOUND",
-                      "message": "Your browser supports WebVR, but no VR displays found."
+                      "headline": "No 360 devices found",
+                      "type": "360_NO_DEVICES_FOUND",
+                      "message": "Your browser supports 360, but no 360 displays found."
                   },
                   "web-vr-out-of-date": {
-                      "headline": "WebVR is out of date",
-                      "type": "WEBVR_OUT_OF_DATE",
-                      "message": "Your browser supports WebVR but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info."
+                      "headline": "360 is out of date",
+                      "type": "360_OUT_OF_DATE",
+                      "message": "Your browser supports 360 but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info."
                   },
                   "web-vr-not-supported": {
-                      "headline": "WebVR not supported on this device",
-                      "type": "WEBVR_NOT_SUPPORTED",
-                      "message": "Your browser does not support WebVR. See <a href='http://webvr.info'>webvr.info</a> for assistance."
+                      "headline": "360 not supported on this device",
+                      "type": "360_NOT_SUPPORTED",
+                      "message": "Your browser does not support 360. See <a href='http://webvr.info'>webvr.info</a> for assistance."
                   }
               }
           });
@@ -201,7 +201,32 @@
             }
         }
 
+        //we need this as IE 11 reports that it has a VR display, but isnt compatible with Video as a Texture. for example
+        function isBrowserCompatible() {
+            var ua = window.navigator.userAgent;
+
+            var msie = ua.indexOf('MSIE ');
+            if (msie > 0) {
+                return false;
+            }
+
+            var trident = ua.indexOf('Trident/');
+            if (trident > 0) {
+                return false;
+            }
+
+            // MS Edge and other browsers
+            return true;
+        }
+
         function initScene() {
+
+            if(!isBrowserCompatible())
+            {
+                player.error({code: 'web-vr-not-supported', dismiss: false});
+                return;
+            }
+
             var time = Date.now(),
                 effect,
                 videoTexture,
@@ -431,18 +456,20 @@
                     vrDisplay.requestAnimationFrame(animate);
 
                     // Grab all gamepads
-                    var gamepads = navigator.getGamepads();
-                    for (var i = 0; i < gamepads.length; ++i) {
-                        var gamepad = gamepads[i];
-                        // Make sure gamepad is defined
-                        if (gamepad) {
-                            // Only take input if state has changed since we checked last
-                            if (gamepad.timestamp && !(gamepad.timestamp === prevTimestamps[i])) {
-                                for (var j = 0; j < gamepad.buttons.length; ++j) {
-                                    if (gamepad.buttons[j].pressed) {
-                                        togglePlay();
-                                        prevTimestamps[i] = gamepad.timestamp;
-                                        break;
+                    if(navigator.getGamepads) {
+                        var gamepads = navigator.getGamepads();
+                        for (var i = 0; i < gamepads.length; ++i) {
+                            var gamepad = gamepads[i];
+                            // Make sure gamepad is defined
+                            if (gamepad) {
+                                // Only take input if state has changed since we checked last
+                                if (gamepad.timestamp && !(gamepad.timestamp === prevTimestamps[i])) {
+                                    for (var j = 0; j < gamepad.buttons.length; ++j) {
+                                        if (gamepad.buttons[j].pressed) {
+                                            togglePlay();
+                                            prevTimestamps[i] = gamepad.timestamp;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -619,6 +646,6 @@
   };
 
   // register the plugin with video.js
-  videojs.plugin('vr', plugin);
+  videojs.registerPlugin('vr', plugin);
 
 }(window.videojs));
