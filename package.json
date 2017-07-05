@@ -28,13 +28,13 @@
     "build-js": "browserify ./src/js/videocloud.vr.js -v -d > ./dist/videocloud.vr.js",
     "build-uglify": "uglifyjs dist/videocloud.vr.js --comments --mangle --compress --ie8 -o dist/videocloud.vr.min.js",
     "build-scss": "node-sass ./src/css/videocloud.vr.scss ./dist/videocloud.vr.css",
-    "build": "rm -rf dist && mkdir -p dist && npm run build-js && npm run build-uglify && npm run build-scss",
+    "build": "rm -rf dist && mkdir dist && npm run build-js && npm run build-uglify && npm run build-scss",
     "serve": "npm run build && live-server --port=3000"
   },
   "dependencies": {
     "three": "0.83.0",
     "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
-    "webvr-polyfill": "0.9.23"
+    "webvr-polyfill": "^0.9.35"
   },
   "devDependencies": {
     "browserify": "13.0.0",
@@ -43,6 +43,6 @@
     "three": "0.83.0",
     "uglify-js": "^3.0.20",
     "webvr-boilerplate": "MetaCDN/webvr-boilerplate",
-    "webvr-polyfill": "0.9.23"
+    "webvr-polyfill": "^0.9.35"
   }
 }

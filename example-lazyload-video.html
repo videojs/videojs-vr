@@ -17,9 +17,9 @@
   </head>
   <body>
 
+
     <video id="video-container"
            data-account="1872491397001"
-           data-video-id="5459766183001"
            data-player="HkgaBk7yZb"
            data-embed="default"
            data-application-id
@@ -35,7 +35,13 @@
     <script>
         (function(){
             var player = videojs( '#video-container');
-            player.vr({debug:true});
+            player.vr({projection: "360",debug:true});
+            player.ready(function(){
+                player.src({
+                    src: " https://cdn-au.metacdn.com/jumipqxo/1lgi0Am/20160823050905_file_id14719289501962016_08_08_08_22_16_er_MP4-HIGH-MP4.mp4",
+                    type: "video/mp4"
+                });
+            });
         })();
 
     </script>
