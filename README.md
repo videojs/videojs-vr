@@ -1,41 +1,102 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [VR](#vr)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [`<script>` Tag](#script-tag)
+    - [Browserify/CommonJS](#browserifycommonjs)
+    - [RequireJS/AMD](#requirejsamd)
+    - [Optional integration with videojs-errors](#optional-integration-with-videojs-errors)
+    - [Passing a projection on a source by source basis](#passing-a-projection-on-a-source-by-source-basis)
+  - [Oculus Rift and HTC Vive Support](#oculus-rift-and-htc-vive-support)
+  - [Accessing the Camera Position](#accessing-the-camera-position)
+  - [Accessing THREE.js objects](#accessing-threejs-objects)
+  - [Credits](#credits)
+  - [Support](#support)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 # VR
 
 A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
 
-[View Demo](https://videojs-vr.s3.amazonaws.com/latest/example.html)
+## Installation
 
-
-### Build
-```
-npm install
-npm run build
+```sh
+npm install --save videojs-vr
 ```
 
-### Run
+## Usage
+
+To include videojs-vr on your website or web application, use any of the following methods.
+
+### `<script>` Tag
+
+This is the simplest case. Get the script in whatever way you prefer and include the plugin _after_ you include [video.js][videojs], so that the `videojs` global is available.
+
+```html
+<script src="//path/to/video.min.js"></script>
+<script src="//path/to/videojs-vr.min.js"></script>
+<script>
+  var player = videojs('my-video');
+
+  player.vr({projection: '360'});
+</script>
 ```
-npm run serve
+
+### Browserify/CommonJS
+
+When using with Browserify, install videojs-vr via npm and `require` the plugin as you would any other module.
+
+```js
+var videojs = require('video.js');
+
+// The actual plugin function is exported by this module, but it is also
+// attached to the `Player.prototype`; so, there is no need to assign it
+// to a variable.
+require('videojs-vr');
+
+var player = videojs('my-video');
+
+player.vr({projection: '360'});
 ```
 
-## Examples
-To test locally, visit localhost:3000/example-external.html or localhost:3000/example-videocloud.html
+### RequireJS/AMD
 
+When using with RequireJS (or another AMD library), get the script in whatever way you prefer and `require` the plugin as you normally would:
 
-## Setting up your own player
+```js
+require(['video.js', 'videojs-vr'], function(videojs) {
+  var player = videojs('my-video');
 
-Include the following script imports:
+  player.vr({projection: '360'});
+});
+```
 
-    <script src="./dist/videocloud.vr.js"></script>
+### Optional integration with videojs-errors
+If the [videojs-errors](https://github.com/brightcove/videojs-errors) plugin is intialized before `videojs-vr`, then it will be used to display errors to users.
 
-Host all video content on a HTTP Server that supports byte range requests if you want the seek bar to work (e.g. Apache).
+### Passing a projection on a source by source basis
+Set `player.mediainfo` and `player.mediainfo.projection` to a valid projection value and pass in 'AUTO' or nothing for the `projection` key when initializing this plugin.
+EX:
+```js
+var player = videojs('my-video');
 
-### Projections
-- 360
-- 360_LR
-- 360_TB
-- CUBE
-- AUTO - will attempt to retrieve metadata from VideoCloud Video, and if present will start plugin otherwise defaults to NONE
-- NONE - plugin doesnt run and renders the video flat
+if (!player.mediainfo) {
+  player.mediainfo = {};
+}
+
+if (!player.mediainfo.projection) {
+  player.mediainfo.projection = '360';
+}
+
+player.vr({projection: 'AUTO'});
+
+// or player.vr(); since 'AUTO' is the default
+```
 
 ## Oculus Rift and HTC Vive Support
 This plugin leverages the [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate) project (which in turn uses [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js)) to create a 'responsive VR' experience across multiple devices.
@@ -50,7 +111,7 @@ The Three.js rotation values are exposed under the property `cameraVector` on th
 For example, assuming the parent element for Video.js is `#video-container` the following code would return the current `cameraVector` values:
 
     document.getElementById('video-container').player.vr.cameraVector
- 
+
 See `example-camera.html` for a working demo that logs camera object and rotation to the console every second.
 
 ## Accessing THREE.js objects
@@ -63,13 +124,13 @@ For example, assuming the parent element for Video.js is `#video-container` the 
  while:
 
     document.getElementById('video-container').player.vr.threeJs.scene
- 
+
  would return the THREE.js Scene, and:
 
     document.getElementById('video-container').player.vr.threeJs.renderer
- 
+
  would return the THREE.js renderer.
- 
+
 
 ## Credits ##
 
@@ -82,14 +143,3 @@ This project is a conglomeration of a few amazing open source libraries.
 
 ## Support ##
 This work is sponsored by [Brightcove](https://www.brightcove.com), [HapYak](http://corp.hapyak.com/) and [StreamShark](https://streamshark.io)
-
-
-## Release History
-
-* 0.3.4
-* 0.3.3
-* 0.3.2
-* 0.3.1
-* 0.3.0
-* 0.2.2
-* 0.2.0

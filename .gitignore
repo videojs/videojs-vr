@@ -1,5 +1,34 @@
-/node_modules/
-/bower_components/
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 .DS_Store
-/samples/
-yarn.lock
+._*
+
+# Editors
+*~
+*.swp
+*.tmproj
+*.tmproject
+*.sublime-*
+.idea/
+.project/
+.settings/
+.vscode/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+bower_components/
+node_modules/
+
+# Yeoman meta-data
+.yo-rc.json
+
+# Build-related directories
+dist/
+docs/api/
+test/dist/
