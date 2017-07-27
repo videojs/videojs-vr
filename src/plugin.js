@@ -355,7 +355,7 @@ const vr = function(options) {
     videoEl.style.display = 'none';
 
     // Handle window resizes
-    function onWindowResize() {
+    function onWindowResize(event) {
       const width = player.currentWidth();
       const height = player.currentHeight();
 
@@ -364,7 +364,7 @@ const vr = function(options) {
       camera.updateProjectionMatrix();
     }
 
-    window.addEventListener('resize', onWindowResize, false);
+    player.on(['resize', 'fullscreenchange'], onWindowResize);
     window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
 
     function onVRRequestPresent() {
