@@ -364,8 +364,9 @@ const vr = function(options) {
       camera.updateProjectionMatrix();
     }
 
-    player.on(['resize', 'fullscreenchange'], onWindowResize);
+    player.on('fullscreenchange', onWindowResize);
     window.addEventListener('vrdisplaypresentchange', onWindowResize, true);
+    window.addEventListener('resize', onWindowResize, true);
 
     function onVRRequestPresent() {
       manager.enterVRMode_();
