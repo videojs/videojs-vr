@@ -132,10 +132,9 @@ const vr = function(options) {
     }
     if (projection === 'AUTO') {
       if (player.mediainfo && player.mediainfo.projection && player.mediainfo.projection === 'equirectangular') {
-        changeProjection('360');
-      } else {
-        changeProjection('NONE');
+        return changeProjection('360');
       }
+      return changeProjection('NONE');
     } else if (projection === '360') {
       movieGeometry = new THREE.SphereBufferGeometry(256, 32, 32);
 
