@@ -239,7 +239,7 @@ const vr = function(options) {
       return;
     }
 
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, player.currentWidth() / player.currentHeight(), 1, 1000);
 
     // Store vector representing the direction in which the camera is looking, in world space.
     cameraVector = new THREE.Vector3();
@@ -336,10 +336,10 @@ const vr = function(options) {
       antialias: true
     });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(player.currentWidth(), player.currentHeight());
     const effect = new VREffect(renderer);
 
-    effect.setSize(window.innerWidth, window.innerHeight);
+    effect.setSize(player.currentWidth(), player.currentHeight());
 
     let vrDisplay = null;
 
