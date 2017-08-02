@@ -1,11 +1,10 @@
-import 'webvr-polyfill/build/webvr-polyfill';
-
+import window from 'global/window';
+/* THIS CONFIGURES webvr-polyfill don't change the order */
+import './webvr-config.js';
+import 'webvr-polyfill/src/main';
 import videojs from 'video.js';
 import {version as VERSION} from '../package.json';
-import window from 'global/window';
-
 import * as THREE from 'three';
-
 // previously we used
 // * three/examples/js/controls/VRControls.js
 // * three/examples/js/effects/VREffects.js
@@ -13,11 +12,8 @@ import * as THREE from 'three';
 // so the code has been copied locally to allow exporting
 import VRControls from './VRControls.js';
 import VREffect from './VREffect.js';
-
-import WebVrConfig from './webvr.config.js';
 import WebVRManager from 'webvr-boilerplate';
 
-window.WebVrConfig = WebVrConfig;
 window.WebVRManager = WebVRManager;
 
 const navigator = window.navigator;
@@ -238,7 +234,7 @@ const vr = function(options) {
       return;
     }
 
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, player.currentWidth() / player.currentHeight(), 1, 1000);
 
     // Store vector representing the direction in which the camera is looking, in world space.
     cameraVector = new THREE.Vector3();
@@ -335,10 +331,10 @@ const vr = function(options) {
       antialias: true
     });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(player.currentWidth(), player.currentHeight());
     const effect = new VREffect(renderer);
 
-    effect.setSize(window.innerWidth, window.innerHeight);
+    effect.setSize(player.currentWidth(), player.currentHeight());
 
     let vrDisplay = null;
 
