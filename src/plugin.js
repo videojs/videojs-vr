@@ -46,6 +46,13 @@ const errors = {
  */
 const vr = function(options) {
   const player = this;
+
+  // don't initialize twice
+  if (this.usingPlugin('vr')) {
+    videojs.log.warn('videojs-vr is already intialized, not going to initialize again');
+    return;
+  }
+
   const settings = videojs.mergeOptions(defaults, options || {});
   const videoEl = this.el().getElementsByTagName('video')[0];
   const container = this.el();
