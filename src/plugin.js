@@ -14,6 +14,10 @@ import VRControls from './VRControls.js';
 import VREffect from './VREffect.js';
 import WebVRManager from 'webvr-boilerplate';
 
+// import controls so they get regisetered with videojs
+import './cardboard-button';
+import './big-vr-play-button';
+
 window.WebVRManager = WebVRManager;
 
 const navigator = window.navigator;
@@ -56,6 +60,9 @@ const initPlugin = function(player, options) {
   const videoEl = player.el().getElementsByTagName('video')[0];
   const container = player.el();
   const defaultProjection = settings.projection;
+  const bigPlayButtonIndex = player
+    .children()
+    .indexOf(player.getChild('BigPlayButton'));
 
   player.vr.currentProjection = settings.projection;
 
@@ -243,6 +250,26 @@ const initPlugin = function(player, options) {
 
   /* reset player.vr to a default un-initialized state */
   player.vr.reset = function() {
+
+    // re-add the big play button to player
+    if (!player.getChild('BigPlayButton')) {
+      player.addChild('BigPlayButton', {}, bigPlayButtonIndex);
+    }
+
+    if (player.getChild('BigVrPlayButton')) {
+      player.removeChild('BigVrPlayButton');
+    }
+
+    // remove the cardboard button
+    if (videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
+      player.controlBar.removeChild('CardboardButton');
+    }
+
+    // show the fullscreen again
+    if (videojs.browser.IS_IOS) {
+      player.controlBar.fullscreenToggle.show();
+    }
+
     // reset the video element style so that it will be displayed
     videoEl.style.display = '';
 
@@ -349,6 +376,19 @@ const initPlugin = function(player, options) {
       log('Projection is NONE, dont init');
       player.vr.reset();
       return;
+    }
+
+    player.removeChild('BigPlayButton');
+    player.addChild('BigVrPlayButton', {}, bigPlayButtonIndex);
+    player.bigPlayButton = player.getChild('BigVrPlayButton');
+    // mobile devices
+    if (videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
+      player.controlBar.addChild('CardboardButton', {});
+    }
+
+    // if ios remove full screen toggle
+    if (videojs.browser.IS_IOS) {
+      player.controlBar.fullscreenToggle.hide();
     }
 
     player.vr.camera.position.set(0, 0, 0);
@@ -500,38 +540,6 @@ const initPlugin = function(player, options) {
   player.on('loadedmetadata', function() {
     player.vr.initScene();
   });
-  function updateVrControls(cb) {
-
-    // Add Carboard button
-    const Button = videojs.getComponent('Button');
-    const VRButton = videojs.extend(Button, {
-      constructor() {
-        Button.apply(this, arguments);
-        log(this);
-      },
-      handleClick() {
-        const event = new window.Event('vrdisplayactivate');
-
-        window.dispatchEvent(event);
-      },
-      buildCSSClass() {
-        return Button.prototype.buildCSSClass.call(this) + 'vjs-button-vr';
-      }
-    });
-
-    videojs.registerComponent('VRButton', VRButton);
-    cb.addChild('VRButton', {});
-
-    // if ios remove full screen toggle
-    if (videojs.browser.IS_IOS) {
-      player.controlBar.fullscreenToggle.hide();
-    }
-  }
-
-  // mobile devices
-  if (videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
-    updateVrControls(player.controlBar);
-  }
 
   return player.vr;
 };
