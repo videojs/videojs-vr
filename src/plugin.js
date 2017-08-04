@@ -55,8 +55,8 @@ const initPlugin = function(player, options) {
   const settings = videojs.mergeOptions(defaults, options || {});
   const videoEl = player.el().getElementsByTagName('video')[0];
   const container = player.el();
+  const defaultProjection = settings.projection;
 
-  player.vr.defaultProjection = settings.projection;
   player.vr.currentProjection = settings.projection;
 
   const log = function(msg) {
@@ -247,7 +247,7 @@ const initPlugin = function(player, options) {
     videoEl.style.display = '';
 
     // set the current projection to the default
-    player.vr.currentProjection = player.vr.defaultProjection;
+    player.vr.currentProjection = defaultProjection;
     // remove the old canvas
     if (player.vr.renderedCanvas && container.contains(player.vr.renderedCanvas)) {
       container.removeChild(player.vr.renderedCanvas);
