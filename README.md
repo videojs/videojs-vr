@@ -9,6 +9,7 @@
     - [Browserify/CommonJS](#browserifycommonjs)
     - [RequireJS/AMD](#requirejsamd)
     - [Optional integration with videojs-errors](#optional-integration-with-videojs-errors)
+  - [Setting a global projection](#setting-a-global-projection)
     - [Passing a projection on a source by source basis](#passing-a-projection-on-a-source-by-source-basis)
   - [Oculus Rift and HTC Vive Support](#oculus-rift-and-htc-vive-support)
   - [Accessing the Camera Position](#accessing-the-camera-position)
@@ -43,7 +44,7 @@ This is the simplest case. Get the script in whatever way you prefer and include
 <script>
   var player = videojs('my-video');
 
-  player.vr({projection: '360'});
+  player.vr();
 </script>
 ```
 
@@ -78,6 +79,20 @@ require(['video.js', 'videojs-vr'], function(videojs) {
 
 ### Optional integration with videojs-errors
 If the [videojs-errors](https://github.com/brightcove/videojs-errors) plugin is intialized before `videojs-vr`, then it will be used to display errors to users.
+
+## Setting a global projection
+If you are only going to be playing 360 videos you can set the global plugin projection like so:
+
+```js
+
+var player = videojs('my-video');
+
+player.vr({projection: '360'});
+
+// or change player.vr.defaultProjection
+// and call player.vr.initScene again
+
+```
 
 ### Passing a projection on a source by source basis
 Set `player.mediainfo` and `player.mediainfo.projection` to a valid projection value and pass in 'AUTO' or nothing for the `projection` key when initializing this plugin.

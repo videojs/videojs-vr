@@ -11,7 +11,7 @@ const WebVRConfig = {
 
   // Flag to disable touch panner. In case you have your own touch controls.
   // Default: true.
-  // TOUCH_PANNER_DISABLED: true,
+  TOUCH_PANNER_DISABLED: false
   // To disable keyboard and mouse controls, if you want to use your own
   // implementation.
   // Default: false.

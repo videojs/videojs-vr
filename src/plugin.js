@@ -21,7 +21,17 @@ import './big-vr-play-button';
 window.WebVRManager = WebVRManager;
 
 const navigator = window.navigator;
-const validProjections = ['360', '360_LR', '360_TB', '360_CUBE', 'NONE', 'AUTO'];
+const validProjections = [
+  '360',
+  '360_LR',
+  '360_TB',
+  '360_CUBE',
+  'NONE',
+  'AUTO',
+  'Sphere',
+  'Cube',
+  'equirectangular'
+];
 // Default options for the plugin.
 const defaults = {
   projection: 'AUTO',
@@ -45,10 +55,42 @@ const errors = {
   }
 };
 
+const getInternalProjectionName = function(projection) {
+  if (!projection) {
+    return;
+  }
+
+  projection = projection.toString().trim();
+
+  if ((/sphere/i).test(projection)) {
+    return '360';
+  }
+
+  if ((/cube/i).test(projection)) {
+    return '360_CUBE';
+  }
+
+  if ((/equirectangular/i).test(projection)) {
+    return '360_CUBE';
+  }
+
+  for (let i = 0; i < validProjections.length; i++) {
+    if (new RegExp('^' + validProjections[i] + '$', 'i').test(projection)) {
+      return validProjections[i];
+    }
+  }
+
+};
 /**
  * Initializes the plugin
  */
 const initPlugin = function(player, options) {
+  const videoEl = player.el().getElementsByTagName('video')[0];
+
+  if (videoEl === undefined || videoEl === null) {
+    // Player is not using HTML5 tech, so don't init it.
+    return;
+  }
 
   // don't initialize twice
   if (player.vr && player.vr.currentProjection) {
@@ -57,13 +99,17 @@ const initPlugin = function(player, options) {
   }
 
   const settings = videojs.mergeOptions(defaults, options || {});
-  const videoEl = player.el().getElementsByTagName('video')[0];
   const container = player.el();
-  const defaultProjection = settings.projection;
   const bigPlayButtonIndex = player
     .children()
     .indexOf(player.getChild('BigPlayButton'));
 
+  if (!getInternalProjectionName(settings.projection)) {
+    videojs.log.error('videojs-vr: Please use a valid projection option: ' + validProjections.join(', '));
+    return;
+  }
+
+  player.vr.defaultProjection = settings.projection;
   player.vr.currentProjection = settings.projection;
 
   const log = function(msg) {
@@ -89,21 +135,6 @@ const initPlugin = function(player, options) {
     }
   };
 
-  if (videoEl === undefined || videoEl === null) {
-    // Player is not using HTML5 tech, so don't init it.
-    return;
-  }
-
-  if (player.vr.currentProjection === 'NONE' || !player.vr.currentProjection) {
-    // Show raw 360 video.
-    return;
-  }
-
-  if (validProjections.indexOf(player.vr.currentProjection) === -1) {
-    videojs.log.error('videojs-vr: Please use a valid projection option: ' + validProjections.join(', '));
-    return;
-  }
-
   function isHLS() {
     const currentType = player.currentType();
 
@@ -125,6 +156,7 @@ const initPlugin = function(player, options) {
   }
 
   function changeProjection(projection) {
+    projection = getInternalProjectionName(projection);
     // don't change to an invalid projection
     if (validProjections.indexOf(projection) === -1) {
       projection = 'NONE';
@@ -139,15 +171,7 @@ const initPlugin = function(player, options) {
       // mediainfo cannot be set to auto or we would infinite loop here
       // each source should know wether they are 360 or not, if using AUTO
       if (player.mediainfo && player.mediainfo.projection && player.mediainfo.projection !== 'AUTO') {
-        let autoProjection = player.mediainfo.projection;
-
-        if ((/equirectangular/i).test(autoProjection) || (/sphere/i).test(autoProjection)) {
-          autoProjection = '360';
-        }
-
-        if ((/cube/i).test(autoProjection)) {
-          autoProjection = '360_CUBE';
-        }
+        const autoProjection = getInternalProjectionName(player.mediainfo.projection);
 
         return changeProjection(autoProjection);
       }
@@ -274,7 +298,7 @@ const initPlugin = function(player, options) {
     videoEl.style.display = '';
 
     // set the current projection to the default
-    player.vr.currentProjection = defaultProjection;
+    player.vr.currentProjection = player.vr.defaultProjection;
     // remove the old canvas
     if (player.vr.renderedCanvas && container.contains(player.vr.renderedCanvas)) {
       container.removeChild(player.vr.renderedCanvas);
