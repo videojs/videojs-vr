@@ -44,25 +44,20 @@ const errors = {
 /**
  * Initializes the plugin
  */
-const vr = function(options) {
-  const player = this;
+const initPlugin = function(player, options) {
 
   // don't initialize twice
-  if (this.usingPlugin('vr')) {
+  if (player.vr && player.vr.currentProjection) {
     videojs.log.warn('videojs-vr is already intialized, not going to initialize again');
     return;
   }
 
   const settings = videojs.mergeOptions(defaults, options || {});
-  const videoEl = this.el().getElementsByTagName('video')[0];
-  const container = this.el();
-  let currentProjection = settings.projection;
-  let movieMaterial;
-  let movieGeometry;
-  let movieScreen;
-  let controls3d;
-  let scene;
-  let cameraVector;
+  const videoEl = player.el().getElementsByTagName('video')[0];
+  const container = player.el();
+  const defaultProjection = settings.projection;
+
+  player.vr.currentProjection = settings.projection;
 
   const log = function(msg) {
     if (settings.debug) {
@@ -92,12 +87,12 @@ const vr = function(options) {
     return;
   }
 
-  if (currentProjection === 'NONE' || !currentProjection) {
+  if (player.vr.currentProjection === 'NONE' || !player.vr.currentProjection) {
     // Show raw 360 video.
     return;
   }
 
-  if (validProjections.indexOf(currentProjection) === -1) {
+  if (validProjections.indexOf(player.vr.currentProjection) === -1) {
     videojs.log.error('videojs-vr: Please use a valid projection option: ' + validProjections.join(', '));
     return;
   }
@@ -125,28 +120,40 @@ const vr = function(options) {
   function changeProjection(projection) {
     // don't change to an invalid projection
     if (validProjections.indexOf(projection) === -1) {
-      return;
+      projection = 'NONE';
     }
 
     const position = {x: 0, y: 0, z: 0 };
 
-    if (scene) {
-      scene.remove(movieScreen);
+    if (player.vr.scene) {
+      player.vr.scene.remove(player.vr.movieScreen);
     }
     if (projection === 'AUTO') {
-      if (player.mediainfo && player.mediainfo.projection && player.mediainfo.projection === 'equirectangular') {
-        return changeProjection('360');
+      // mediainfo cannot be set to auto or we would infinite loop here
+      // each source should know wether they are 360 or not, if using AUTO
+      if (player.mediainfo && player.mediainfo.projection && player.mediainfo.projection !== 'AUTO') {
+        let autoProjection = player.mediainfo.projection;
+
+        if ((/equirectangular/i).test(autoProjection) || (/sphere/i).test(autoProjection)) {
+          autoProjection = '360';
+        }
+
+        if ((/cube/i).test(autoProjection)) {
+          autoProjection = '360_CUBE';
+        }
+
+        return changeProjection(autoProjection);
       }
       return changeProjection('NONE');
     } else if (projection === '360') {
-      movieGeometry = new THREE.SphereBufferGeometry(256, 32, 32);
+      player.vr.movieGeometry = new THREE.SphereBufferGeometry(256, 32, 32);
 
-      movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-      movieScreen.position.set(position.x, position.y, position.z);
+      player.vr.movieScreen = new THREE.Mesh(player.vr.movieGeometry, player.vr.movieMaterial);
+      player.vr.movieScreen.position.set(position.x, position.y, position.z);
 
-      movieScreen.scale.x = -1;
-      movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
-      scene.add(movieScreen);
+      player.vr.movieScreen.scale.x = -1;
+      player.vr.movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
+      player.vr.scene.add(player.vr.movieScreen);
     } else if (projection === '360_LR' || projection === '360_TB') {
       let geometry = new THREE.SphereGeometry(256, 32, 32);
 
@@ -164,12 +171,12 @@ const vr = function(options) {
         }
       }
 
-      movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
-      movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-      movieScreen.rotation.y = -Math.PI / 2;
+      player.vr.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      player.vr.movieScreen = new THREE.Mesh(player.vr.movieGeometry, player.vr.movieMaterial);
+      player.vr.movieScreen.rotation.y = -Math.PI / 2;
       // display in left eye only
-      movieScreen.layers.set(1);
-      scene.add(movieScreen);
+      player.vr.movieScreen.layers.set(1);
+      player.vr.scene.add(player.vr.movieScreen);
 
       // Right eye view
       geometry = new THREE.SphereGeometry(256, 32, 32);
@@ -188,16 +195,16 @@ const vr = function(options) {
         }
       }
 
-      movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
-      movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-      movieScreen.rotation.y = -Math.PI / 2;
+      player.vr.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      player.vr.movieScreen = new THREE.Mesh(player.vr.movieGeometry, player.vr.movieMaterial);
+      player.vr.movieScreen.rotation.y = -Math.PI / 2;
       // display in right eye only
-      movieScreen.layers.set(2);
-      scene.add(movieScreen);
+      player.vr.movieScreen.layers.set(2);
+      player.vr.scene.add(player.vr.movieScreen);
 
     } else if (projection === '360_CUBE') {
       // Currently doesn't work - need to figure out order of cube faces
-      movieGeometry = new THREE.CubeGeometry(256, 256, 256);
+      player.vr.movieGeometry = new THREE.CubeGeometry(256, 256, 256);
       const face1 = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
       const face2 = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1)];
       const face3 = [new THREE.Vector2(0.666, 0.5), new THREE.Vector2(1, 0.5), new THREE.Vector2(1, 1), new THREE.Vector2(0.666, 1)];
@@ -205,60 +212,74 @@ const vr = function(options) {
       const face5 = [new THREE.Vector2(0.333, 1), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
       const face6 = [new THREE.Vector2(0.666, 1), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
 
-      movieGeometry.faceVertexUvs[0] = [];
+      player.vr.movieGeometry.faceVertexUvs[0] = [];
 
-      movieGeometry.faceVertexUvs[0][0] = [ face1[0], face1[1], face1[3] ];
-      movieGeometry.faceVertexUvs[0][1] = [ face1[1], face1[2], face1[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][0] = [ face1[0], face1[1], face1[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][1] = [ face1[1], face1[2], face1[3] ];
 
-      movieGeometry.faceVertexUvs[0][2] = [ face2[0], face2[1], face2[3] ];
-      movieGeometry.faceVertexUvs[0][3] = [ face2[1], face2[2], face2[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][2] = [ face2[0], face2[1], face2[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][3] = [ face2[1], face2[2], face2[3] ];
 
-      movieGeometry.faceVertexUvs[0][4] = [ face3[0], face3[1], face3[3] ];
-      movieGeometry.faceVertexUvs[0][5] = [ face3[1], face3[2], face3[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][4] = [ face3[0], face3[1], face3[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][5] = [ face3[1], face3[2], face3[3] ];
 
-      movieGeometry.faceVertexUvs[0][6] = [ face4[0], face4[1], face4[3] ];
-      movieGeometry.faceVertexUvs[0][7] = [ face4[1], face4[2], face4[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][6] = [ face4[0], face4[1], face4[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][7] = [ face4[1], face4[2], face4[3] ];
 
-      movieGeometry.faceVertexUvs[0][8] = [ face5[0], face5[1], face5[3] ];
-      movieGeometry.faceVertexUvs[0][9] = [ face5[1], face5[2], face5[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][8] = [ face5[0], face5[1], face5[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][9] = [ face5[1], face5[2], face5[3] ];
 
-      movieGeometry.faceVertexUvs[0][10] = [ face6[0], face6[1], face6[3] ];
-      movieGeometry.faceVertexUvs[0][11] = [ face6[1], face6[2], face6[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][10] = [ face6[0], face6[1], face6[3] ];
+      player.vr.movieGeometry.faceVertexUvs[0][11] = [ face6[1], face6[2], face6[3] ];
 
-      movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-      movieScreen.position.set(position.x, position.y, position.z);
+      player.vr.movieScreen = new THREE.Mesh(player.vr.movieGeometry, player.vr.movieMaterial);
+      player.vr.movieScreen.position.set(position.x, position.y, position.z);
 
-      scene.add(movieScreen);
+      player.vr.scene.add(player.vr.movieScreen);
     }
 
-    currentProjection = projection;
+    player.vr.currentProjection = projection;
   }
 
-  function initScene() {
+  /* reset player.vr to a default un-initialized state */
+  player.vr.reset = function() {
+    // reset the video element style so that it will be displayed
+    videoEl.style.display = '';
+
+    // set the current projection to the default
+    player.vr.currentProjection = defaultProjection;
+    // remove the old canvas
+    if (player.vr.renderedCanvas && container.contains(player.vr.renderedCanvas)) {
+      container.removeChild(player.vr.renderedCanvas);
+    }
+  };
+
+  player.vr.initScene = function() {
+    player.vr.reset();
+
     // we need this as IE 11 reports that it has a VR display, but isnt compatible with Video as a Texture. for example
     if (videojs.browser.IE_VERSION) {
       triggerError({code: 'web-vr-not-supported', dismiss: false});
       return;
     }
 
-    const camera = new THREE.PerspectiveCamera(75, player.currentWidth() / player.currentHeight(), 1, 1000);
-
+    player.vr.camera = new THREE.PerspectiveCamera(75, player.currentWidth() / player.currentHeight(), 1, 1000);
     // Store vector representing the direction in which the camera is looking, in world space.
-    cameraVector = new THREE.Vector3();
+    player.vr.cameraVector = new THREE.Vector3();
 
-    if (currentProjection === '360_LR' || currentProjection === '360_TB') {
+    if (player.vr.currentProjection === '360_LR' || player.vr.currentProjection === '360_TB') {
       // Render left eye when not in VR mode
-      camera.layers.enable(1);
+      player.vr.camera.layers.enable(1);
     }
 
-    scene = new THREE.Scene();
-    controls3d = new VRControls(camera);
+    player.vr.scene = new THREE.Scene();
+    player.vr.controls3d = new VRControls(player.vr.camera);
 
-    const videoTexture = new THREE.VideoTexture(videoEl);
+    player.vr.videoTexture = new THREE.VideoTexture(videoEl);
 
-    videoTexture.generateMipmaps = false;
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
+    player.vr.videoTexture.generateMipmaps = false;
+    player.vr.videoTexture.minFilter = THREE.LinearFilter;
+    player.vr.videoTexture.magFilter = THREE.LinearFilter;
 
     // iOS and macOS HLS fix/hacks
     // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
@@ -268,20 +289,20 @@ const vr = function(options) {
 
     if (isHLS() && videojs.browser.IS_ANY_SAFARI) {
       log('Safari + iOS + HLS = flipY and colorspace hack');
-      videoTexture.format = THREE.RGBAFormat;
-      videoTexture.flipY = false;
+      player.vr.videoTexture.format = THREE.RGBAFormat;
+      player.vr.videoTexture.flipY = false;
     } else if (isHLS() && videojs.browser.IS_SAFARI) {
       log('Safari + HLS = flipY hack');
-      videoTexture.format = THREE.RGBFormat;
-      videoTexture.flipY = false;
+      player.vr.videoTexture.format = THREE.RGBFormat;
+      player.vr.videoTexture.flipY = false;
     } else {
-      videoTexture.format = THREE.RGBFormat;
+      player.vr.videoTexture.format = THREE.RGBFormat;
     }
 
-    if (videoTexture.format === THREE.RGBAFormat && videoTexture.flipY === false) {
-      movieMaterial = new THREE.ShaderMaterial({
+    if (player.vr.videoTexture.format === THREE.RGBAFormat && player.vr.videoTexture.flipY === false) {
+      player.vr.movieMaterial = new THREE.ShaderMaterial({
         uniforms: {
-          texture: { value: videoTexture }
+          texture: { value: player.vr.videoTexture }
         },
         vertexShader: [
           'varying vec2 vUV;',
@@ -298,10 +319,10 @@ const vr = function(options) {
           '}'
         ].join('\n')
       });
-    } else if (videoTexture.format === THREE.RGBFormat && videoTexture.flipY === false) {
-      movieMaterial = new THREE.ShaderMaterial({
+    } else if (player.vr.videoTexture.format === THREE.RGBFormat && player.vr.videoTexture.flipY === false) {
+      player.vr.movieMaterial = new THREE.ShaderMaterial({
         uniforms: {
-          texture: { value: videoTexture }
+          texture: { value: player.vr.videoTexture }
         },
         vertexShader: [
           'varying vec2 vUV;',
@@ -319,41 +340,43 @@ const vr = function(options) {
         ].join('\n')
       });
     } else {
-      movieMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, overdraw: true, side: THREE.DoubleSide });
+      player.vr.movieMaterial = new THREE.MeshBasicMaterial({ map: player.vr.videoTexture, overdraw: true, side: THREE.DoubleSide });
     }
 
-    changeProjection(currentProjection);
+    changeProjection(player.vr.currentProjection);
 
-    if (currentProjection === 'NONE') {
+    if (player.vr.currentProjection === 'NONE') {
       log('Projection is NONE, dont init');
+      player.vr.reset();
       return;
     }
 
-    camera.position.set(0, 0, 0);
+    player.vr.camera.position.set(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({
+    player.vr.renderer = new THREE.WebGLRenderer({
       devicePixelRatio: window.devicePixelRatio,
       alpha: false,
       clearColor: 0xffffff,
       antialias: true
     });
 
-    renderer.setSize(player.currentWidth(), player.currentHeight());
-    const effect = new VREffect(renderer);
+    player.vr.renderer.setSize(player.currentWidth(), player.currentHeight());
+    player.vr.effect = new VREffect(player.vr.renderer);
 
-    effect.setSize(player.currentWidth(), player.currentHeight());
-
-    let vrDisplay = null;
+    player.vr.effect.setSize(player.currentWidth(), player.currentHeight());
+    player.vr.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
-    const prevTimestamps = [];
-    const manager = new WebVRManager(renderer, effect, {hideButton: true});
-    const renderedCanvas = renderer.domElement;
+    player.vr.prevTimestamps_ = [];
 
-    renderedCanvas.style.width = 'inherit';
-    renderedCanvas.style.height = 'inherit';
+    player.vr.manager = new WebVRManager(player.vr.renderer, player.vr.effect, {hideButton: true});
 
-    container.insertBefore(renderedCanvas, container.firstChild);
+    player.vr.renderedCanvas = player.vr.renderer.domElement;
+
+    player.vr.renderedCanvas.style.width = 'inherit';
+    player.vr.renderedCanvas.style.height = 'inherit';
+
+    container.insertBefore(player.vr.renderedCanvas, container.firstChild);
     videoEl.style.display = 'none';
 
     // Handle window resizes
@@ -361,9 +384,9 @@ const vr = function(options) {
       const width = player.currentWidth();
       const height = player.currentHeight();
 
-      effect.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+      player.vr.effect.setSize(width, height);
+      player.vr.camera.aspect = width / height;
+      player.vr.camera.updateProjectionMatrix();
     }
 
     player.on('fullscreenchange', onWindowResize);
@@ -371,15 +394,15 @@ const vr = function(options) {
     window.addEventListener('resize', onWindowResize, true);
 
     function onVRRequestPresent() {
-      manager.enterVRMode_();
-      manager.setMode_(3);
+      player.vr.manager.enterVRMode_();
+      player.vr.manager.setMode_(3);
     }
 
     function onVRExitPresent() {
-      if (!vrDisplay.isPresenting) {
+      if (!player.vrDisplay.isPresenting) {
         return;
       }
-      vrDisplay.exitPresent();
+      player.vr.vrDisplay.exitPresent();
     }
 
     window.addEventListener('vrdisplayactivate', onVRRequestPresent, true);
@@ -389,8 +412,8 @@ const vr = function(options) {
       navigator.getVRDisplays().then(function(displays) {
         if (displays.length > 0) {
           log('WebVR supported, VRDisplays found.');
-          vrDisplay = displays[0];
-          log(vrDisplay);
+          player.vr.vrDisplay = displays[0];
+          log(player.vr.vrDisplay);
         } else {
           triggerError({code: 'web-vr-no-devices-found', dismiss: false});
         }
@@ -409,15 +432,15 @@ const vr = function(options) {
         // in iOS, width and height never changes regardless orientation
         // so when in a horizontal mode, height still greater than width
         if (screen.height > screen.width) {
-          camera.aspect = screen.height / screen.width;
+          player.vr.camera.aspect = screen.height / screen.width;
         } else {
           // in Android, width and height will swap value depending on orientation
-          camera.aspect = screen.width / screen.height;
+          player.vr.camera.aspect = screen.width / screen.height;
         }
       } else {
-        camera.aspect = screen.width / screen.height;
+        player.vr.camera.aspect = screen.width / screen.height;
       }
-      camera.updateProjectionMatrix();
+      player.vr.camera.updateProjectionMatrix();
     }
     window.addEventListener('orientationchange', onWindowRotate, false);
 
@@ -433,16 +456,16 @@ const vr = function(options) {
 
     (function animate() {
       if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
-        if (videoTexture) {
-          videoTexture.needsUpdate = true;
+        if (player.vr.videoTexture) {
+          player.vr.videoTexture.needsUpdate = true;
         }
       }
 
-      controls3d.update();
-      manager.render(scene, camera);
+      player.vr.controls3d.update();
+      player.vr.manager.render(player.vr.scene, player.vr.camera);
 
-      if (vrDisplay) {
-        vrDisplay.requestAnimationFrame(animate);
+      if (player.vr.vrDisplay) {
+        player.vr.vrDisplay.requestAnimationFrame(animate);
 
         // Grab all gamepads
         if (navigator.getGamepads) {
@@ -454,11 +477,11 @@ const vr = function(options) {
             // Make sure gamepad is defined
             if (gamepad) {
               // Only take input if state has changed since we checked last
-              if (gamepad.timestamp && !(gamepad.timestamp === prevTimestamps[i])) {
+              if (gamepad.timestamp && !(gamepad.timestamp === player.vr.prevTimestamps_[i])) {
                 for (let j = 0; j < gamepad.buttons.length; ++j) {
                   if (gamepad.buttons[j].pressed) {
                     togglePlay();
-                    prevTimestamps[i] = gamepad.timestamp;
+                    player.vr.prevTimestamps_[i] = gamepad.timestamp;
                     break;
                   }
                 }
@@ -470,64 +493,51 @@ const vr = function(options) {
         window.requestAnimationFrame(animate);
       }
 
-      camera.getWorldDirection(cameraVector);
+      player.vr.camera.getWorldDirection(player.vr.cameraVector);
     }());
+  };
 
-    // Expose the Three.js perspective camera and rotation values on the player under the 'vr' namespace:
-    player.vr = {
-      cameraVector,
-      threeJs: {
-        scene,
-        camera,
-        renderer
+  player.on('loadedmetadata', function() {
+    player.vr.initScene();
+  });
+  function updateVrControls(cb) {
+
+    // Add Carboard button
+    const Button = videojs.getComponent('Button');
+    const VRButton = videojs.extend(Button, {
+      constructor() {
+        Button.apply(this, arguments);
+        log(this);
+      },
+      handleClick() {
+        const event = new window.Event('vrdisplayactivate');
+
+        window.dispatchEvent(event);
+      },
+      buildCSSClass() {
+        return Button.prototype.buildCSSClass.call(this) + 'vjs-button-vr';
       }
-    };
+    });
 
+    videojs.registerComponent('VRButton', VRButton);
+    cb.addChild('VRButton', {});
+
+    // if ios remove full screen toggle
+    if (videojs.browser.IS_IOS) {
+      player.controlBar.fullscreenToggle.hide();
+    }
   }
 
-  player.on('loadstart', function() {
-    initScene();
-  });
+  // mobile devices
+  if (videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
+    updateVrControls(player.controlBar);
+  }
 
-  player.ready(function() {
+  return player.vr;
+};
 
-    function updateVrControls(cb) {
-
-      // Add Carboard button
-      const Button = videojs.getComponent('Button');
-      const VRButton = videojs.extend(Button, {
-        constructor() {
-          Button.apply(this, arguments);
-          log(this);
-        },
-        handleClick() {
-          const event = new window.Event('vrdisplayactivate');
-
-          window.dispatchEvent(event);
-        },
-        buildCSSClass() {
-          return Button.prototype.buildCSSClass.call(this) + 'vjs-button-vr';
-        }
-      });
-
-      videojs.registerComponent('VRButton', VRButton);
-      cb.addChild('VRButton', {});
-
-      // if ios remove full screen toggle
-      if (videojs.browser.IS_IOS) {
-        player.controlBar.fullscreenToggle.hide();
-      }
-    }
-
-    // mobile devices
-    if (videojs.browser.IS_ANDROID || videojs.browser.IS_IOS || videojs.browser.IS_IPAD) {
-      updateVrControls(player.controlBar);
-    }
-  });
-
-  return {
-    changeProjection
-  };
+const vr = function(options) {
+  this.ready(() => initPlugin(this, options));
 };
 
 // register the plugin with video.js

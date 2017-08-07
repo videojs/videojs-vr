@@ -18,7 +18,11 @@
   <script>
     (function(window, videojs) {
       var player = window.player = videojs('videojs-vr-player');
-      player.vr({projection: '360', debug: true});
+      player.mediainfo = player.mediainfo || {};
+      player.mediainfo.projection = '360';
+
+      // AUTO is the default and looks at mediainfo
+      player.vr({projection: 'AUTO', debug: true});
     }(window, window.videojs));
   </script>
 </body>
