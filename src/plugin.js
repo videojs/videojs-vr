@@ -463,7 +463,7 @@ const initPlugin = function(player, options) {
     }
 
     function onVRExitPresent() {
-      if (!player.vrDisplay.isPresenting) {
+      if (!player.vr.vrDisplay.isPresenting) {
         return;
       }
       player.vr.vrDisplay.exitPresent();
