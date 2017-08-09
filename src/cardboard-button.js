@@ -85,6 +85,7 @@ class CardboardButton extends Button {
   }
 
   dispose() {
+    super.dispose();
     window.removeEventListener('vrdisplayactivate', this.handleVrDisplayActivate_);
     window.removeEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_);
     window.removeEventListener('vrdisplaypresentchange', this.handleVrDisplayPresentChange_);
