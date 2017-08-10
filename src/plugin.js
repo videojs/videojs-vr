@@ -129,7 +129,6 @@ class VR extends Plugin {
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
-    this.handleRotate_ = videojs.bind(this, this.handleRotate_);
     this.handleResize_ = videojs.bind(this, this.handleResize_);
     this.animate_ = videojs.bind(this, this.animate_);
 
@@ -284,24 +283,6 @@ class VR extends Plugin {
     this.vrDisplay.exitPresent();
   }
 
-  handleRotate_() {
-    const screen = window.screen;
-
-    if (window.orientation === -90 || window.orientation === 90) {
-      // in iOS, width and height never changes regardless orientation
-      // so when in a horizontal mode, height still greater than width
-      if (screen.height > screen.width) {
-        this.camera.aspect = screen.height / screen.width;
-      } else {
-        // in Android, width and height will swap value depending on orientation
-        this.camera.aspect = screen.width / screen.height;
-      }
-    } else {
-      this.camera.aspect = screen.width / screen.height;
-    }
-    this.camera.updateProjectionMatrix();
-  }
-
   togglePlay_() {
     if (this.player_.paused()) {
       this.player_.play();
@@ -359,7 +340,7 @@ class VR extends Plugin {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
-    this.effect.setSize(width, height);
+    this.effect.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
   }
@@ -487,10 +468,10 @@ class VR extends Plugin {
       antialias: true
     });
 
-    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight());
+    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.effect = new VREffect(this.renderer);
 
-    this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight());
+    this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
@@ -500,8 +481,34 @@ class VR extends Plugin {
 
     this.renderedCanvas = this.renderer.domElement;
 
-    this.renderedCanvas.style.width = 'inherit';
-    this.renderedCanvas.style.height = 'inherit';
+    const debounce = function(fn, wait) {
+      let timeout;
+
+      return function(...args) {
+        // reset the timer
+        if (timeout) {
+          window.clearTimeout(timeout);
+        }
+        timeout = window.setTimeout(() => fn.apply(undefined, args), wait);
+      };
+    };
+    // we use this to stop webvr-polyfill from making the canvas take up more
+    // space then the video element
+    const setInherit = debounce((mut) => {
+      if (this.observer_) {
+        this.observer_.disconnect();
+      } else {
+        this.observer_ = new window.MutationObserver(setInherit);
+      }
+      this.renderedCanvas.setAttribute('style', 'width: inherit; height: inherit;');
+      this.handleResize_();
+      this.observer_.observe(this.renderedCanvas, {
+        attributes: true,
+        attributeList: ['style']
+      });
+    }, 10);
+
+    setInherit();
 
     this.player_.el().insertBefore(this.renderedCanvas, this.player_.el().firstChild);
     this.getVideoEl_().style.display = 'none';
@@ -527,7 +534,6 @@ class VR extends Plugin {
     window.addEventListener('resize', this.handleResize_, true);
     window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
-    window.addEventListener('orientationchange', this.handleRotate_, false);
 
     this.animate_();
     this.initialized_ = true;
@@ -553,7 +559,6 @@ class VR extends Plugin {
     window.removeEventListener('vrdisplaypresentchange', this.handleResize_);
     window.removeEventListener('vrdisplayactivate', this.handleVrDisplayActivate_);
     window.removeEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_);
-    window.removeEventListener('orientationchange', this.handleRotate_);
 
     // re-add the big play button to player
     if (!this.player_.getChild('BigPlayButton')) {
@@ -579,6 +584,10 @@ class VR extends Plugin {
 
     // set the current projection to the default
     this.currentProjection_ = this.defaultProjection;
+
+    if (this.observer_) {
+      this.observer_.disconnect();
+    }
 
     // remove the old canvas
     if (this.renderedCanvas) {
