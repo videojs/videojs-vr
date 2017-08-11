@@ -10,6 +10,8 @@ class CardboardButton extends Button {
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
     this.handleVrDisplayPresentChange_ = videojs.bind(this, this.handleVrDisplayPresentChange_);
+    this.handleOrientationChange_ = videojs.bind(this, this.handleOrientationChange_);
+    window.addEventListener('orientationchange', this.handleOrientationChange_);
     window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_);
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_);
 
@@ -46,14 +48,25 @@ class CardboardButton extends Button {
     }
   }
 
+  handleOrientationChange_() {
+    if (this.active_ && videojs.browser.IS_IOS) {
+      this.changeSize_();
+    }
+  }
+
+  changeSize_() {
+    this.player_.width(window.innerWidth);
+    this.player_.height(window.innerHeight);
+    window.dispatchEvent(new window.Event('resize'));
+  }
+
   handleVrDisplayActivate_() {
     // we mimic fullscreen on IOS
     if (videojs.browser.IS_IOS) {
       this.oldWidth_ = this.player_.currentWidth();
       this.oldHeight_ = this.player_.currentHeight();
-      this.player_.width(window.innerWidth);
-      this.player_.height(window.innerHeight);
-      window.dispatchEvent(new window.Event('resize'));
+      this.player_.enterFullWindow();
+      this.changeSize_();
     }
 
     this.active_ = true;
@@ -68,6 +81,7 @@ class CardboardButton extends Button {
       if (this.oldHeight_) {
         this.player_.height(this.oldHeight_);
       }
+      this.player_.exitFullWindow();
       window.dispatchEvent(new window.Event('resize'));
     }
 
@@ -78,6 +92,12 @@ class CardboardButton extends Button {
     // if cardboard mode display is not active, activate it
     // otherwise deactivate it
     if (!this.active_) {
+      // This starts playback mode when the cardboard button
+      // is clicked on Andriod. We need to do this as the controls
+      // disappear
+      if (!this.player_.hasStarted() && videojs.browser.IS_ANDROID) {
+        this.player_.play();
+      }
       window.dispatchEvent(new window.Event('vrdisplayactivate'));
     } else {
       window.dispatchEvent(new window.Event('vrdisplaydeactivate'));
