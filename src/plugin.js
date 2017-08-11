@@ -98,7 +98,7 @@ const isHLS = function(currentType) {
 
   // if the current type has a case insensitivie match from the list above
   // this is hls
-  return hlsTypes.some((type) => (new RegExp(type, 'i')).test(currentType));
+  return hlsTypes.some((type) => (new RegExp(`^${type}$`, 'i')).test(currentType));
 };
 
 const Plugin = videojs.getPlugin('plugin');
@@ -513,13 +513,13 @@ class VR extends Plugin {
           this.vrDisplay = displays[0];
           this.log(this.vrDisplay);
         } else {
-          this.triggerError({code: 'web-vr-no-devices-found', dismiss: false});
+          this.triggerError_({code: 'web-vr-no-devices-found', dismiss: false});
         }
       });
     } else if (window.navigator.getVRDevices) {
-      this.triggerError({code: 'web-vr-out-of-date', dismiss: false});
+      this.triggerError_({code: 'web-vr-out-of-date', dismiss: false});
     } else {
-      this.triggerError({code: 'web-vr-not-supported', dismiss: false});
+      this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
     }
 
     this.on(this.player_, 'fullscreenchange', this.handleResize_);
