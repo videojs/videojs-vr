@@ -38,10 +38,10 @@ class CardboardButton extends Button {
   }
 
   handleVrDisplayPresentChange_() {
-    if (!this.player_.vr.vrDisplay.isPresenting && this.active_) {
+    if (!this.player_.vr().vrDisplay.isPresenting && this.active_) {
       this.handleVrDisplayDeactivate_();
     }
-    if (this.player_.vr.vrDisplay.isPresenting && !this.active_) {
+    if (this.player_.vr().vrDisplay.isPresenting && !this.active_) {
       this.handleVrDisplayActivate_();
     }
   }
