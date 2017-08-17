@@ -35,6 +35,7 @@ const validProjections = [
 // Default options for the plugin.
 const defaults = {
   projection: 'AUTO',
+  forceCardboard: false,
   debug: false
 };
 
@@ -450,8 +451,11 @@ class VR extends Plugin {
     this.player_.removeChild('BigPlayButton');
     this.player_.addChild('BigVrPlayButton', {}, this.bigPlayButtonIndex_);
     this.player_.bigPlayButton = this.player_.getChild('BigVrPlayButton');
-    // mobile devices
-    if (videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
+
+    // mobile devices, or cardboard forced to on
+    if (this.options_.forceCardboard ||
+        videojs.browser.IS_ANDROID ||
+        videojs.browser.IS_IOS) {
       this.player_.controlBar.addChild('CardboardButton', {});
     }
 
@@ -570,7 +574,7 @@ class VR extends Plugin {
     }
 
     // remove the cardboard button
-    if (videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
+    if (this.player_.getChild('CardboardButton')) {
       this.player_.controlBar.removeChild('CardboardButton');
     }
 
