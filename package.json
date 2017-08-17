@@ -92,7 +92,7 @@
     "three": "^0.83.0",
     "video.js": "^6.2.0",
     "webvr-boilerplate": "^0.5.0",
-    "webvr-polyfill": "^0.9.23"
+    "webvr-polyfill": "0.9.23"
   },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
