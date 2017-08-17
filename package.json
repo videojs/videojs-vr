@@ -92,7 +92,7 @@
     "three": "^0.83.0",
     "video.js": "^6.2.0",
     "webvr-boilerplate": "^0.5.0",
-    "webvr-polyfill": "^0.9.23"
+    "webvr-polyfill": "0.9.23"
   },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
@@ -112,8 +112,8 @@
     "karma-qunit": "^1.2.1",
     "karma-safari-launcher": "^1.0.0",
     "mkdirp": "^0.5.1",
-    "node-static": "^0.7.9",
     "node-sass": "^4.5.3",
+    "node-static": "^0.7.9",
     "npm-run-all": "^4.0.2",
     "qunitjs": "^1.21.0",
     "rimraf": "^2.6.1",
@@ -123,6 +123,7 @@
     "rollup-plugin-json": "^2.1.1",
     "rollup-plugin-multi-entry": "^2.0.1",
     "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-replace": "^1.1.1",
     "rollup-watch": "^3.2.2",
     "semver": "^5.3.0",
     "sinon": "^2.2.0",
