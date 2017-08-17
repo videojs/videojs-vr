@@ -524,6 +524,9 @@ class VR extends Plugin {
           this.vrDisplay = displays[0];
           this.log(this.vrDisplay);
 
+          // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
+          // also need the cardboard button to enter fully immersive mode
+          // so, we want to add the button if we're not polyfilled.
           if (!this.vrDisplay.isPolyfilled) {
             this.addCardboardButton_();
           }
