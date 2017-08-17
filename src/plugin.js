@@ -456,7 +456,7 @@ class VR extends Plugin {
     if (this.options_.forceCardboard ||
         videojs.browser.IS_ANDROID ||
         videojs.browser.IS_IOS) {
-      this.player_.controlBar.addChild('CardboardButton', {});
+      this.addCardboardButton_();
     }
 
     // if ios remove full screen toggle
@@ -523,6 +523,13 @@ class VR extends Plugin {
           this.log('WebVR supported, VRDisplays found.');
           this.vrDisplay = displays[0];
           this.log(this.vrDisplay);
+
+          // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
+          // also need the cardboard button to enter fully immersive mode
+          // so, we want to add the button if we're not polyfilled.
+          if (!this.vrDisplay.isPolyfilled) {
+            this.addCardboardButton_();
+          }
         } else {
           this.triggerError_({code: 'web-vr-no-devices-found', dismiss: false});
         }
@@ -541,6 +548,12 @@ class VR extends Plugin {
 
     this.animate_();
     this.initialized_ = true;
+  }
+
+  addCardboardButton_() {
+    if (!this.player_.getChild('CardboardButton')) {
+      this.player_.controlBar.addChild('CardboardButton', {});
+    }
   }
 
   getVideoEl_() {
