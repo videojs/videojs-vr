@@ -14,6 +14,17 @@
   - [Oculus Rift and HTC Vive Support](#oculus-rift-and-htc-vive-support)
   - [Accessing the Camera Position](#accessing-the-camera-position)
   - [Accessing THREE.js objects](#accessing-threejs-objects)
+  - [Options](#options)
+    - [`forceCardboard`](#forcecardboard)
+    - [`projection`](#projection)
+      - [`'360'` or `'Sphere'`](#360-or-sphere)
+      - [`'Cube'`, `'360_CUBE'`, or `'equirectangular'`](#cube-360_cube-or-equirectangular)
+      - [`'NONE'`](#none)
+      - [`'AUTO'`](#auto)
+      - [`'360_LR'`](#360_lr)
+      - [`'360_TB'`](#360_tb)
+    - [`player.mediainfo.projection`](#playermediainfoprojection)
+    - [`debug`](#debug)
   - [Credits](#credits)
   - [Support](#support)
 
@@ -116,36 +127,72 @@ player.vr({projection: 'AUTO'});
 ## Oculus Rift and HTC Vive Support
 This plugin leverages the [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate) project (which in turn uses [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js)) to create a 'responsive VR' experience across multiple devices.
 
-Oculus Rift and HTC Vive playback requires Firefox Nightly with the WebVR addon, or experimental WebVR-enabled builds of Chromium. Go to [WebVR.info](http://www.webvr.info) for more info.
+Oculus Rift and HTC Vive playback requires Firefox >= 55, experimental WebVR-enabled builds of Chromium, or via Chrome by enabling webvr in `chrome://flags`. Go to [WebVR.info](http://www.webvr.info) for more info.
 
 GearVR playback requires the latest Samsung Internet for Gear VR with WebVR support enabled. Go [here](https://webvr.rocks/samsung_internet) for more info.
 
 ## Accessing the Camera Position
 The Three.js rotation values are exposed under the property `cameraVector` on the `vr` plugin namespace.
 
-For example, assuming the parent element for Video.js is `#video-container` the following code would return the current `cameraVector` values:
+```js
+var player = videojs('my-video');
 
-    document.getElementById('video-container').player.vr.cameraVector
-
-See `example-camera.html` for a working demo that logs camera object and rotation to the console every second.
+player.vr().cameraVector;
+```
 
 ## Accessing THREE.js objects
 The Three.js Scene, renderer, and perspective camera are exposed under the `threeJs` object as the properties `scene`, `renderer`, and `camera` on the `vr` plugin namespace.
 
-For example, assuming the parent element for Video.js is `#video-container` the following code would return the current `camera` object:
+```
+var player = videojs('my-video');
 
-    document.getElementById('video-container').player.vr.threeJs.camera
+player.vr().camera;
+player.vr().scene;
+player.vr().rendeer;
+```
 
- while:
+## Options
+### `forceCardboard`
+> Type: `boolean`, default: `false`
 
-    document.getElementById('video-container').player.vr.threeJs.scene
+Force the cardboard button to display on all devices even if we don't think they support it.
 
- would return the THREE.js Scene, and:
+### `projection`
 
-    document.getElementById('video-container').player.vr.threeJs.renderer
+> Type `string`, default: `'auto'`
+Can be any of the following:
 
- would return the THREE.js renderer.
+#### `'360'` or `'Sphere'`
+The video is a sphere
 
+#### `'Cube'`, `'360_CUBE'`, or `'equirectangular'`
+The video is a cube
+
+#### `'NONE'`
+This video is not a 360 video
+
+#### `'AUTO'`
+Check `player.mediainfo.projection` to see if the current video is a 360 video.
+
+#### `'360_LR'`
+Used for side-by-side 360 videos
+
+#### `'360_TB'`
+Used for top-to-bottom 360 videos
+
+### `player.mediainfo.projection`
+
+> type: `string`
+
+This should be set on a source-by-source basis to turn 360 videos on an off depending upon the video.
+
+See [`projection`](#projection) above for information of values. Note that `AUTO` is the same as `NONE` for `player.mediainfo.projection`.
+
+### `debug`
+
+> type: `boolean`, default: `false`
+
+Enable debug logging for this plugin
 
 ## Credits ##
 
