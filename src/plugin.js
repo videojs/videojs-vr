@@ -551,7 +551,7 @@ class VR extends Plugin {
   }
 
   addCardboardButton_() {
-    if (!this.player_.getChild('CardboardButton')) {
+    if (!this.player_.controlBar.getChild('CardboardButton')) {
       this.player_.controlBar.addChild('CardboardButton', {});
     }
   }
