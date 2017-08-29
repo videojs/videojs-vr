@@ -73,7 +73,7 @@ const getInternalProjectionName = function(projection) {
   }
 
   if ((/equirectangular/i).test(projection)) {
-    return '360_CUBE';
+    return '360';
   }
 
   for (let i = 0; i < validProjections.length; i++) {
