@@ -17,8 +17,8 @@
   - [Options](#options)
     - [`forceCardboard`](#forcecardboard)
     - [`projection`](#projection)
-      - [`'360'` or `'Sphere'`](#360-or-sphere)
-      - [`'Cube'`, `'360_CUBE'`, or `'equirectangular'`](#cube-360_cube-or-equirectangular)
+      - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
+      - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
       - [`'NONE'`](#none)
       - [`'AUTO'`](#auto)
       - [`'360_LR'`](#360_lr)
@@ -162,10 +162,10 @@ Force the cardboard button to display on all devices even if we don't think they
 > Type `string`, default: `'auto'`
 Can be any of the following:
 
-#### `'360'` or `'Sphere'`
+#### `'360'`, `'Sphere'`, or `'equirectangular'`
 The video is a sphere
 
-#### `'Cube'`, `'360_CUBE'`, or `'equirectangular'`
+#### `'Cube'` or `'360_CUBE'`
 The video is a cube
 
 #### `'NONE'`
