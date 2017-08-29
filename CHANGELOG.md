@@ -1,3 +1,14 @@
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/videojs/videojs-vr/compare/v1.0.0...v1.0.1) (2017-08-29)
+
+### Bug Fixes
+
+* equirectangular should be equivelent to 360 ([#28](https://github.com/videojs/videojs-vr/issues/28)) ([f0e5422](https://github.com/videojs/videojs-vr/commit/f0e5422))
+
+### Chores
+
+* update README ([#23](https://github.com/videojs/videojs-vr/issues/23)) ([9e54437](https://github.com/videojs/videojs-vr/commit/9e54437))
+
 <a name="1.0.0"></a>
 # 1.0.0 (2017-08-24)
 
