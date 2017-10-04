@@ -172,7 +172,6 @@ class VR extends Plugin {
       let geometry = new THREE.SphereGeometry(256, 32, 32);
 
       // Left eye view
-      geometry.scale(-1, 1, 1);
       let uvs = geometry.faceVertexUvs[ 0 ];
 
       for (let i = 0; i < uvs.length; i++) {
@@ -181,9 +180,11 @@ class VR extends Plugin {
             uvs[ i ][ j ].x *= 0.5;
           } else {
             uvs[ i ][ j ].y *= 0.5;
+            uvs[ i ][ j ].y += 0.5;
           }
         }
       }
+      geometry.scale(-1, 1, 1);
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
@@ -194,7 +195,7 @@ class VR extends Plugin {
 
       // Right eye view
       geometry = new THREE.SphereGeometry(256, 32, 32);
-      geometry.scale(-1, 1, 1);
+
       uvs = geometry.faceVertexUvs[ 0 ];
 
       for (let i = 0; i < uvs.length; i++) {
@@ -204,10 +205,10 @@ class VR extends Plugin {
             uvs[ i ][ j ].x += 0.5;
           } else {
             uvs[ i ][ j ].y *= 0.5;
-            uvs[ i ][ j ].y += 0.5;
           }
         }
       }
+      geometry.scale(-1, 1, 1);
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
