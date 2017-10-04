@@ -8,7 +8,6 @@ import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
 import multiEntry from 'rollup-plugin-multi-entry';
 import resolve from 'rollup-plugin-node-resolve';
-import replace from 'rollup-plugin-replace';
 
 export default {
   moduleName: 'videojsVrTests',
@@ -37,7 +36,6 @@ export default {
       jsnext: true
     }),
     json(),
-    replace({'mat4_invert =': 'var mat4_invert ='}),
     commonjs({
       sourceMap: false
     }),
