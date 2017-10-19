@@ -1,3 +1,11 @@
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/videojs/videojs-vr/compare/v1.0.1...v1.0.2) (2017-10-19)
+
+### Bug Fixes
+
+* equirectangular in the readme ([#29](https://github.com/videojs/videojs-vr/issues/29)) ([7dad7a1](https://github.com/videojs/videojs-vr/commit/7dad7a1))
+* make stereo modes so actually stereo [#32](https://github.com/videojs/videojs-vr/issues/32) ([#33](https://github.com/videojs/videojs-vr/issues/33)) ([1e06433](https://github.com/videojs/videojs-vr/commit/1e06433))
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/videojs/videojs-vr/compare/v1.0.0...v1.0.1) (2017-08-29)
 
