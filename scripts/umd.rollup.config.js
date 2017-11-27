@@ -10,14 +10,19 @@ import json from 'rollup-plugin-json';
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  moduleName: 'videojsVr',
-  entry: 'src/plugin.js',
-  dest: 'dist/videojs-vr.js',
-  format: 'umd',
-  external: ['video.js'],
+  name: 'videojsVr',
+  input: 'src/plugin.js',
+  output: {
+    file: 'dist/videojs-vr.js',
+    format: 'umd'
+  },
+  external: [
+    'video.js'
+  ],
   globals: {
     'video.js': 'videojs'
   },
+  legacy: true,
   plugins: [
     resolve({
       browser: true,
@@ -32,6 +37,7 @@ export default {
       babelrc: false,
       exclude: 'node_modules/**',
       presets: [
+        'es3',
         ['es2015', {
           loose: true,
           modules: false
