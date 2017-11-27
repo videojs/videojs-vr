@@ -531,7 +531,10 @@ class VR extends Plugin {
           if (!this.vrDisplay.isPolyfilled) {
             this.addCardboardButton_();
           }
-        } else {
+        // FIREFOX doesn't report the polyfill display as a
+        // VRDisplay so this would error even though the video would
+        // work
+        } else if (!videojs.browser.IS_FIREFOX) {
           this.triggerError_({code: 'web-vr-no-devices-found', dismiss: false});
         }
       });
