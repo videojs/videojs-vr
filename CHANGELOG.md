@@ -1,3 +1,10 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/videojs/videojs-vr/compare/v1.0.2...v1.0.3) (2017-12-04)
+
+### Bug Fixes
+
+* workaround for firefox/polyfill display issue ([#41](https://github.com/videojs/videojs-vr/issues/41)) ([76e6e03](https://github.com/videojs/videojs-vr/commit/76e6e03))
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/videojs/videojs-vr/compare/v1.0.1...v1.0.2) (2017-10-19)
 
