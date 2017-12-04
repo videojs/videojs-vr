@@ -9,18 +9,32 @@ import babel from 'rollup-plugin-babel';
 import json from 'rollup-plugin-json';
 
 export default {
-  moduleName: 'videojsVr',
-  entry: 'src/plugin.js',
-  external: ['video.js'],
+  name: 'videojsVr',
+  input: 'src/plugin.js',
+  output: [{
+    file: 'dist/videojs-vr.cjs.js',
+    format: 'cjs'
+  }, {
+    file: 'dist/videojs-vr.es.js',
+    format: 'es'
+  }],
+  external: [
+    'global',
+    'global/document',
+    'global/window',
+    'video.js'
+  ],
   globals: {
     'video.js': 'videojs'
   },
+  legacy: true,
   plugins: [
     json(),
     babel({
       babelrc: false,
       exclude: 'node_modules/**',
       presets: [
+        'es3',
         ['es2015', {
           loose: true,
           modules: false
@@ -31,9 +45,5 @@ export default {
         'transform-object-assign'
       ]
     })
-  ],
-  targets: [
-    {dest: 'dist/videojs-vr.cjs.js', format: 'cjs'},
-    {dest: 'dist/videojs-vr.es.js', format: 'es'}
   ]
 };
