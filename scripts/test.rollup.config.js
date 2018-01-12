@@ -8,6 +8,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
 import multiEntry from 'rollup-plugin-multi-entry';
 import resolve from 'rollup-plugin-node-resolve';
+import replace from './rollup-replace';
 
 export default {
   name: 'videojsVrTests',
@@ -39,6 +40,7 @@ export default {
       jsnext: true
     }),
     json(),
+    replace(),
     commonjs({
       sourceMap: false
     }),

@@ -5,13 +5,8 @@ import './webvr-config.js';
 import 'webvr-polyfill/src/main';
 import videojs from 'video.js';
 import * as THREE from 'three';
-// previously we used
-// * three/examples/js/controls/VRControls.js
-// * three/examples/js/effects/VREffects.js
-// but since we are using es6 now, there is no good way to make them export to us
-// so the code has been copied locally to allow exporting
-import VRControls from './VRControls.js';
-import VREffect from './VREffect.js';
+import VRControls from 'three/examples/js/controls/VRControls.js';
+import VREffect from 'three/examples/js/effects/VREffect.js';
 import WebVRManager from 'webvr-boilerplate/build/webvr-manager';
 
 // import controls so they get regisetered with videojs
