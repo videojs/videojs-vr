@@ -7,6 +7,9 @@
  */
 import babel from 'rollup-plugin-babel';
 import json from 'rollup-plugin-json';
+import replace from './rollup-replace';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
 
 export default {
   name: 'videojsVr',
@@ -22,14 +25,25 @@ export default {
     'global',
     'global/document',
     'global/window',
-    'video.js'
+    'video.js',
+    'three',
+    'webvr-boilerplate'
   ],
   globals: {
     'video.js': 'videojs'
   },
   legacy: true,
   plugins: [
+    resolve({
+      browser: true,
+      main: true,
+      jsnext: true
+    }),
     json(),
+    replace(),
+    commonjs({
+      sourceMap: false
+    }),
     babel({
       babelrc: false,
       exclude: 'node_modules/**',
