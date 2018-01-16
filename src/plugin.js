@@ -6,6 +6,7 @@ import 'webvr-polyfill/src/main';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from 'three/examples/js/controls/VRControls.js';
+import OrbitControls from 'three/examples/js/controls/OrbitControls.js';
 import VREffect from 'three/examples/js/effects/VREffect.js';
 import WebVRManager from 'webvr-boilerplate/build/webvr-manager';
 
@@ -366,8 +367,6 @@ class VR extends Plugin {
     }
 
     this.scene = new THREE.Scene();
-    this.controls3d = new VRControls(this.camera);
-
     this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
 
     this.videoTexture.generateMipmaps = false;
@@ -523,15 +522,16 @@ class VR extends Plugin {
           // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
           // also need the cardboard button to enter fully immersive mode
           // so, we want to add the button if we're not polyfilled.
+
+          this.controls3d = new VRControls(this.camera);
           if (!this.vrDisplay.isPolyfilled) {
             this.addCardboardButton_();
           }
-        // FIREFOX doesn't report the polyfill display as a
-        // VRDisplay so this would error even though the video would
-        // work
-        } else if (!videojs.browser.IS_FIREFOX) {
-          this.triggerError_({code: 'web-vr-no-devices-found', dismiss: false});
+        } else {
+          this.controls3d = new OrbitControls(this.camera, this.renderedCanvas);
         }
+
+        this.requestAnimationFrame(this.animate_);
       });
     } else if (window.navigator.getVRDevices) {
       this.triggerError_({code: 'web-vr-out-of-date', dismiss: false});
@@ -545,7 +545,6 @@ class VR extends Plugin {
     window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
-    this.animate_();
     this.initialized_ = true;
   }
 
