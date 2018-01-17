@@ -6,6 +6,9 @@ import * as THREE from 'three';
 import VRControls from 'three/examples/js/controls/VRControls.js';
 import VREffect from 'three/examples/js/effects/VREffect.js';
 import OrbitControls from 'three/examples/js/controls/OrbitControls.js';
+import rgbFragmentShader from './rgb-fragment-shader';
+import rgbaFragmentShader from './rgba-fragment-shader';
+import vertexShader from './vertex-shader';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
@@ -387,45 +390,17 @@ class VR extends Plugin {
       this.videoTexture.format = THREE.RGBFormat;
     }
 
-    if (this.videoTexture.format === THREE.RGBAFormat && this.videoTexture.flipY === false) {
+    if ((this.videoTexture.format === THREE.RGBAFormat || this.videoTexture.format === THREE.RGBFormat) && this.videoTexture.flipY === false) {
+      let fragmentShader = rgbFragmentShader;
+
+      if (this.videoTexture.format === THREE.RGBAFormat) {
+        fragmentShader = rgbaFragmentShader;
+      }
+
       this.movieMaterial = new THREE.ShaderMaterial({
-        uniforms: {
-          texture: { value: this.videoTexture }
-        },
-        vertexShader: [
-          'varying vec2 vUV;',
-          'void main() {',
-          ' vUV = vec2( uv.x, 1.0 - uv.y );',
-          ' gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-          '}'
-        ].join('\n'),
-        fragmentShader: [
-          'uniform sampler2D texture;',
-          'varying vec2 vUV;',
-          'void main() {',
-          ' gl_FragColor = texture2D( texture, vUV  ).bgra;',
-          '}'
-        ].join('\n')
-      });
-    } else if (this.videoTexture.format === THREE.RGBFormat && this.videoTexture.flipY === false) {
-      this.movieMaterial = new THREE.ShaderMaterial({
-        uniforms: {
-          texture: { value: this.videoTexture }
-        },
-        vertexShader: [
-          'varying vec2 vUV;',
-          'void main() {',
-          ' vUV = vec2( uv.x, 1.0 - uv.y );',
-          ' gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-          '}'
-        ].join('\n'),
-        fragmentShader: [
-          'uniform sampler2D texture;',
-          'varying vec2 vUV;',
-          'void main() {',
-          ' gl_FragColor = texture2D( texture, vUV  );',
-          '}'
-        ].join('\n')
+        uniforms: {texture: {value: this.videoTexture}},
+        vertexShader,
+        fragmentShader
       });
     } else {
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.DoubleSide });
