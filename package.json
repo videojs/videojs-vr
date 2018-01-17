@@ -61,7 +61,7 @@
     "watch:js-modules": "rollup -c scripts/modules.rollup.config.js -w",
     "watch:js-umd": "rollup -c scripts/umd.rollup.config.js -w",
     "watch:test": "rollup -c scripts/test.rollup.config.js -w",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "prepush": "npm run lint",
     "precommit": "npm run docs:toc && git add README.md"
   },
@@ -92,8 +92,7 @@
     "global": "^4.3.2",
     "three": "^0.87.1",
     "video.js": "^6.2.7",
-    "webvr-boilerplate": "^0.5.0",
-    "webvr-polyfill": "0.9.38"
+    "webvr-polyfill": "^0.10.2"
   },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
@@ -115,7 +114,7 @@
     "karma-qunit": "^1.2.1",
     "karma-safari-launcher": "^1.0.0",
     "mkdirp": "^0.5.1",
-    "node-sass": "4.5.3",
+    "node-sass": "^4.5.3",
     "node-static": "^0.7.9",
     "npm-run-all": "^4.0.2",
     "qunitjs": "^1.21.0",

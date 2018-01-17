@@ -1,20 +1,15 @@
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
-/* THIS CONFIGURES webvr-polyfill don't change the order */
-import './webvr-config.js';
-import 'webvr-polyfill/src/main';
+import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from 'three/examples/js/controls/VRControls.js';
 import VREffect from 'three/examples/js/effects/VREffect.js';
-import WebVRManager from 'webvr-boilerplate/build/webvr-manager';
 import OrbitControls from 'three/examples/js/controls/OrbitControls.js';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
 import './big-vr-play-button';
-
-window.WebVRManager = WebVRManager;
 
 const validProjections = [
   '360',
@@ -101,6 +96,10 @@ class VR extends Plugin {
     const settings = videojs.mergeOptions(defaults, options);
 
     super(player, settings);
+
+    this.polyfill_ = new WebVRPolyfill({
+      TOUCH_PANNER_DISABLED: false
+    });
 
     this.options_ = settings;
     this.player_ = player;
@@ -268,12 +267,11 @@ class VR extends Plugin {
     if (!this.vrDisplay) {
       return;
     }
-    this.manager.enterVRMode_();
-    this.manager.setMode_(3);
+    this.vrDisplay.requestPresent([{source: this.renderedCanvas}]);
   }
 
   handleVrDisplayDeactivate_() {
-    if (this.vrDisplay && !this.vrDisplay.isPresenting) {
+    if (!this.vrDisplay || !this.vrDisplay.isPresenting) {
       return;
     }
     this.vrDisplay.exitPresent();
@@ -303,7 +301,7 @@ class VR extends Plugin {
     }
 
     this.controls3d.update();
-    this.manager.render(this.scene, this.camera);
+    this.effect.render(this.scene, this.camera);
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
 
@@ -473,8 +471,6 @@ class VR extends Plugin {
 
     // Previous timestamps for gamepad updates
     this.prevTimestamps_ = [];
-
-    this.manager = new WebVRManager(this.renderer, this.effect, {hideButton: true});
 
     this.renderedCanvas = this.renderer.domElement;
 
