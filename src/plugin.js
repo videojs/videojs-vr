@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import VRControls from 'three/examples/js/controls/VRControls.js';
 import VREffect from 'three/examples/js/effects/VREffect.js';
 import WebVRManager from 'webvr-boilerplate/build/webvr-manager';
+import OrbitControls from 'three/examples/js/controls/OrbitControls.js';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
@@ -35,11 +36,6 @@ const defaults = {
 };
 
 const errors = {
-  'web-vr-no-devices-found': {
-    headline: 'No 360 devices found',
-    type: '360_NO_DEVICES_FOUND',
-    message: 'Your browser supports 360, but no 360 displays found.'
-  },
   'web-vr-out-of-date': {
     headline: '360 is out of date',
     type: '360_OUT_OF_DATE',
@@ -269,15 +265,26 @@ class VR extends Plugin {
   }
 
   handleVrDisplayActivate_() {
+    if (!this.vrDisplay) {
+      return;
+    }
     this.manager.enterVRMode_();
     this.manager.setMode_(3);
   }
 
   handleVrDisplayDeactivate_() {
-    if (!this.vrDisplay.isPresenting) {
+    if (this.vrDisplay && !this.vrDisplay.isPresenting) {
       return;
     }
     this.vrDisplay.exitPresent();
+  }
+
+  requestAnimationFrame(fn) {
+    if (this.vrDisplay) {
+      return this.vrDisplay.requestAnimationFrame(fn);
+    }
+
+    return super.requestAnimationFrame(fn);
   }
 
   togglePlay_() {
@@ -298,29 +305,20 @@ class VR extends Plugin {
     this.controls3d.update();
     this.manager.render(this.scene, this.camera);
 
-    if (!this.vrDisplay) {
-      this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
-      this.camera.getWorldDirection(this.cameraVector);
-      return;
-    }
+    this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
 
-    this.animationFrameId_ = this.vrDisplay.requestAnimationFrame(this.animate_);
+    if (window.navigator.getGamepads) {
+      // Grab all gamepads
+      const gamepads = window.navigator.getGamepads();
 
-    if (!window.navigator.getGamepads) {
-      return;
-    }
-    // Grab all gamepads
-    const gamepads = window.navigator.getGamepads();
+      for (let i = 0; i < gamepads.length; ++i) {
+        const gamepad = gamepads[i];
 
-    for (let i = 0; i < gamepads.length; ++i) {
-      const gamepad = gamepads[i];
-
-      // Make sure gamepad is defined
-      if (!gamepad) {
-        continue;
-      }
-      // Only take input if state has changed since we checked last
-      if (gamepad.timestamp && !(gamepad.timestamp === this.prevTimestamps_[i])) {
+        // Make sure gamepad is defined
+        // Only take input if state has changed since we checked last
+        if (!gamepad || !gamepad.timestamp || gamepad.timestamp === this.prevTimestamps_[i]) {
+          continue;
+        }
         for (let j = 0; j < gamepad.buttons.length; ++j) {
           if (gamepad.buttons[j].pressed) {
             this.togglePlay_();
@@ -366,7 +364,6 @@ class VR extends Plugin {
     }
 
     this.scene = new THREE.Scene();
-    this.controls3d = new VRControls(this.camera);
 
     this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
 
@@ -514,11 +511,12 @@ class VR extends Plugin {
     this.getVideoEl_().style.display = 'none';
 
     if (window.navigator.getVRDisplays) {
+      this.log('VR is supported, getting vr displays');
       window.navigator.getVRDisplays().then((displays) => {
         if (displays.length > 0) {
-          this.log('WebVR supported, VRDisplays found.');
+          this.log('VR Displays found', displays);
           this.vrDisplay = displays[0];
-          this.log(this.vrDisplay);
+          this.log('Going to use VRControls on the first one', this.vrDisplay);
 
           // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
           // also need the cardboard button to enter fully immersive mode
@@ -526,12 +524,13 @@ class VR extends Plugin {
           if (!this.vrDisplay.isPolyfilled) {
             this.addCardboardButton_();
           }
-        // FIREFOX doesn't report the polyfill display as a
-        // VRDisplay so this would error even though the video would
-        // work
-        } else if (!videojs.browser.IS_FIREFOX) {
-          this.triggerError_({code: 'web-vr-no-devices-found', dismiss: false});
+          this.controls3d = new VRControls(this.camera);
+        } else {
+          this.log('no vr displays found going to use OrbitControls');
+          this.controls3d = new OrbitControls(this.camera, this.renderedCanvas);
+          this.controls3d.target.set(0, 0, -1);
         }
+        this.requestAnimationFrame(this.animate_);
       });
     } else if (window.navigator.getVRDevices) {
       this.triggerError_({code: 'web-vr-out-of-date', dismiss: false});
@@ -545,7 +544,6 @@ class VR extends Plugin {
     window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
-    this.animate_();
     this.initialized_ = true;
   }
 
