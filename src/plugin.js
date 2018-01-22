@@ -1,30 +1,17 @@
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
+import document from 'global/document';
 import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from 'three/examples/js/controls/VRControls.js';
 import VREffect from 'three/examples/js/effects/VREffect.js';
 import OrbitControls from 'three/examples/js/controls/OrbitControls.js';
-import rgbFragmentShader from './rgb-fragment-shader';
-import rgbaFragmentShader from './rgba-fragment-shader';
-import vertexShader from './vertex-shader';
+import * as utils from './utils';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
 import './big-vr-play-button';
-
-const validProjections = [
-  '360',
-  '360_LR',
-  '360_TB',
-  '360_CUBE',
-  'NONE',
-  'AUTO',
-  'Sphere',
-  'Cube',
-  'equirectangular'
-];
 
 // Default options for the plugin.
 const defaults = {
@@ -44,51 +31,6 @@ const errors = {
     type: '360_NOT_SUPPORTED',
     message: "Your browser does not support 360. See <a href='http://webvr.info'>webvr.info</a> for assistance."
   }
-};
-
-const getInternalProjectionName = function(projection) {
-  if (!projection) {
-    return;
-  }
-
-  projection = projection.toString().trim();
-
-  if ((/sphere/i).test(projection)) {
-    return '360';
-  }
-
-  if ((/cube/i).test(projection)) {
-    return '360_CUBE';
-  }
-
-  if ((/equirectangular/i).test(projection)) {
-    return '360';
-  }
-
-  for (let i = 0; i < validProjections.length; i++) {
-    if (new RegExp('^' + validProjections[i] + '$', 'i').test(projection)) {
-      return validProjections[i];
-    }
-  }
-
-};
-
-const isHLS = function(currentType) {
-  // hls video types
-  const hlsTypes = [
-    // Apple santioned
-    'application/vnd.apple.mpegurl',
-    // Very common
-    'application/x-mpegurl',
-    // Included for completeness
-    'video/x-mpegurl',
-    'video/mpegurl',
-    'application/mpegurl'
-  ];
-
-  // if the current type has a case insensitivie match from the list above
-  // this is hls
-  return hlsTypes.some((type) => (new RegExp(`^${type}$`, 'i')).test(currentType));
 };
 
 const Plugin = videojs.getPlugin('plugin');
@@ -115,8 +57,9 @@ class VR extends Plugin {
       player.errors({errors});
     }
 
-    // we need this as IE 11 reports that it has a VR display, but isnt compatible with Video as a Texture. for example
-    if (videojs.browser.IE_VERSION) {
+    // IE 11 does not support enough webgl to be supported
+    // older safari does not support cors, so it wont work
+    if (videojs.browser.IE_VERSION || !utils.corsSupport) {
       this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
       return;
     }
@@ -132,7 +75,7 @@ class VR extends Plugin {
   }
 
   changeProjection_(projection) {
-    projection = getInternalProjectionName(projection);
+    projection = utils.getInternalProjectionName(projection);
     // don't change to an invalid projection
     if (!projection) {
       projection = 'NONE';
@@ -147,7 +90,7 @@ class VR extends Plugin {
       // mediainfo cannot be set to auto or we would infinite loop here
       // each source should know wether they are 360 or not, if using AUTO
       if (this.player_.mediainfo && this.player_.mediainfo.projection && this.player_.mediainfo.projection !== 'AUTO') {
-        const autoProjection = getInternalProjectionName(this.player_.mediainfo.projection);
+        const autoProjection = utils.getInternalProjectionName(this.player_.mediainfo.projection);
 
         return this.changeProjection_(autoProjection);
       }
@@ -303,6 +246,14 @@ class VR extends Plugin {
       }
     }
 
+    // This draws the current video data as an image to a canvas every render. That canvas is used
+    // as a texture by webgl. Normally the video is used directly and we don't have to do this, but
+    // HLS video textures on iOS >= 11 is currently broken, so we have to support those browser
+    // in a roundabout way.
+    if (this.videoImageContext_) {
+      this.videoImageContext_.drawImage(this.getVideoEl_(), 0, 0, this.videoImage_.width, this.videoImage_.height);
+    }
+
     this.controls3d.update();
     this.effect.render(this.scene, this.camera);
 
@@ -336,6 +287,12 @@ class VR extends Plugin {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
+    // when dealing with a non video
+    if (this.videoImage_) {
+      this.videoImage_.width = width;
+      this.videoImage_.height = height;
+    }
+
     this.effect.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -343,8 +300,8 @@ class VR extends Plugin {
 
   setProjection(projection) {
 
-    if (!getInternalProjectionName(projection)) {
-      videojs.log.error('videojs-vr: please pass a valid projection: ' + validProjections.join(', '));
+    if (!utils.getInternalProjectionName(projection)) {
+      videojs.log.error('videojs-vr: please pass a valid projection ' + utils.validProjections.join(', '));
       return;
     }
 
@@ -366,45 +323,40 @@ class VR extends Plugin {
 
     this.scene = new THREE.Scene();
 
-    this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
+    // We opted to stop using a video texture on safari due to
+    // various bugs that exist when using it. This gives us worse performance
+    // but it will actually work on all recent version of safari. See
+    // the following issues for more info on this:
+    //
+    // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
+    // https://bugs.webkit.org/show_bug.cgi?id=179417
+    if (videojs.browser.IS_ANY_SAFARI && utils.isHLS(this.player_.currentSource().type)) {
+      this.log('Video texture is not supported using image canvas hack');
+      this.videoImage_ = document.createElement('canvas');
+      this.videoImage_.width = this.player_.currentWidth();
+      this.videoImage_.height = this.player_.currentHeight();
 
+      this.videoImageContext_ = this.videoImage_.getContext('2d');
+      this.videoImageContext_.fillStyle = '#000000';
+
+      this.videoTexture = new THREE.Texture(this.videoImage_);
+
+      this.videoTexture.wrapS = THREE.ClampToEdgeWrapping;
+      this.videoTexture.wrapT = THREE.ClampToEdgeWrapping;
+      this.videoTexture.flipY = true;
+    } else {
+      this.log('Video texture is supported using that');
+      this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
+    }
+
+    // shared regardless of wether VideoTexture is used or
+    // an image canvas is used
     this.videoTexture.generateMipmaps = false;
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
+    this.videoTexture.format = THREE.RGBFormat;
 
-    // iOS and macOS HLS fix/hacks
-    // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
-    // https://github.com/mrdoob/three.js/issues/9754
-    // On iOS with HLS, color space is wrong and texture is flipped on Y axis
-    // On macOS, just need to flip texture Y axis
-
-    if (isHLS() && videojs.browser.IS_ANY_SAFARI) {
-      this.log('Safari + iOS + HLS = flipY and colorspace hack');
-      this.videoTexture.format = THREE.RGBAFormat;
-      this.videoTexture.flipY = false;
-    } else if (isHLS() && videojs.browser.IS_SAFARI) {
-      this.log('Safari + HLS = flipY hack');
-      this.videoTexture.format = THREE.RGBFormat;
-      this.videoTexture.flipY = false;
-    } else {
-      this.videoTexture.format = THREE.RGBFormat;
-    }
-
-    if ((this.videoTexture.format === THREE.RGBAFormat || this.videoTexture.format === THREE.RGBFormat) && this.videoTexture.flipY === false) {
-      let fragmentShader = rgbFragmentShader;
-
-      if (this.videoTexture.format === THREE.RGBAFormat) {
-        fragmentShader = rgbaFragmentShader;
-      }
-
-      this.movieMaterial = new THREE.ShaderMaterial({
-        uniforms: {texture: {value: this.videoTexture}},
-        vertexShader,
-        fragmentShader
-      });
-    } else {
-      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.DoubleSide });
-    }
+    this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.DoubleSide });
 
     this.changeProjection_(this.currentProjection_);
 
@@ -581,6 +533,14 @@ class VR extends Plugin {
 
     if (this.animationFrameId_) {
       this.cancelAnimationFrame(this.animationFrameId_);
+    }
+
+    if (this.videoImage_) {
+      this.videoImage_ = null;
+    }
+
+    if (this.videoImageContext_) {
+      this.videoImageContext_ = null;
     }
 
     this.initialized_ = false;
