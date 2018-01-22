@@ -568,7 +568,7 @@ class VR extends Plugin {
     this.getVideoEl_().style.display = '';
 
     // set the current projection to the default
-    this.currentProjection_ = this.defaultProjection;
+    this.currentProjection_ = this.defaultProjection_;
 
     if (this.observer_) {
       this.observer_.disconnect();
