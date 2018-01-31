@@ -30,6 +30,11 @@ const errors = {
     headline: '360 not supported on this device',
     type: '360_NOT_SUPPORTED',
     message: "Your browser does not support 360. See <a href='http://webvr.info'>webvr.info</a> for assistance."
+  },
+  'web-vr-hls-cors-not-supported': {
+    headline: '360 HLS video not supported on this device',
+    type: '360_NOT_SUPPORTED',
+    message: "Your browser/device does not support HLS 360 video. See <a href='http://webvr.info'>webvr.info</a> for assistance."
   }
 };
 
@@ -231,6 +236,14 @@ class VR extends Plugin {
     return super.requestAnimationFrame(fn);
   }
 
+  cancelAnimationFrame(id) {
+    if (this.vrDisplay) {
+      return this.vrDisplay.cancelAnimationFrame(id);
+    }
+
+    return super.cancelAnimationFrame(id);
+  }
+
   togglePlay_() {
     if (this.player_.paused()) {
       this.player_.play();
@@ -390,6 +403,20 @@ class VR extends Plugin {
       antialias: true
     });
 
+    const webglContext = this.renderer.getContext('webgl');
+    const oldTexImage2D = webglContext.texImage2D;
+
+    webglContext.texImage2D = (...args) => {
+      try {
+        return oldTexImage2D.apply(webglContext, args);
+      } catch (e) {
+        this.reset();
+        this.player_.pause();
+        this.triggerError_({code: 'web-vr-hls-cors-not-supported', dismiss: false});
+        throw new Error(e);
+      }
+    };
+
     this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.effect = new VREffect(this.renderer);
 
@@ -453,7 +480,7 @@ class VR extends Plugin {
           this.controls3d = new OrbitControls(this.camera, this.renderedCanvas);
           this.controls3d.target.set(0, 0, -1);
         }
-        this.requestAnimationFrame(this.animate_);
+        this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
       });
     } else if (window.navigator.getVRDevices) {
       this.triggerError_({code: 'web-vr-out-of-date', dismiss: false});
