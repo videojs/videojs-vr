@@ -1,3 +1,16 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/videojs/videojs-vr/compare/v1.0.3...v1.1.0) (2018-01-31)
+
+### Features
+
+* remove threejs files from the repo ([#43](https://github.com/videojs/videojs-vr/issues/43)) ([a5cf671](https://github.com/videojs/videojs-vr/commit/a5cf671))
+
+### Bug Fixes
+
+* default projection typo ([#47](https://github.com/videojs/videojs-vr/issues/47)) ([4c0c7bb](https://github.com/videojs/videojs-vr/commit/4c0c7bb))
+* native webvr ([#45](https://github.com/videojs/videojs-vr/issues/45)) ([4b3a89f](https://github.com/videojs/videojs-vr/commit/4b3a89f))
+* safari hls ([#48](https://github.com/videojs/videojs-vr/issues/48)) ([7dc2a69](https://github.com/videojs/videojs-vr/commit/7dc2a69))
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/videojs/videojs-vr/compare/v1.0.2...v1.0.3) (2017-12-04)
 
