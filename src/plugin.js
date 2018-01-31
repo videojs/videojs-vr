@@ -233,7 +233,7 @@ class VR extends Plugin {
       return this.vrDisplay.requestAnimationFrame(fn);
     }
 
-    return super.requestAnimationFrame(fn);
+    return Component.prototype.requestAnimationFrame.call(this, fn);
   }
 
   cancelAnimationFrame(id) {
@@ -241,7 +241,7 @@ class VR extends Plugin {
       return this.vrDisplay.cancelAnimationFrame(id);
     }
 
-    return super.cancelAnimationFrame(id);
+    return Component.prototype.cancelAnimationFrame.call(this, id);
   }
 
   togglePlay_() {
@@ -253,6 +253,9 @@ class VR extends Plugin {
   }
 
   animate_() {
+    if (!this.initialized_) {
+      return;
+    }
     if (this.getVideoEl_().readyState === this.getVideoEl_().HAVE_ENOUGH_DATA) {
       if (this.videoTexture) {
         this.videoTexture.needsUpdate = true;
@@ -269,8 +272,6 @@ class VR extends Plugin {
 
     this.controls3d.update();
     this.effect.render(this.scene, this.camera);
-
-    this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
 
     if (window.navigator.getGamepads) {
       // Grab all gamepads
@@ -294,6 +295,8 @@ class VR extends Plugin {
       }
     }
     this.camera.getWorldDirection(this.cameraVector);
+
+    this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   }
 
   handleResize_() {
@@ -579,8 +582,6 @@ class VR extends Plugin {
   }
 }
 
-VR.prototype.requestAnimationFrame = Component.prototype.requestAnimationFrame;
-VR.prototype.cancelAnimationFrame = Component.prototype.cancelAnimationFrame;
 VR.prototype.setTimeout = Component.prototype.setTimeout;
 VR.prototype.clearTimeout = Component.prototype.clearTimeout;
 
