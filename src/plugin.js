@@ -586,7 +586,7 @@ class VR extends Plugin {
 VR.prototype.setTimeout = Component.prototype.setTimeout;
 VR.prototype.clearTimeout = Component.prototype.clearTimeout;
 
-VR.version = VERSION;
+VR.VERSION = VERSION;
 
 videojs.registerPlugin('vr', VR);
 export default VR;
