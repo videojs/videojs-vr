@@ -483,6 +483,9 @@ class VR extends Plugin {
           this.log('no vr displays found going to use OrbitControls');
           this.controls3d = new OrbitControls(this.camera, this.renderedCanvas);
           this.controls3d.target.set(0, 0, -1);
+          this.controls3d.enableZoom = false;
+          this.controls3d.enablePan = false;
+          this.controls3d.rotateSpeed = -0.5;
         }
         this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
       });
