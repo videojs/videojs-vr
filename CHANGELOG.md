@@ -1,3 +1,12 @@
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/videojs/videojs-vr/compare/v1.1.0...v1.1.1) (2018-02-20)
+
+### Bug Fixes
+
+* expose version correctly ([#51](https://github.com/videojs/videojs-vr/issues/51)) ([dd7adc1](https://github.com/videojs/videojs-vr/commit/dd7adc1))
+* **OrbitControls:** no pan, less speed, no zoom ([#52](https://github.com/videojs/videojs-vr/issues/52)) ([44b6d41](https://github.com/videojs/videojs-vr/commit/44b6d41))
+* rework three example build, to fix webpack ([#53](https://github.com/videojs/videojs-vr/issues/53)) ([382156b](https://github.com/videojs/videojs-vr/commit/382156b))
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/videojs/videojs-vr/compare/v1.0.3...v1.1.0) (2018-01-31)
 
