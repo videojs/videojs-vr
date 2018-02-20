@@ -18,7 +18,7 @@ export default function(options) {
           }
 
           // trun the global modifiction into an import and a local variable definition
-          code = code.replace(`THREE.${m} =`, `import * as THREE from 'three';\nconst ${m} =`);
+          code = code.replace(`THREE.${m} =`, `import * as THREE from 'three';\nvar ${m} =`);
 
           // change references from the global modification to the local variable
           code = code.replace(new RegExp(`THREE.${m}`, 'g'), m);
