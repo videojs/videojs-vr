@@ -33,6 +33,8 @@
 
 # VR
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/videojs/videojs-vr.svg)](https://greenkeeper.io/)
+
 A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
 
 ## Installation
