@@ -2,12 +2,15 @@ sudo: false
 dist: trusty
 language: node_js
 node_js:
-  - 'node'
-  - 'lts/argon'
+  - 'lts/*'
+before_install:
+- npm install -g greenkeeper-lockfile@1
 before_script:
   - export CHROME_BIN=/usr/bin/google-chrome
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+  - greenkeeper-lockfile-update
+after_script: greenkeeper-lockfile-upload
 addons:
   firefox: latest
   apt:
