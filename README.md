@@ -1,39 +1,39 @@
+# VR
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/videojs/videojs-vr.svg)](https://greenkeeper.io/)
+
+A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [VR](#vr)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [`<script>` Tag](#script-tag)
-    - [Browserify/CommonJS](#browserifycommonjs)
-    - [RequireJS/AMD](#requirejsamd)
-    - [Optional integration with videojs-errors](#optional-integration-with-videojs-errors)
-  - [Setting a global projection](#setting-a-global-projection)
-    - [Passing a projection on a source by source basis](#passing-a-projection-on-a-source-by-source-basis)
-  - [Oculus Rift and HTC Vive Support](#oculus-rift-and-htc-vive-support)
-  - [Accessing the Camera Position](#accessing-the-camera-position)
-  - [Accessing THREE.js objects](#accessing-threejs-objects)
-  - [Options](#options)
-    - [`forceCardboard`](#forcecardboard)
-    - [`projection`](#projection)
-      - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
-      - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
-      - [`'NONE'`](#none)
-      - [`'AUTO'`](#auto)
-      - [`'360_LR'`](#360_lr)
-      - [`'360_TB'`](#360_tb)
-    - [`player.mediainfo.projection`](#playermediainfoprojection)
-    - [`debug`](#debug)
-  - [Credits](#credits)
-  - [Support](#support)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [`<script>` Tag](#script-tag)
+  - [Browserify/CommonJS](#browserifycommonjs)
+  - [RequireJS/AMD](#requirejsamd)
+  - [Optional integration with videojs-errors](#optional-integration-with-videojs-errors)
+- [Setting a global projection](#setting-a-global-projection)
+  - [Passing a projection on a source by source basis](#passing-a-projection-on-a-source-by-source-basis)
+- [Oculus Rift and HTC Vive Support](#oculus-rift-and-htc-vive-support)
+- [Accessing the Camera Position](#accessing-the-camera-position)
+- [Accessing THREE.js objects](#accessing-threejs-objects)
+- [Options](#options)
+  - [`forceCardboard`](#forcecardboard)
+  - [`projection`](#projection)
+    - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
+    - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
+    - [`'NONE'`](#none)
+    - [`'AUTO'`](#auto)
+    - [`'360_LR'`](#360_lr)
+    - [`'360_TB'`](#360_tb)
+  - [`player.mediainfo.projection`](#playermediainfoprojection)
+  - [`debug`](#debug)
+- [Credits](#credits)
+- [Support](#support)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-
-# VR
-
-A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
 
 ## Installation
 
