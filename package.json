@@ -118,7 +118,7 @@
     "node-sass": "^4.5.3",
     "node-static": "^0.7.9",
     "npm-run-all": "^4.0.2",
-    "qunitjs": "^1.21.0",
+    "qunit": "^2.5.1",
     "rimraf": "^2.6.1",
     "rollup": "^0.57.1",
     "rollup-plugin-babel": "^2.7.1",
