@@ -584,6 +584,10 @@ class VR extends Plugin {
     super.dispose();
     this.reset();
   }
+
+  polyfillVersion() {
+    return WebVRPolyfill.version;
+  }
 }
 
 VR.prototype.setTimeout = Component.prototype.setTimeout;
