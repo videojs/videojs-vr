@@ -1,3 +1,14 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/videojs/videojs-vr/compare/v1.1.1...v1.2.0) (2018-03-27)
+
+### Bug Fixes
+
+* chrome m55 android gyro breakage by updating webvr-polyfill ([#64](https://github.com/videojs/videojs-vr/issues/64)) ([ff8e461](https://github.com/videojs/videojs-vr/commit/ff8e461))
+
+### Chores
+
+* **package:** update rollup to version 0.57.1 ([#62](https://github.com/videojs/videojs-vr/issues/62)) ([d81a5a4](https://github.com/videojs/videojs-vr/commit/d81a5a4)), closes [#57](https://github.com/videojs/videojs-vr/issues/57)
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/videojs/videojs-vr/compare/v1.1.0...v1.1.1) (2018-02-20)
 
