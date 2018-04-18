@@ -47,9 +47,7 @@ class VR extends Plugin {
 
     super(player, settings);
 
-    this.polyfill_ = new WebVRPolyfill({
-      TOUCH_PANNER_DISABLED: false
-    });
+    const self = this;
 
     this.options_ = settings;
     this.player_ = player;
@@ -65,9 +63,17 @@ class VR extends Plugin {
     // IE 11 does not support enough webgl to be supported
     // older safari does not support cors, so it wont work
     if (videojs.browser.IE_VERSION || !utils.corsSupport) {
-      this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
+      // if a player triggers error before 'loadstart' is fired
+      // video.js will reset the error overlay
+      this.player_.on('loadstart', function() {
+        self.triggerError_({code: 'web-vr-not-supported', dismiss: false});
+      });
       return;
     }
+
+    this.polyfill_ = new WebVRPolyfill({
+      TOUCH_PANNER_DISABLED: false
+    });
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
@@ -204,7 +210,12 @@ class VR extends Plugin {
       this.player_.error(errorObj);
     // if we don't have videojs-errors just use a normal player error
     } else {
-      this.player_.error({code: errorObj.code, message: errors[errorObj.code].message});
+      this.player_.error({
+        code: errorObj.code,
+        message: errors[errorObj.code].message
+        .replace(/<a\b[^>]*>/i, '')
+        .replace(/<\/a>/i, '')
+      });
     }
   }
 
