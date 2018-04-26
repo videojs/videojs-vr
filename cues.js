@@ -1,3 +1,15 @@
+function getProjection(v) {
+  return v.project(vr.camera);
+}
+
+function getPos(p, canvas) {
+  // Scale the point's x and y into pixel-coordinates based on the size of the canvas
+  let x = p.x * 0.5 * canvas.width + 0.5 * canvas.width;
+  let y = -p.y * 0.5 * canvas.height + 0.5 * canvas.height;
+
+  return {x, y};
+}
+
 function setupcue(e, pos, c) {
   var timer;
   var c = c || document.querySelector('canvas');
@@ -16,7 +28,7 @@ function setupcue(e, pos, c) {
       v.multiplyScalar(256);
 
       // project the point onto the camera-view
-      let p = v.project(vr.camera);
+      let p = getProjection(v);
 
       // to be on screen, the point must be between -1 and 1 of each axis
       if (p.x < -1 || p.x > 1 ||
@@ -25,9 +37,7 @@ function setupcue(e, pos, c) {
         return;
       }
 
-      // Scale the point's x and y into pixel-coordinates based on the size of the canvas
-      let x = p.x * 0.5 * canvas.width + 0.5 * canvas.width;
-      let y = -p.y * 0.5 * canvas.height + 0.5 * canvas.height;
+      let {x, y} = getPos(p, canvas);
 
       element.style.left = x - parseFloat(getComputedStyle(element).width)/2 + 'px';
       element.style.top = y - parseFloat(getComputedStyle(element).height) + 'px';
