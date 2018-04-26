@@ -76,7 +76,8 @@
       "test/dist",
       "test/karma.conf.js",
       "src/VRControls.js",
-      "src/VREffect.js"
+      "src/VREffect.js",
+      "cues.js"
     ]
   },
   "files": [
