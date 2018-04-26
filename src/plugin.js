@@ -47,6 +47,8 @@ class VR extends Plugin {
 
     super(player, settings);
 
+    this.THREE = THREE;
+
     this.polyfill_ = new WebVRPolyfill({
       TOUCH_PANNER_DISABLED: false
     });
