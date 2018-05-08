@@ -47,8 +47,6 @@ class VR extends Plugin {
 
     super(player, settings);
 
-    const self = this;
-
     this.options_ = settings;
     this.player_ = player;
     this.bigPlayButtonIndex_ = player.children().indexOf(player.getChild('BigPlayButton')) || 0;
@@ -65,8 +63,8 @@ class VR extends Plugin {
     if (videojs.browser.IE_VERSION || !utils.corsSupport) {
       // if a player triggers error before 'loadstart' is fired
       // video.js will reset the error overlay
-      this.player_.on('loadstart', function() {
-        self.triggerError_({code: 'web-vr-not-supported', dismiss: false});
+      this.player_.on('loadstart', () => {
+        this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
       });
       return;
     }
@@ -210,11 +208,17 @@ class VR extends Plugin {
       this.player_.error(errorObj);
     // if we don't have videojs-errors just use a normal player error
     } else {
+      // strip any html content from the error message
+      // as it is not supported outside of videojs-errors
+      const div = document.createElement('div');
+
+      div.innerHTML = errors[errorObj.code].message;
+
+      const message = div.textContent || div.innerText || '';
+
       this.player_.error({
         code: errorObj.code,
-        message: errors[errorObj.code].message
-        .replace(/<a\b[^>]*>/i, '')
-        .replace(/<\/a>/i, '')
+        message,
       });
     }
   }
