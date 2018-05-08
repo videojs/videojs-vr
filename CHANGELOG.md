@@ -1,3 +1,10 @@
+<a name="1.2.1"></a>
+## [1.2.1](https://github.com/videojs/videojs-vr/compare/v1.2.0...v1.2.1) (2018-05-08)
+
+### Bug Fixes
+
+* Correctly show an error in IE/Safari when webvr is unsupported ([#67](https://github.com/videojs/videojs-vr/issues/67)) ([67988da](https://github.com/videojs/videojs-vr/commit/67988da))
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/videojs/videojs-vr/compare/v1.1.1...v1.2.0) (2018-03-27)
 
