@@ -70,7 +70,9 @@ class VR extends Plugin {
     }
 
     this.polyfill_ = new WebVRPolyfill({
-      TOUCH_PANNER_DISABLED: false
+      TOUCH_PANNER_DISABLED: false,
+      // do not show rotate instructions
+      ROTATE_INSTRUCTIONS_DISABLED: true
     });
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
