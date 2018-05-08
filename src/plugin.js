@@ -218,7 +218,7 @@ class VR extends Plugin {
 
       this.player_.error({
         code: errorObj.code,
-        message,
+        message
       });
     }
   }
