@@ -24,17 +24,17 @@ const errors = {
   'web-vr-out-of-date': {
     headline: '360 is out of date',
     type: '360_OUT_OF_DATE',
-    message: "Your browser supports 360 but not the latest version. See <a href='http://webvr.info'>webvr.info</a> for more info."
+    message: "Your browser supports 360 but not the latest version. See <a href='http://webvr.info'>http://webvr.info</a> for more info."
   },
   'web-vr-not-supported': {
     headline: '360 not supported on this device',
     type: '360_NOT_SUPPORTED',
-    message: "Your browser does not support 360. See <a href='http://webvr.info'>webvr.info</a> for assistance."
+    message: "Your browser does not support 360. See <a href='http://webvr.info'>http://webvr.info</a> for assistance."
   },
   'web-vr-hls-cors-not-supported': {
     headline: '360 HLS video not supported on this device',
     type: '360_NOT_SUPPORTED',
-    message: "Your browser/device does not support HLS 360 video. See <a href='http://webvr.info'>webvr.info</a> for assistance."
+    message: "Your browser/device does not support HLS 360 video. See <a href='http://webvr.info'>http://webvr.info</a> for assistance."
   }
 };
 
@@ -46,10 +46,6 @@ class VR extends Plugin {
     const settings = videojs.mergeOptions(defaults, options);
 
     super(player, settings);
-
-    this.polyfill_ = new WebVRPolyfill({
-      TOUCH_PANNER_DISABLED: false
-    });
 
     this.options_ = settings;
     this.player_ = player;
@@ -65,9 +61,17 @@ class VR extends Plugin {
     // IE 11 does not support enough webgl to be supported
     // older safari does not support cors, so it wont work
     if (videojs.browser.IE_VERSION || !utils.corsSupport) {
-      this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
+      // if a player triggers error before 'loadstart' is fired
+      // video.js will reset the error overlay
+      this.player_.on('loadstart', () => {
+        this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
+      });
       return;
     }
+
+    this.polyfill_ = new WebVRPolyfill({
+      TOUCH_PANNER_DISABLED: false
+    });
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
@@ -204,7 +208,18 @@ class VR extends Plugin {
       this.player_.error(errorObj);
     // if we don't have videojs-errors just use a normal player error
     } else {
-      this.player_.error({code: errorObj.code, message: errors[errorObj.code].message});
+      // strip any html content from the error message
+      // as it is not supported outside of videojs-errors
+      const div = document.createElement('div');
+
+      div.innerHTML = errors[errorObj.code].message;
+
+      const message = div.textContent || div.innerText || '';
+
+      this.player_.error({
+        code: errorObj.code,
+        message
+      });
     }
   }
 
