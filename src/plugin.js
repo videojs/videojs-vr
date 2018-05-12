@@ -163,8 +163,6 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
     } else if (projection === '360_CUBE') {
-      // Currently doesn't work - need to figure out order of cube faces
-      // CubeGeometry is legacy name, refers to BoxGeometry
       this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
       const face1 = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
       const face2 = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1)];
