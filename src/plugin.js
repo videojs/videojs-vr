@@ -164,33 +164,34 @@ class VR extends Plugin {
 
     } else if (projection === '360_CUBE') {
       // Currently doesn't work - need to figure out order of cube faces
-      this.movieGeometry = new THREE.CubeGeometry(256, 256, 256);
+      // CubeGeometry is legacy name, refers to BoxGeometry
+      this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
       const face1 = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
       const face2 = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1)];
       const face3 = [new THREE.Vector2(0.666, 0.5), new THREE.Vector2(1, 0.5), new THREE.Vector2(1, 1), new THREE.Vector2(0.666, 1)];
-      const face4 = [new THREE.Vector2(0, 0), new THREE.Vector2(0.333, 1), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0, 0.5)];
-      const face5 = [new THREE.Vector2(0.333, 1), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
-      const face6 = [new THREE.Vector2(0.666, 1), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
+      const face4 = [new THREE.Vector2(0, 0), new THREE.Vector2(0.333, 0), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0, 0.5)];
+      const face5 = [new THREE.Vector2(0.333, 0), new THREE.Vector2(0.666, 0), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
+      const face6 = [new THREE.Vector2(0.666, 0), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
 
       this.movieGeometry.faceVertexUvs[0] = [];
 
-      this.movieGeometry.faceVertexUvs[0][0] = [ face1[0], face1[1], face1[3] ];
-      this.movieGeometry.faceVertexUvs[0][1] = [ face1[1], face1[2], face1[3] ];
+      this.movieGeometry.faceVertexUvs[0][0] = [ face1[3], face1[0], face1[2] ];
+      this.movieGeometry.faceVertexUvs[0][1] = [ face1[0], face1[1], face1[2] ];
 
-      this.movieGeometry.faceVertexUvs[0][2] = [ face2[0], face2[1], face2[3] ];
-      this.movieGeometry.faceVertexUvs[0][3] = [ face2[1], face2[2], face2[3] ];
+      this.movieGeometry.faceVertexUvs[0][2] = [ face2[3], face2[0], face2[2] ];
+      this.movieGeometry.faceVertexUvs[0][3] = [ face2[0], face2[1], face2[2] ];
 
-      this.movieGeometry.faceVertexUvs[0][4] = [ face3[0], face3[1], face3[3] ];
-      this.movieGeometry.faceVertexUvs[0][5] = [ face3[1], face3[2], face3[3] ];
+      this.movieGeometry.faceVertexUvs[0][4] = [ face3[3], face3[0], face3[2] ];
+      this.movieGeometry.faceVertexUvs[0][5] = [ face3[0], face3[1], face3[2] ];
 
-      this.movieGeometry.faceVertexUvs[0][6] = [ face4[0], face4[1], face4[3] ];
-      this.movieGeometry.faceVertexUvs[0][7] = [ face4[1], face4[2], face4[3] ];
+      this.movieGeometry.faceVertexUvs[0][6] = [ face4[3], face4[0], face4[2] ];
+      this.movieGeometry.faceVertexUvs[0][7] = [ face4[0], face4[1], face4[2] ];
 
-      this.movieGeometry.faceVertexUvs[0][8] = [ face5[0], face5[1], face5[3] ];
-      this.movieGeometry.faceVertexUvs[0][9] = [ face5[1], face5[2], face5[3] ];
+      this.movieGeometry.faceVertexUvs[0][8] = [ face5[3], face5[0], face5[2] ];
+      this.movieGeometry.faceVertexUvs[0][9] = [ face5[0], face5[1], face5[2] ];
 
-      this.movieGeometry.faceVertexUvs[0][10] = [ face6[0], face6[1], face6[3] ];
-      this.movieGeometry.faceVertexUvs[0][11] = [ face6[1], face6[2], face6[3] ];
+      this.movieGeometry.faceVertexUvs[0][10] = [ face6[3], face6[0], face6[2] ];
+      this.movieGeometry.faceVertexUvs[0][11] = [ face6[0], face6[1], face6[2] ];
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.position.set(position.x, position.y, position.z);
@@ -387,7 +388,8 @@ class VR extends Plugin {
     this.videoTexture.magFilter = THREE.LinearFilter;
     this.videoTexture.format = THREE.RGBFormat;
 
-    this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.FrontSide });
+    // double sided to render inside of cube
+    this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.DoubleSide });
 
     this.changeProjection_(this.currentProjection_);
 
