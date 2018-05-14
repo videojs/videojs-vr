@@ -223,10 +223,14 @@ class VR extends Plugin {
     }
   }
 
-  log(msg) {
-    if (this.options_.debug) {
-      videojs.log(msg);
+  log(...msgs) {
+    if (!this.options_.debug) {
+      return;
     }
+
+    msgs.forEach((msg) => {
+      videojs.log(msg);
+    });
   }
 
   handleVrDisplayActivate_() {
@@ -354,14 +358,8 @@ class VR extends Plugin {
 
     this.scene = new THREE.Scene();
 
-    // We opted to stop using a video texture on safari due to
-    // various bugs that exist when using it. This gives us worse performance
-    // but it will actually work on all recent version of safari. See
-    // the following issues for more info on this:
-    //
-    // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
-    // https://bugs.webkit.org/show_bug.cgi?id=179417
-    if (videojs.browser.IS_ANY_SAFARI && utils.isHLS(this.player_.currentSource().type)) {
+    // video texture is not supported on ios < 11
+    if (videojs.browser.IOS_VERSION && videojs.browser.IOS_VERSION <= 10) {
       this.log('Video texture is not supported using image canvas hack');
       this.videoImage_ = document.createElement('canvas');
       this.videoImage_.width = this.player_.currentWidth();
