@@ -9,6 +9,7 @@ A video.js plugin that turns a video element into a HTML5 Panoramic 360 video pl
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Installation](#installation)
+- [Browser Support](#browser-support)
 - [Usage](#usage)
   - [`<script>` Tag](#script-tag)
   - [Browserify/CommonJS](#browserifycommonjs)
@@ -40,6 +41,9 @@ A video.js plugin that turns a video element into a HTML5 Panoramic 360 video pl
 ```sh
 npm install --save videojs-vr
 ```
+
+## Browser Support
+We only support the most recent versions of Chrome/Firefox/Safari and Andriod Chrome/Safari iOS. We cannot support older versions of browses since webvr is still experimental and is constantly changing.
 
 ## Usage
 
