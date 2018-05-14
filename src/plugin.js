@@ -223,10 +223,14 @@ class VR extends Plugin {
     }
   }
 
-  log(msg) {
-    if (this.options_.debug) {
-      videojs.log(msg);
+  log(...msgs) {
+    if (!this.options_.debug) {
+      return;
     }
+
+    msgs.forEach((msg) => {
+      videojs.log(msg);
+    });
   }
 
   handleVrDisplayActivate_() {
@@ -277,14 +281,6 @@ class VR extends Plugin {
       }
     }
 
-    // This draws the current video data as an image to a canvas every render. That canvas is used
-    // as a texture by webgl. Normally the video is used directly and we don't have to do this, but
-    // HLS video textures on iOS >= 11 is currently broken, so we have to support those browser
-    // in a roundabout way.
-    if (this.videoImageContext_) {
-      this.videoImageContext_.drawImage(this.getVideoEl_(), 0, 0, this.videoImage_.width, this.videoImage_.height);
-    }
-
     this.controls3d.update();
     this.effect.render(this.scene, this.camera);
 
@@ -318,12 +314,6 @@ class VR extends Plugin {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
-    // when dealing with a non video
-    if (this.videoImage_) {
-      this.videoImage_.width = width;
-      this.videoImage_.height = height;
-    }
-
     this.effect.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -353,32 +343,7 @@ class VR extends Plugin {
     }
 
     this.scene = new THREE.Scene();
-
-    // We opted to stop using a video texture on safari due to
-    // various bugs that exist when using it. This gives us worse performance
-    // but it will actually work on all recent version of safari. See
-    // the following issues for more info on this:
-    //
-    // https://bugs.webkit.org/show_bug.cgi?id=163866#c3
-    // https://bugs.webkit.org/show_bug.cgi?id=179417
-    if (videojs.browser.IS_ANY_SAFARI && utils.isHLS(this.player_.currentSource().type)) {
-      this.log('Video texture is not supported using image canvas hack');
-      this.videoImage_ = document.createElement('canvas');
-      this.videoImage_.width = this.player_.currentWidth();
-      this.videoImage_.height = this.player_.currentHeight();
-
-      this.videoImageContext_ = this.videoImage_.getContext('2d');
-      this.videoImageContext_.fillStyle = '#000000';
-
-      this.videoTexture = new THREE.Texture(this.videoImage_);
-
-      this.videoTexture.wrapS = THREE.ClampToEdgeWrapping;
-      this.videoTexture.wrapT = THREE.ClampToEdgeWrapping;
-      this.videoTexture.flipY = true;
-    } else {
-      this.log('Video texture is supported using that');
-      this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
-    }
+    this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
 
     // shared regardless of wether VideoTexture is used or
     // an image canvas is used
@@ -582,14 +547,6 @@ class VR extends Plugin {
 
     if (this.animationFrameId_) {
       this.cancelAnimationFrame(this.animationFrameId_);
-    }
-
-    if (this.videoImage_) {
-      this.videoImage_ = null;
-    }
-
-    if (this.videoImageContext_) {
-      this.videoImageContext_ = null;
     }
 
     this.initialized_ = false;

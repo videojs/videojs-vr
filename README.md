@@ -9,7 +9,8 @@ A video.js plugin that turns a video element into a HTML5 Panoramic 360 video pl
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Installation](#installation)
-- [Usage](#usage)
+- [Browser Support](#browser-support)
+- [Projection support](#projection-support)
   - [`<script>` Tag](#script-tag)
   - [Browserify/CommonJS](#browserifycommonjs)
   - [RequireJS/AMD](#requirejsamd)
@@ -41,6 +42,23 @@ A video.js plugin that turns a video element into a HTML5 Panoramic 360 video pl
 npm install --save videojs-vr
 ```
 
+## Browser Support
+The most recent versions of:
+* Desktop
+  * Chrome
+  * Firefox
+  * Safari
+* Mobile
+  * Chrome on Andriod
+  * Safari on iOS
+
+## Projection support
+Currently we only support:
+* Projections
+  * Spherical Videos, via the 360/equirectangular projection
+* Mappings
+  * Monoscopic (single video pane)
+  * Stereoscopic (dual video pane for both eyes) via the cardboard button
 ## Usage
 
 To include videojs-vr on your website or web application, use any of the following methods.
