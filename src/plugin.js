@@ -281,14 +281,6 @@ class VR extends Plugin {
       }
     }
 
-    // This draws the current video data as an image to a canvas every render. That canvas is used
-    // as a texture by webgl. Normally the video is used directly and we don't have to do this, but
-    // HLS video textures on iOS >= 11 is currently broken, so we have to support those browser
-    // in a roundabout way.
-    if (this.videoImageContext_) {
-      this.videoImageContext_.drawImage(this.getVideoEl_(), 0, 0, this.videoImage_.width, this.videoImage_.height);
-    }
-
     this.controls3d.update();
     this.effect.render(this.scene, this.camera);
 
@@ -322,12 +314,6 @@ class VR extends Plugin {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
-    // when dealing with a non video
-    if (this.videoImage_) {
-      this.videoImage_.width = width;
-      this.videoImage_.height = height;
-    }
-
     this.effect.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -357,26 +343,7 @@ class VR extends Plugin {
     }
 
     this.scene = new THREE.Scene();
-
-    // video texture is not supported on ios < 11
-    if (videojs.browser.IOS_VERSION && videojs.browser.IOS_VERSION <= 10) {
-      this.log('Video texture is not supported using image canvas hack');
-      this.videoImage_ = document.createElement('canvas');
-      this.videoImage_.width = this.player_.currentWidth();
-      this.videoImage_.height = this.player_.currentHeight();
-
-      this.videoImageContext_ = this.videoImage_.getContext('2d');
-      this.videoImageContext_.fillStyle = '#000000';
-
-      this.videoTexture = new THREE.Texture(this.videoImage_);
-
-      this.videoTexture.wrapS = THREE.ClampToEdgeWrapping;
-      this.videoTexture.wrapT = THREE.ClampToEdgeWrapping;
-      this.videoTexture.flipY = true;
-    } else {
-      this.log('Video texture is supported using that');
-      this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
-    }
+    this.videoTexture = new THREE.VideoTexture(this.getVideoEl_());
 
     // shared regardless of wether VideoTexture is used or
     // an image canvas is used
@@ -580,14 +547,6 @@ class VR extends Plugin {
 
     if (this.animationFrameId_) {
       this.cancelAnimationFrame(this.animationFrameId_);
-    }
-
-    if (this.videoImage_) {
-      this.videoImage_ = null;
-    }
-
-    if (this.videoImageContext_) {
-      this.videoImageContext_ = null;
     }
 
     this.initialized_ = false;
