@@ -105,7 +105,9 @@ class VR extends Plugin {
       }
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
+
       this.movieGeometry = new THREE.SphereBufferGeometry(256, 32, 32);
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.FrontSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.position.set(position.x, position.y, position.z);
@@ -132,6 +134,8 @@ class VR extends Plugin {
       geometry.scale(-1, 1, 1);
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.FrontSide });
+      
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.rotation.y = -Math.PI / 2;
       // display in left eye only
@@ -156,6 +160,8 @@ class VR extends Plugin {
       geometry.scale(-1, 1, 1);
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.FrontSide });
+      
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.rotation.y = -Math.PI / 2;
       // display in right eye only
@@ -164,35 +170,38 @@ class VR extends Plugin {
 
     } else if (projection === '360_CUBE') {
       this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
-      const face1 = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
-      const face2 = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1)];
-      const face3 = [new THREE.Vector2(0.666, 0.5), new THREE.Vector2(1, 0.5), new THREE.Vector2(1, 1), new THREE.Vector2(0.666, 1)];
-      const face4 = [new THREE.Vector2(0, 0), new THREE.Vector2(0.333, 0), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0, 0.5)];
-      const face5 = [new THREE.Vector2(0.333, 0), new THREE.Vector2(0.666, 0), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
-      const face6 = [new THREE.Vector2(0.666, 0), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
+
+      const left = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
+      const right = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1)];
+      const top = [new THREE.Vector2(0.666, 0.5), new THREE.Vector2(1, 0.5), new THREE.Vector2(1, 1), new THREE.Vector2(0.666, 1)];
+      const bottom = [new THREE.Vector2(0, 0), new THREE.Vector2(0.333, 0), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0, 0.5)];
+      const front = [new THREE.Vector2(0.333, 0), new THREE.Vector2(0.666, 0), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
+      const back = [new THREE.Vector2(0.666, 0), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
 
       this.movieGeometry.faceVertexUvs[0] = [];
 
-      this.movieGeometry.faceVertexUvs[0][0] = [ face1[3], face1[0], face1[2] ];
-      this.movieGeometry.faceVertexUvs[0][1] = [ face1[0], face1[1], face1[2] ];
+      this.movieGeometry.faceVertexUvs[0][0] = [ right[2], right[1], right[3] ];
+      this.movieGeometry.faceVertexUvs[0][1] = [ right[1], right[0], right[3] ];
 
-      this.movieGeometry.faceVertexUvs[0][2] = [ face2[3], face2[0], face2[2] ];
-      this.movieGeometry.faceVertexUvs[0][3] = [ face2[0], face2[1], face2[2] ];
+      this.movieGeometry.faceVertexUvs[0][2] = [ left[2], left[1], left[3] ];
+      this.movieGeometry.faceVertexUvs[0][3] = [ left[1], left[0], left[3] ];
 
-      this.movieGeometry.faceVertexUvs[0][4] = [ face3[3], face3[0], face3[2] ];
-      this.movieGeometry.faceVertexUvs[0][5] = [ face3[0], face3[1], face3[2] ];
+      this.movieGeometry.faceVertexUvs[0][4] = [ top[2], top[1], top[3] ];
+      this.movieGeometry.faceVertexUvs[0][5] = [ top[1], top[0], top[3] ];
 
-      this.movieGeometry.faceVertexUvs[0][6] = [ face4[3], face4[0], face4[2] ];
-      this.movieGeometry.faceVertexUvs[0][7] = [ face4[0], face4[1], face4[2] ];
+      this.movieGeometry.faceVertexUvs[0][6] = [ bottom[2], bottom[1], bottom[3] ];
+      this.movieGeometry.faceVertexUvs[0][7] = [ bottom[1], bottom[0], bottom[3] ];
 
-      this.movieGeometry.faceVertexUvs[0][8] = [ face5[3], face5[0], face5[2] ];
-      this.movieGeometry.faceVertexUvs[0][9] = [ face5[0], face5[1], face5[2] ];
+      this.movieGeometry.faceVertexUvs[0][8] = [ front[2], front[1], front[3] ];
+      this.movieGeometry.faceVertexUvs[0][9] = [ front[1], front[0], front[3] ];
 
-      this.movieGeometry.faceVertexUvs[0][10] = [ face6[3], face6[0], face6[2] ];
-      this.movieGeometry.faceVertexUvs[0][11] = [ face6[0], face6[1], face6[2] ];
+      this.movieGeometry.faceVertexUvs[0][10] = [ back[2], back[1], back[3] ];
+      this.movieGeometry.faceVertexUvs[0][11] = [ back[1], back[0], back[3] ];
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.position.set(position.x, position.y, position.z);
+      this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
     }
@@ -385,9 +394,6 @@ class VR extends Plugin {
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
     this.videoTexture.format = THREE.RGBFormat;
-
-    // double sided to render inside of cube
-    this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.DoubleSide });
 
     this.changeProjection_(this.currentProjection_);
 
