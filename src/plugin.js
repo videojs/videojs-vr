@@ -135,7 +135,7 @@ class VR extends Plugin {
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.FrontSide });
-      
+
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.rotation.y = -Math.PI / 2;
       // display in left eye only
@@ -161,7 +161,7 @@ class VR extends Plugin {
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.FrontSide });
-      
+
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.rotation.y = -Math.PI / 2;
       // display in right eye only
