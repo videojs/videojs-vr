@@ -6,7 +6,7 @@ import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from 'three/examples/js/controls/VRControls.js';
 import VREffect from 'three/examples/js/effects/VREffect.js';
-import OrbitControls from 'three/examples/js/controls/OrbitControls.js';
+import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 
 // import controls so they get regisetered with videojs
@@ -70,10 +70,10 @@ class VR extends Plugin {
     }
 
     this.polyfill_ = new WebVRPolyfill({
-      TOUCH_PANNER_DISABLED: false,
       // do not show rotate instructions
       ROTATE_INSTRUCTIONS_DISABLED: true
     });
+    this.polyfill_ = new WebVRPolyfill();
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
@@ -476,22 +476,27 @@ class VR extends Plugin {
         if (displays.length > 0) {
           this.log('VR Displays found', displays);
           this.vrDisplay = displays[0];
-          this.log('Going to use VRControls on the first one', this.vrDisplay);
 
           // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
           // also need the cardboard button to enter fully immersive mode
           // so, we want to add the button if we're not polyfilled.
           if (!this.vrDisplay.isPolyfilled) {
+            this.log('Real HMD found using VRControls', this.vrDisplay);
             this.addCardboardButton_();
+
+            // We use VRControls here since we are working with an HMD
+            // and we only want orientation controls.
+            this.controls3d = new VRControls(this.camera);
           }
-          this.controls3d = new VRControls(this.camera);
-        } else {
-          this.log('no vr displays found going to use OrbitControls');
-          this.controls3d = new OrbitControls(this.camera, this.renderedCanvas);
-          this.controls3d.target.set(0, 0, -1);
-          this.controls3d.enableZoom = false;
-          this.controls3d.enablePan = false;
-          this.controls3d.rotateSpeed = -0.5;
+        }
+
+        if (!this.controls3d) {
+          this.log('no HMD found Using Orbit & Orientation Controls');
+          this.controls3d = new OrbitOrientationContols({
+            camera: this.camera,
+            canvas: this.renderedCanvas,
+            orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
+          });
         }
         this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
       });
