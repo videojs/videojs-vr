@@ -235,13 +235,52 @@ class VR extends Plugin {
     if (!this.vrDisplay) {
       return;
     }
-    this.vrDisplay.requestPresent([{source: this.renderedCanvas}]);
+    this.vrDisplay.requestPresent([{source: this.renderedCanvas}]).then(() => {
+      if (!this.vrDisplay.cardboardUI_) {
+        return;
+      }
+
+      // webvr-polyfill/cardboard ui only watch for click events
+      // to tell that the back button is pressed, but somewhere along the
+      // line these events are silenced with preventDefault.
+      let touches = [];
+
+      this.cardboardTouchStart_ = (e) => {
+        for (let i = 0; i < e.touches.length; i++) {
+          touches.push(e.touches[i]);
+        }
+      };
+
+      this.cardboardTouchEnd_ = (e) => {
+        if (!touches.length) {
+          return;
+        }
+
+        touches.forEach((t) => {
+          const simulatedClick = new window.MouseEvent('click', {
+            screenX: t.screenX,
+            screenY: t.screenY,
+            clientX: t.clientX,
+            clientY: t.clientY
+          });
+
+          this.renderedCanvas.dispatchEvent(simulatedClick);
+        });
+
+        touches = [];
+      };
+
+      this.renderedCanvas.addEventListener('touchstart', this.cardboardTouchStart_);
+      this.renderedCanvas.addEventListener('touchend', this.cardboardTouchEnd_);
+    });
   }
 
   handleVrDisplayDeactivate_() {
     if (!this.vrDisplay || !this.vrDisplay.isPresenting) {
       return;
     }
+    this.renderedCanvas.removeEventListener('touchstart', this.cardboardTouchStart_);
+    this.renderedCanvas.removeEventListener('touchend', this.cardboardTouchEnd_);
     this.vrDisplay.exitPresent();
   }
 
