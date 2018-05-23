@@ -466,36 +466,7 @@ class VR extends Plugin {
     this.prevTimestamps_ = [];
 
     this.renderedCanvas = this.renderer.domElement;
-
-    const debounce = function(fn, wait) {
-      let timeout;
-
-      return function(...args) {
-        // reset the timer
-        if (timeout) {
-          window.clearTimeout(timeout);
-        }
-        timeout = window.setTimeout(() => fn.apply(undefined, args), wait);
-      };
-    };
-    // we use this to stop webvr-polyfill from making the canvas take up more
-    // space then the video element
-    const setInherit = debounce((mut) => {
-      if (this.observer_) {
-        this.observer_.disconnect();
-      } else {
-        this.observer_ = new window.MutationObserver(setInherit);
-      }
-      this.renderedCanvas.setAttribute('style', 'width: inherit; height: inherit;');
-      this.handleResize_();
-      this.observer_.observe(this.renderedCanvas, {
-        attributes: true,
-        attributeList: ['style']
-      });
-    }, 10);
-
-    setInherit();
-
+    this.renderedCanvas.setAttribute('style', 'width: 100%; height: 100%; position: absolute; top:0;');
     this.player_.el().insertBefore(this.renderedCanvas, this.player_.el().firstChild);
     this.getVideoEl_().style.display = 'none';
 
