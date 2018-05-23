@@ -1,3 +1,29 @@
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/videojs/videojs-vr/compare/v1.2.1...v1.3.0) (2018-05-23)
+
+### Features
+
+* handle 360_CUBE projection (thanks dillontiner!)  ([#86](https://github.com/videojs/videojs-vr/issues/86)) ([19ae76d](https://github.com/videojs/videojs-vr/commit/19ae76d))
+
+### Bug Fixes
+
+* FrontSide -> BackSide for 360 videos due to changes in three.js ([#88](https://github.com/videojs/videojs-vr/issues/88)) ([e58862d](https://github.com/videojs/videojs-vr/commit/e58862d))
+* no rotate instructions and ios back arrow fix ([#75](https://github.com/videojs/videojs-vr/issues/75)) ([0c525cd](https://github.com/videojs/videojs-vr/commit/0c525cd))
+* re-implement touch pan controls ([#89](https://github.com/videojs/videojs-vr/issues/89)) ([0cde016](https://github.com/videojs/videojs-vr/commit/0cde016))
+* remove safari video image canvas work-around ([#74](https://github.com/videojs/videojs-vr/issues/74)) ([4a9d500](https://github.com/videojs/videojs-vr/commit/4a9d500))
+* vjs fluid class usage, and remove hacky mutationobserver work-around ([#76](https://github.com/videojs/videojs-vr/issues/76)) ([db749dc](https://github.com/videojs/videojs-vr/commit/db749dc))
+
+### Chores
+
+* **package:** update rollup to version 0.58.2 ([#77](https://github.com/videojs/videojs-vr/issues/77)) ([a4d611f](https://github.com/videojs/videojs-vr/commit/a4d611f))
+* **package:** update rollup-plugin-babel to version 3.0.4 ([#70](https://github.com/videojs/videojs-vr/issues/70)) ([7ae874a](https://github.com/videojs/videojs-vr/commit/7ae874a))
+* **package:** update rollup-plugin-commonjs to version 9.1.3 ([#79](https://github.com/videojs/videojs-vr/issues/79)) ([90d5fb6](https://github.com/videojs/videojs-vr/commit/90d5fb6))
+* **package:** update three to version 0.92.0 ([#78](https://github.com/videojs/videojs-vr/issues/78)) ([b9668cb](https://github.com/videojs/videojs-vr/commit/b9668cb))
+
+### Documentation
+
+* remove webvr-boilerplate from the readme ([a2015e1](https://github.com/videojs/videojs-vr/commit/a2015e1))
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/videojs/videojs-vr/compare/v1.2.0...v1.2.1) (2018-05-08)
 
