@@ -56,6 +56,7 @@ The most recent versions of:
 Currently we only support:
 * Projections
   * Spherical Videos, via the 360/equirectangular projection
+  * 360 cube videos
 * Mappings
   * Monoscopic (single video pane)
   * Stereoscopic (dual video pane for both eyes) via the cardboard button
@@ -143,7 +144,7 @@ player.vr({projection: 'AUTO'});
 ```
 
 ## Oculus Rift and HTC Vive Support
-This plugin leverages the [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate) project (which in turn uses [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js)) to create a 'responsive VR' experience across multiple devices.
+This project leverages the [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js) libraries to create a 'responsive VR' experience across multiple devices.
 
 Oculus Rift and HTC Vive playback requires Firefox >= 55, experimental WebVR-enabled builds of Chromium, or via Chrome by enabling webvr in `chrome://flags`. Go to [WebVR.info](http://www.webvr.info) for more info.
 
@@ -218,7 +219,6 @@ This project is a conglomeration of a few amazing open source libraries.
 
 * [VideoJS](http://www.videojs.com)
 * [Three.js](http://threejs.org)
-* [webvr-boilerplate](https://github.com/borismus/webvr-boilerplate)
 * [webvr-polyfill](https://github.com/borismus/webvr-polyfill)
 
 ## Support ##
