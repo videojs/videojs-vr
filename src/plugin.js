@@ -70,7 +70,9 @@ class VR extends Plugin {
     }
 
     this.polyfill_ = new WebVRPolyfill({
-      TOUCH_PANNER_DISABLED: false
+      TOUCH_PANNER_DISABLED: false,
+      // do not show rotate instructions
+      ROTATE_INSTRUCTIONS_DISABLED: true
     });
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
@@ -237,14 +239,61 @@ class VR extends Plugin {
     if (!this.vrDisplay) {
       return;
     }
-    this.vrDisplay.requestPresent([{source: this.renderedCanvas}]);
+    this.vrDisplay.requestPresent([{source: this.renderedCanvas}]).then(() => {
+      if (!this.vrDisplay.cardboardUI_ || !videojs.browser.IS_IOS) {
+        return;
+      }
+
+      // webvr-polyfill/cardboard ui only watches for click events
+      // to tell that the back arrow button is pressed during cardboard vr.
+      // but somewhere along the line these events are silenced with preventDefault
+      // but only on iOS, so we translate them ourselves here
+      let touches = [];
+      const iosCardboardTouchStart_ = (e) => {
+        for (let i = 0; i < e.touches.length; i++) {
+          touches.push(e.touches[i]);
+        }
+      };
+
+      const iosCardboardTouchEnd_ = (e) => {
+        if (!touches.length) {
+          return;
+        }
+
+        touches.forEach((t) => {
+          const simulatedClick = new window.MouseEvent('click', {
+            screenX: t.screenX,
+            screenY: t.screenY,
+            clientX: t.clientX,
+            clientY: t.clientY
+          });
+
+          this.renderedCanvas.dispatchEvent(simulatedClick);
+        });
+
+        touches = [];
+      };
+
+      this.renderedCanvas.addEventListener('touchstart', iosCardboardTouchStart_);
+      this.renderedCanvas.addEventListener('touchend', iosCardboardTouchEnd_);
+
+      this.iosRevertTouchToClick_ = () => {
+        this.renderedCanvas.removeEventListener('touchstart', iosCardboardTouchStart_);
+        this.renderedCanvas.removeEventListener('touchend', iosCardboardTouchEnd_);
+        this.iosRevertTouchToClick_ = null;
+      };
+    });
   }
 
   handleVrDisplayDeactivate_() {
     if (!this.vrDisplay || !this.vrDisplay.isPresenting) {
       return;
     }
+    if (this.iosRevertTouchToClick_) {
+      this.iosRevertTouchToClick_();
+    }
     this.vrDisplay.exitPresent();
+
   }
 
   requestAnimationFrame(fn) {
@@ -538,6 +587,11 @@ class VR extends Plugin {
 
     if (this.observer_) {
       this.observer_.disconnect();
+    }
+
+    // reset the ios touch to click workaround
+    if (this.iosRevertTouchToClick_) {
+      this.iosRevertTouchToClick_();
     }
 
     // remove the old canvas
