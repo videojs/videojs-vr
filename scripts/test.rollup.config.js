@@ -10,10 +10,19 @@ import multiEntry from 'rollup-plugin-multi-entry';
 import resolve from 'rollup-plugin-node-resolve';
 import replace from './rollup-replace';
 
+const name = 'videojsVrTests';
+const globals = {
+  'qunit': 'QUnit',
+  'qunitjs': 'QUnit',
+  'sinon': 'sinon',
+  'video.js': 'videojs'
+};
+
 export default {
-  name: 'videojsVrTests',
   input: 'test/**/*.test.js',
   output: {
+    name,
+    globals,
     file: 'test/dist/bundle.js',
     format: 'iife'
   },
@@ -23,12 +32,6 @@ export default {
     'sinon',
     'video.js'
   ],
-  globals: {
-    'qunit': 'QUnit',
-    'qunitjs': 'QUnit',
-    'sinon': 'sinon',
-    'video.js': 'videojs'
-  },
   legacy: true,
   plugins: [
     multiEntry({

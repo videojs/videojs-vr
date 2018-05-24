@@ -11,13 +11,21 @@ import replace from './rollup-replace';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 
+const name = 'videojsVr';
+const globals = {
+  'video.js': 'videojs'
+};
+
 export default {
-  name: 'videojsVr',
   input: 'src/plugin.js',
   output: [{
+    name,
+    globals,
     file: 'dist/videojs-vr.cjs.js',
     format: 'cjs'
   }, {
+    name,
+    globals,
     file: 'dist/videojs-vr.es.js',
     format: 'es'
   }],
@@ -29,9 +37,6 @@ export default {
     'three',
     'webvr-boilerplate'
   ],
-  globals: {
-    'video.js': 'videojs'
-  },
   legacy: true,
   plugins: [
     resolve({

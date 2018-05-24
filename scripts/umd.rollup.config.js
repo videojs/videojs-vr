@@ -11,18 +11,18 @@ import resolve from 'rollup-plugin-node-resolve';
 import replace from './rollup-replace';
 
 export default {
-  name: 'videojsVr',
   input: 'src/plugin.js',
   output: {
+    name: 'videojsVr',
     file: 'dist/videojs-vr.js',
-    format: 'umd'
+    format: 'umd',
+    globals: {
+      'video.js': 'videojs'
+    }
   },
   external: [
     'video.js'
   ],
-  globals: {
-    'video.js': 'videojs'
-  },
   legacy: true,
   plugins: [
     resolve({
