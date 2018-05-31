@@ -8,6 +8,7 @@ import VRControls from 'three/examples/js/controls/VRControls.js';
 import VREffect from 'three/examples/js/effects/VREffect.js';
 import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
+import CanvasPlayerControls from './canvas-player-controls';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
@@ -497,7 +498,9 @@ class VR extends Plugin {
             canvas: this.renderedCanvas,
             orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
           });
+          this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas);
         }
+
         this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
       });
     } else if (window.navigator.getVRDevices) {
@@ -533,6 +536,11 @@ class VR extends Plugin {
     if (this.controls3d) {
       this.controls3d.dispose();
     }
+
+    if (this.canvasPlayerControls) {
+      this.canvasPlayerControls.dispose();
+    }
+
     if (this.effect) {
       this.effect.dispose();
     }

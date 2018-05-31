@@ -39,6 +39,11 @@ export default function(options) {
 
             code = globalReplace(code, 'rotateLeft', 'scope.rotateLeft');
             code = globalReplace(code, 'rotateUp', 'scope.rotateUp');
+            // comment out the context menu prevent default line...
+            code = globalReplace(code,
+              "scope.domElement.addEventListener\\( 'contextmenu'",
+              "\/\/scope.domElement.addEventListener\\( 'contextmenu'"
+            );
           }
         });
         return code;
