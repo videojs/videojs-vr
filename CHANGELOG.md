@@ -1,3 +1,14 @@
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/videojs/videojs-vr/compare/v1.3.0...v1.4.0) (2018-06-08)
+
+### Bug Fixes
+
+* hide control bar while moving, allow clicking to play/pause, allow right click ([#96](https://github.com/videojs/videojs-vr/issues/96)) ([21b66ca](https://github.com/videojs/videojs-vr/commit/21b66ca))
+
+### Chores
+
+* **package:** update rollup and rollup-plugin-json ([#93](https://github.com/videojs/videojs-vr/issues/93)) ([33db8a8](https://github.com/videojs/videojs-vr/commit/33db8a8))
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/videojs/videojs-vr/compare/v1.2.1...v1.3.0) (2018-05-23)
 
