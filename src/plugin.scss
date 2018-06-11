@@ -1,12 +1,3 @@
-@mixin transition($transition...)
-{
-  -webkit-transition: $transition;
-  -moz-transition:$transition;
-  -ms-transition: $transition;
-  -o-transition: $transition;
-  transition: $transition;
-}
-
 .video-js {
   .vjs-big-vr-play-button {
     width: 100px;
@@ -19,7 +10,7 @@
     }
     @at-root :hover#{&}
     {
-      @include transition(border-color .4s,outline .4s,background-color .4s);
+      transition: transition(border-color .4s,outline .4s,background-color .4s);
       // background-color:blue !important;
     }
 

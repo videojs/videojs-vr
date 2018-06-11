@@ -1,4 +1,12 @@
-import replace from 'rollup-plugin-re';
+const babel = require('rollup-plugin-babel');
+const commonjs = require('rollup-plugin-commonjs');
+const json = require('rollup-plugin-json');
+const multiEntry = require('rollup-plugin-multi-entry');
+const resolve = require('rollup-plugin-node-resolve');
+const {uglify} = require('rollup-plugin-uglify');
+const {minify} = require('uglify-es');
+const browsersList = require('./browserslist');
+const replace = require('rollup-plugin-re');
 
 // three modules to find-replace in
 const modules = [
@@ -12,8 +20,24 @@ const globalReplace = function(str, pattern, replacement) {
   return str.replace(new RegExp(pattern, 'g'), replacement);
 };
 
-export default function(options) {
-  return replace(Object.assign({
+module.exports = {
+  babel: babel({
+    babelrc: false,
+    exclude: 'node_modules/**',
+    presets: [
+      ['env', {loose: true, modules: false, targets: {browsers: browsersList}}]
+    ],
+    plugins: [
+      'external-helpers',
+      'transform-object-assign'
+    ]
+  }),
+  commonjs: commonjs({sourceMap: false}),
+  json: json(),
+  multiEntry: multiEntry({exports: false}),
+  resolve: resolve({browser: true, main: true, jsnext: true}),
+  uglify: uglify({output: {comments: 'some'}}, minify),
+  replace: replace({
     include: ['node_modules/three/examples/js/**'],
     patterns: [
       {transform(code, id) {
@@ -48,6 +72,6 @@ export default function(options) {
         });
         return code;
       }}
-    ]}, options || {}));
-}
-
+    ]
+  })
+};

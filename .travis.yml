@@ -18,3 +18,4 @@ addons:
     - google-chrome
     packages:
     - google-chrome-stable
+
