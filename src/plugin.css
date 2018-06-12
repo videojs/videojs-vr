@@ -7,15 +7,15 @@
 }
 
 .video-js .vjs-big-vr-play-button .vjs-icon-placeholder {
-	display: none;
+  display: none;
 }
 
 :hover.video-js .vjs-big-vr-play-button {
-	transition: border-color 0.4s, outline 0.4s, background-color 0.4s;
+  transition: border-color 0.4s, outline 0.4s, background-color 0.4s;
 }
 
 .video-js .vjs-big-vr-play-button::before {
-	content: '';
+  content: '';
 }
 
 .video-js canvas {
