@@ -28,7 +28,7 @@
   "main": "dist/videojs-vr.cjs.js",
   "module": "dist/videojs-vr.es.js",
   "generator-videojs-plugin": {
-    "version": "6.0.4"
+    "version": "6.0.5"
   },
   "scripts": {
     "prebuild": "npm run clean",
@@ -36,8 +36,8 @@
     "build:css": "postcss --verbose -o dist/videojs-vr.css --config scripts/postcss.config.js src/plugin.css",
     "build:js": "rollup -c scripts/rollup.config.js",
     "build:lang": "vjslang --dir dist/lang",
-    "clean": "rimraf dist test/dist",
-    "postclean": "mkdirp dist test/dist",
+    "clean": "rimraf dist",
+    "postclean": "mkdirp dist",
     "docs": "npm-run-all docs:*",
     "docs:api": "jsdoc src -r -c scripts/jsdoc.json -d docs/api",
     "docs:toc": "doctoc README.md",
