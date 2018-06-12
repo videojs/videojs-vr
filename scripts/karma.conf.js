@@ -1,19 +1,10 @@
 /* eslint-disable no-console */
-const rollupPlugins = require('./primed-rollup-plugins');
-const path = require('path');
 const serveStatic = require('serve-static');
+const path = require('path');
 const serve = serveStatic(
   path.join(__dirname, '..'),
   {index: ['index.html', 'index.htm']}
 );
-const testGlobals = {
-  'qunit': 'QUnit',
-  'qunitjs': 'QUnit',
-  'sinon': 'sinon',
-  'video.js': 'videojs'
-};
-const testExternals = Object.keys(testGlobals).concat([
-]);
 
 const StaticMiddlewareFactory = function(config) {
   console.log(`**** Dev server started at http://${config.listenAddress}:${config.port}/ *****`);
@@ -49,10 +40,7 @@ module.exports = function(config) {
       'dist/videojs-vr.css',
       'node_modules/sinon/pkg/sinon.js',
       'node_modules/video.js/dist/video.js',
-      {included: false, pattern: 'src/**/*.js', watched: true},
-      // Make sure to disable Karma’s file watcher
-      // because the preprocessor will use its own.
-      {pattern: 'test/**/*.test.js', watched: false}
+      'test/dist/bundle.js'
     ],
     customLaunchers: {
       travisChrome: {
@@ -79,25 +67,6 @@ module.exports = function(config) {
     colors: true,
     autoWatch: false,
     singleRun: true,
-    concurrency: Infinity,
-    preprocessors: {
-      'test/**/*.test.js': ['rollup']
-    },
-    rollupPreprocessor: {
-      output: {
-        format: 'iife',
-        name: 'videojsVrTest',
-        globals: testGlobals
-      },
-      external: testExternals,
-      plugins: [
-        rollupPlugins.multiEntry,
-        rollupPlugins.resolve,
-        rollupPlugins.json,
-        rollupPlugins.replace,
-        rollupPlugins.commonjs,
-        rollupPlugins.babel
-      ]
-    }
+    concurrency: Infinity
   });
 };

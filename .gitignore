@@ -28,3 +28,4 @@ node_modules/
 # Build-related directories
 dist/
 docs/api/
+test/dist/

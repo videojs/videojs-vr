@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-const banner = require('./banner').string;
 const postcss = require('postcss');
 const path = require('path');
-const browsersList = require('./browserslist');
+const pkg = require('../package.json');
+const banner = `@name ${pkg.name} @version ${pkg.version} @license ${pkg.license}`;
 
 /**
  * by default there is no way to print that file was written
@@ -30,7 +30,7 @@ module.exports = function(context) {
       // see https://preset-env.cssdb.org/features
       // by default we use stage 3+
       require('postcss-preset-env')({
-        browsers: browsersList,
+        browsers: pkg.browserslist,
         stage: 3,
         features: {
           'custom-environment-variables': true,
@@ -42,13 +42,13 @@ module.exports = function(context) {
       require('postcss-banner')({important: true, inline: true, banner}),
 
       // add/remove vendor prefixes based on browser list
-      require('autoprefixer')(browsersList),
+      require('autoprefixer')(pkg.browserslist),
 
       // minify
       require('cssnano')({
         safe: true,
         preset: ['default', {
-          autoprefixer: browsersList
+          autoprefixer: pkg.browserslist
         }]
       }),
 
