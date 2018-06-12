@@ -1,6 +1,6 @@
 # VR
 
-[![Build Status](https://travis-ci.org/videojs/videojs-vr.svg?branch=master)](https://travis-ci.org/videojs/videojs-vr.svg)
+[![Build Status](https://travis-ci.org/videojs/videojs-vr.svg?branch=master)](https://travis-ci.org/videojs/videojs-vr)
 [![Greenkeeper badge](https://badges.greenkeeper.io/videojs/videojs-vr.svg)](https://greenkeeper.io/)
 [![Slack Status](http://slack.videojs.com/badge.svg)](http://slack.videojs.com)
 
