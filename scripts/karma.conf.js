@@ -2,7 +2,10 @@
 const rollupPlugins = require('./primed-rollup-plugins');
 const path = require('path');
 const serveStatic = require('serve-static');
-const serve = serveStatic(path.join(__dirname, '..'), {index: ['index.html', 'index.htm']});
+const serve = serveStatic(
+  path.join(__dirname, '..'),
+  {index: ['index.html', 'index.htm']}
+);
 const testGlobals = {
   'qunit': 'QUnit',
   'qunitjs': 'QUnit',

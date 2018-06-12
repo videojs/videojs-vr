@@ -28,7 +28,7 @@
   "main": "dist/videojs-vr.cjs.js",
   "module": "dist/videojs-vr.es.js",
   "generator-videojs-plugin": {
-    "version": "6.0.2"
+    "version": "6.0.4"
   },
   "scripts": {
     "prebuild": "npm run clean",
