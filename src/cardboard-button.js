@@ -82,7 +82,6 @@ class CardboardButton extends Button {
         this.player_.height(this.oldHeight_);
       }
       this.player_.exitFullWindow();
-      window.dispatchEvent(new window.Event('resize'));
     }
 
     this.active_ = false;
