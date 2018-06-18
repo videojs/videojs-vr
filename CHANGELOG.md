@@ -1,3 +1,10 @@
+<a name="1.4.1"></a>
+## [1.4.1](https://github.com/videojs/videojs-vr/compare/v1.4.0...v1.4.1) (2018-06-18)
+
+### Bug Fixes
+
+* ios sizing issue when deactivating vr display ([#104](https://github.com/videojs/videojs-vr/issues/104)) ([3a83a05](https://github.com/videojs/videojs-vr/commit/3a83a05))
+
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/videojs/videojs-vr/compare/v1.3.0...v1.4.0) (2018-06-08)
 
