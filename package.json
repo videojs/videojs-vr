@@ -92,7 +92,7 @@
     "global": "^4.3.2",
     "three": "0.92.0",
     "video.js": "^6.2.7",
-    "webvr-polyfill": "0.10.5"
+    "webvr-polyfill": "0.10.6"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
