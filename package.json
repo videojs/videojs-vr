@@ -130,7 +130,7 @@
     "rollup-plugin-re": "^1.0.6",
     "rollup-watch": "^3.2.2",
     "semver": "^5.3.0",
-    "sinon": "^5.0.0",
+    "sinon": "^6.0.0",
     "uglify-js": "^3.0.7",
     "videojs-languages": "^1.0.0",
     "videojs-standard": "^6.0.0"
