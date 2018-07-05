@@ -1,5 +1,22 @@
+/* eslint-disable no-console */
+const serveStatic = require('serve-static');
+const path = require('path');
+const serve = serveStatic(
+  path.join(__dirname, '..'),
+  {index: ['index.html', 'index.htm']}
+);
+
+const StaticMiddlewareFactory = function(config) {
+  console.log(`**** Dev server started at http://${config.listenAddress}:${config.port}/ *****`);
+
+  return function(req, res, next) {
+    res.setHeader('Cache-Control', 'no-cache,must-revalidate');
+    return serve(req, res, next);
+  };
+};
+
 module.exports = function(config) {
-  var detectBrowsers = {
+  const detectBrowsers = {
     enabled: false,
     usePhantomJS: false
   };
@@ -11,7 +28,7 @@ module.exports = function(config) {
 
   // If no browsers are specified, we enable `karma-detect-browsers`
   // this will detect all browsers that are available for testing
-  if (!config.browsers.length) {
+  if (config.browsers !== false && !config.browsers.length) {
     detectBrowsers.enabled = true;
   }
 
@@ -31,9 +48,22 @@ module.exports = function(config) {
         flags: ['--no-sandbox']
       }
     },
-    detectBrowsers: detectBrowsers,
+    client: {
+      clearContext: false,
+      qunit: {
+        showUI: true,
+        testTimeout: 5000
+      }
+    },
+    detectBrowsers,
     reporters: ['dots'],
-    port: 9876,
+    port: 9999,
+    urlRoot: '/test/',
+    plugins: [
+      {'middleware:static': ['factory', StaticMiddlewareFactory]},
+      'karma-*'
+    ],
+    middleware: ['static'],
     colors: true,
     autoWatch: false,
     singleRun: true,

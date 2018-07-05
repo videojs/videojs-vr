@@ -1,12 +1,20 @@
 # VR
 
+[![Build Status](https://travis-ci.org/videojs/videojs-vr.svg?branch=master)](https://travis-ci.org/videojs/videojs-vr)
 [![Greenkeeper badge](https://badges.greenkeeper.io/videojs/videojs-vr.svg)](https://greenkeeper.io/)
+[![Slack Status](http://slack.videojs.com/badge.svg)](http://slack.videojs.com)
+
+[![NPM](https://nodei.co/npm/videojs-vr.png?downloads=true&downloadRank=true)](https://nodei.co/npm/videojs-vr/)
 
 A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
 
+Lead Maintainer: Brandon Casey [@brandonocasey](https://github.com/brandonocasey)
+
+Maintenance Status: Stable
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
 
 - [Installation](#installation)
 - [Browser Support](#browser-support)
