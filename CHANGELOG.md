@@ -1,3 +1,10 @@
+<a name="1.4.3"></a>
+## [1.4.3](https://github.com/videojs/videojs-vr/compare/v1.4.2...v1.4.3) (2018-07-20)
+
+### Bug Fixes
+
+* incorrect css naming ([b7068b7](https://github.com/videojs/videojs-vr/commit/b7068b7))
+
 <a name="1.4.2"></a>
 ## [1.4.2](https://github.com/videojs/videojs-vr/compare/v1.4.1...v1.4.2) (2018-07-05)
 
