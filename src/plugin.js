@@ -553,14 +553,17 @@ class VR extends Plugin {
 
     if (this.controls3d) {
       this.controls3d.dispose();
+      this.controls3d = null;
     }
 
     if (this.canvasPlayerControls) {
       this.canvasPlayerControls.dispose();
+      this.canvasPlayerControls = null;
     }
 
     if (this.effect) {
       this.effect.dispose();
+      this.effect = null;
     }
 
     window.removeEventListener('resize', this.handleResize_);
@@ -592,10 +595,6 @@ class VR extends Plugin {
 
     // set the current projection to the default
     this.currentProjection_ = this.defaultProjection_;
-
-    if (this.observer_) {
-      this.observer_.disconnect();
-    }
 
     // reset the ios touch to click workaround
     if (this.iosRevertTouchToClick_) {
