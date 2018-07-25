@@ -94,14 +94,8 @@ class VR extends Plugin {
 
       this.log('video element recycled for this ad, reseting');
       this.reset();
-      // via the contrib-ads docs playing or contentresumed
-      // can mean that content has started again
-      const reInit = () => {
-        this.off(player, ['playing', 'contentresumed'], reInit);
-        this.init();
-      };
 
-      this.one(player, ['playing', 'contentresumed'], reInit);
+      this.one(player, 'playing', this.init);
     }), 1);
 
     this.on(player, 'loadedmetadata', this.init);
