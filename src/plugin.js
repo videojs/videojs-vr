@@ -83,23 +83,26 @@ class VR extends Plugin {
 
     this.setProjection(this.options_.projection);
 
-    // ios does not use a new player for some ads
-    // this causes ads to play in 360 mode. we need
-    // to reset the plugin before the ad
-    // then init again after the ad.
-    if (videojs.browser.IS_IOS) {
-      this.on(player, 'adstart', () => {
-        this.reset();
-        // via the contrib-ads docs playing or contentresumed
-        // can mean that content has started again
-        const reInit = () => {
-          this.off(player, ['playing', 'contentresumed'], reInit);
-          this.init();
-        };
+    // any time the video element is recycled for ads
+    // we have to reset the vr state and re-init after ad
+    this.on(player, 'adstart', () => window.setTimeout(() => {
+      // if the video element was recycled for this ad
+      if (!player.ads || !player.ads.videoElementRecycled()) {
+        this.log('video element not recycled for this ad, no need to reset');
+        return;
+      }
 
-        this.one(player, ['playing', 'contentresumed'], reInit);
-      });
-    }
+      this.log('video element recycled for this ad, reseting');
+      this.reset();
+      // via the contrib-ads docs playing or contentresumed
+      // can mean that content has started again
+      const reInit = () => {
+        this.off(player, ['playing', 'contentresumed'], reInit);
+        this.init();
+      };
+
+      this.one(player, ['playing', 'contentresumed'], reInit);
+    }), 1);
 
     this.on(player, 'loadedmetadata', this.init);
   }
