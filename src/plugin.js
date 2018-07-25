@@ -258,7 +258,11 @@ class VR extends Plugin {
     }
 
     msgs.forEach((msg) => {
-      videojs.log(msg);
+      if (typeof msg === 'string') {
+        videojs.log('VR: ' + msg);
+      } else {
+        videojs.log('VR: ', msg);
+      }
     });
   }
 
@@ -490,10 +494,10 @@ class VR extends Plugin {
     this.getVideoEl_().style.display = 'none';
 
     if (window.navigator.getVRDisplays) {
-      this.log('VR is supported, getting vr displays');
+      this.log('is supported, getting vr displays');
       window.navigator.getVRDisplays().then((displays) => {
         if (displays.length > 0) {
-          this.log('VR Displays found', displays);
+          this.log('Displays found', displays);
           this.vrDisplay = displays[0];
 
           // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
