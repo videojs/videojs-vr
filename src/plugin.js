@@ -85,7 +85,7 @@ class VR extends Plugin {
 
     // any time the video element is recycled for ads
     // we have to reset the vr state and re-init after ad
-    this.on(player, 'adstart', () => window.setTimeout(() => {
+    this.on(player, 'adstart', () => player.setTimeout(() => {
       // if the video element was recycled for this ad
       if (!player.ads || !player.ads.videoElementRecycled()) {
         this.log('video element not recycled for this ad, no need to reset');
@@ -255,11 +255,7 @@ class VR extends Plugin {
     }
 
     msgs.forEach((msg) => {
-      if (typeof msg === 'string') {
-        videojs.log('VR: ' + msg);
-      } else {
-        videojs.log('VR: ', msg);
-      }
+      videojs.log('VR: ', msg);
     });
   }
 
