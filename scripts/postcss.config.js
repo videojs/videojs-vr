@@ -3,6 +3,9 @@ const postcss = require('postcss');
 const path = require('path');
 const pkg = require('../package.json');
 const banner = `@name ${pkg.name} @version ${pkg.version} @license ${pkg.license}`;
+const getNow = () => Date.now();
+
+let startTime = getNow();
 
 /**
  * by default there is no way to print that file was written
@@ -15,13 +18,26 @@ const printOutput = postcss.plugin('postcss-print-output', function(opts) {
     const relativeFrom = path.relative(process.cwd(), results.opts.from);
     const relativeTo = path.relative(process.cwd(), results.opts.to);
 
-    console.log(`${relativeFrom} -> ${relativeTo}`);
+    console.log(`${relativeFrom} -> ${relativeTo} in ${getNow() - startTime}ms`);
+  };
+});
+
+/**
+ * A function to set the startTime of postcss so that
+ * we can print the time taken in the output.
+ */
+const setTime = postcss.plugin('postcss-set-time', function(opts) {
+  return function(root, results) {
+    startTime = getNow();
   };
 });
 
 module.exports = function(context) {
   return {
     plugins: [
+      // set the startTime so that we can print the end time
+      setTime(),
+
       // inlines local file imports
       require('postcss-import')(),
 
@@ -31,9 +47,12 @@ module.exports = function(context) {
       // by default we use stage 3+
       require('postcss-preset-env')({
         browsers: pkg.browserslist,
-        stage: 3,
+        stage: false,
         features: {
-          'custom-environment-variables': true,
+          // turn `var(xyz)` in the actual value
+          'custom-properties': {preserve: false, warnings: true},
+
+          // flatten nested rules
           'nesting-rules': true
         }
       }),
