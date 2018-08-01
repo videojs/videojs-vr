@@ -1,3 +1,10 @@
+<a name="1.4.4"></a>
+## [1.4.4](https://github.com/videojs/videojs-vr/compare/v1.4.3...v1.4.4) (2018-08-01)
+
+### Bug Fixes
+
+* dispose event listeners on window correctly ([#119](https://github.com/videojs/videojs-vr/issues/119)) ([b6a8125](https://github.com/videojs/videojs-vr/commit/b6a8125))
+
 <a name="1.4.3"></a>
 ## [1.4.3](https://github.com/videojs/videojs-vr/compare/v1.4.2...v1.4.3) (2018-07-20)
 
