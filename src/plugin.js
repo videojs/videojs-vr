@@ -545,10 +545,10 @@ class VR extends Plugin {
       this.effect.dispose();
     }
 
-    window.removeEventListener('resize', this.handleResize_);
-    window.removeEventListener('vrdisplaypresentchange', this.handleResize_);
-    window.removeEventListener('vrdisplayactivate', this.handleVrDisplayActivate_);
-    window.removeEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_);
+    window.removeEventListener('resize', this.handleResize_, true);
+    window.removeEventListener('vrdisplaypresentchange', this.handleResize_, true);
+    window.removeEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
+    window.removeEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
     // re-add the big play button to player
     if (!this.player_.getChild('BigPlayButton')) {
