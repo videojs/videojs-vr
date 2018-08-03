@@ -1,3 +1,10 @@
+<a name="1.4.5"></a>
+## [1.4.5](https://github.com/videojs/videojs-vr/compare/v1.4.4...v1.4.5) (2018-08-03)
+
+### Bug Fixes
+
+* babel the es dist, by updating the generator ([#117](https://github.com/videojs/videojs-vr/issues/117)) ([2d4468d](https://github.com/videojs/videojs-vr/commit/2d4468d))
+
 <a name="1.4.4"></a>
 ## [1.4.4](https://github.com/videojs/videojs-vr/compare/v1.4.3...v1.4.4) (2018-08-01)
 
