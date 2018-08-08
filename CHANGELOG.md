@@ -1,3 +1,10 @@
+<a name="1.4.6"></a>
+## [1.4.6](https://github.com/videojs/videojs-vr/compare/v1.4.5...v1.4.6) (2018-08-08)
+
+### Chores
+
+* update deps ([#122](https://github.com/videojs/videojs-vr/issues/122)) ([d175793](https://github.com/videojs/videojs-vr/commit/d175793))
+
 <a name="1.4.5"></a>
 ## [1.4.5](https://github.com/videojs/videojs-vr/compare/v1.4.4...v1.4.5) (2018-08-03)
 
