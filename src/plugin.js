@@ -83,6 +83,21 @@ class VR extends Plugin {
 
     this.setProjection(this.options_.projection);
 
+    // any time the video element is recycled for ads
+    // we have to reset the vr state and re-init after ad
+    this.on(player, 'adstart', () => player.setTimeout(() => {
+      // if the video element was recycled for this ad
+      if (!player.ads || !player.ads.videoElementRecycled()) {
+        this.log('video element not recycled for this ad, no need to reset');
+        return;
+      }
+
+      this.log('video element recycled for this ad, reseting');
+      this.reset();
+
+      this.one(player, 'playing', this.init);
+    }), 1);
+
     this.on(player, 'loadedmetadata', this.init);
   }
 
@@ -240,7 +255,7 @@ class VR extends Plugin {
     }
 
     msgs.forEach((msg) => {
-      videojs.log(msg);
+      videojs.log('VR: ', msg);
     });
   }
 
@@ -472,10 +487,10 @@ class VR extends Plugin {
     this.getVideoEl_().style.display = 'none';
 
     if (window.navigator.getVRDisplays) {
-      this.log('VR is supported, getting vr displays');
+      this.log('is supported, getting vr displays');
       window.navigator.getVRDisplays().then((displays) => {
         if (displays.length > 0) {
-          this.log('VR Displays found', displays);
+          this.log('Displays found', displays);
           this.vrDisplay = displays[0];
 
           // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
@@ -535,14 +550,17 @@ class VR extends Plugin {
 
     if (this.controls3d) {
       this.controls3d.dispose();
+      this.controls3d = null;
     }
 
     if (this.canvasPlayerControls) {
       this.canvasPlayerControls.dispose();
+      this.canvasPlayerControls = null;
     }
 
     if (this.effect) {
       this.effect.dispose();
+      this.effect = null;
     }
 
     window.removeEventListener('resize', this.handleResize_, true);
@@ -574,10 +592,6 @@ class VR extends Plugin {
 
     // set the current projection to the default
     this.currentProjection_ = this.defaultProjection_;
-
-    if (this.observer_) {
-      this.observer_.disconnect();
-    }
 
     // reset the ios touch to click workaround
     if (this.iosRevertTouchToClick_) {
