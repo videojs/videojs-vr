@@ -126,7 +126,7 @@
     "sinon": "^6.1.4",
     "uglify-es": "^3.3.9",
     "videojs-languages": "^1.0.0",
-    "videojs-standard": "^6.0.3"
+    "videojs-standard": "^7.0.0"
   },
   "browserslist": [
     "defaults",
