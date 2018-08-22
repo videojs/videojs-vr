@@ -29,3 +29,5 @@ node_modules/
 dist/
 docs/api/
 test/dist/
+.eslintcache
+.yo-rc.json
