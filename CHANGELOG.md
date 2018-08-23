@@ -1,3 +1,10 @@
+<a name="1.4.7"></a>
+## [1.4.7](https://github.com/videojs/videojs-vr/compare/v1.4.6...v1.4.7) (2018-08-23)
+
+### Chores
+
+* generator v7 ([#125](https://github.com/videojs/videojs-vr/issues/125)) ([66d6544](https://github.com/videojs/videojs-vr/commit/66d6544))
+
 <a name="1.4.6"></a>
 ## [1.4.6](https://github.com/videojs/videojs-vr/compare/v1.4.5...v1.4.6) (2018-08-08)
 
