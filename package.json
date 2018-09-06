@@ -102,7 +102,7 @@
     "sinon": "^6.1.5",
     "videojs-generate-karma-config": "~3.0.0",
     "videojs-generate-postcss-config": "~2.0.1",
-    "videojs-generate-rollup-config": "~2.1.0",
+    "videojs-generate-rollup-config": "~2.2.0",
     "videojs-languages": "^1.0.0",
     "videojs-standard": "^7.0.1"
   },
