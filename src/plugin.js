@@ -508,11 +508,17 @@ class VR extends Plugin {
 
         if (!this.controls3d) {
           this.log('no HMD found Using Orbit & Orientation Controls');
-          this.controls3d = new OrbitOrientationContols({
+          const options = {
             camera: this.camera,
             canvas: this.renderedCanvas,
             orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
-          });
+          };
+
+          if (this.options_.motionControls === false) {
+            options.orientation = false;
+          }
+
+          this.controls3d = new OrbitOrientationContols(options);
           this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas);
         }
 
