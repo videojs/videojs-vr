@@ -30,6 +30,7 @@ Maintenance Status: Stable
 - [Accessing THREE.js objects](#accessing-threejs-objects)
 - [Options](#options)
   - [`forceCardboard`](#forcecardboard)
+  - [`motionControls`](#motioncontrols)
   - [`projection`](#projection)
     - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
     - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
@@ -183,6 +184,11 @@ player.vr().rendeer;
 > Type: `boolean`, default: `false`
 
 Force the cardboard button to display on all devices even if we don't think they support it.
+
+### `motionControls`
+> Type: `boolean`, default: `true on ios and andriod`
+
+Whether motion/gyro controls should be enabled.
 
 ### `projection`
 
