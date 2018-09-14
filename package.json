@@ -28,7 +28,7 @@
   "main": "dist/videojs-vr.cjs.js",
   "module": "dist/videojs-vr.es.js",
   "generator-videojs-plugin": {
-    "version": "7.2.4"
+    "version": "7.3.1"
   },
   "scripts": {
     "prebuild": "npm run clean",
@@ -53,7 +53,8 @@
     "watch": "npm-run-all -p watch:*",
     "watch:css": "npm run build:css -- -w",
     "watch:js": "npm run build:js -- -w",
-    "prepublish": "not-in-install && npm run build && pkg-ok || in-install"
+    "prepublish": "not-in-publish || npm-run-all build verify",
+    "verify": "vjsverify"
   },
   "keywords": [
     "videojs",
@@ -104,7 +105,8 @@
     "videojs-generate-postcss-config": "~2.0.1",
     "videojs-generate-rollup-config": "~2.2.0",
     "videojs-languages": "^1.0.0",
-    "videojs-standard": "^7.0.1"
+    "videojs-standard": "~7.1.0",
+    "videojs-generator-verify": "~1.0.3"
   },
   "browserslist": [
     "defaults",
