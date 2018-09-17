@@ -75,6 +75,11 @@
     "src/",
     "test/"
   ],
+  "greenkeeper": {
+    "ignore": [
+      "three"
+    ]
+  },
   "dependencies": {
     "global": "^4.3.2",
     "three": "0.93.0",
