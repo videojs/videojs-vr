@@ -1,3 +1,19 @@
+<a name="1.5.0"></a>
+# [1.5.0](https://github.com/videojs/videojs-vr/compare/v1.4.7...v1.5.0) (2018-09-17)
+
+### Features
+
+* motion controls option ([#137](https://github.com/videojs/videojs-vr/issues/137)) ([8024a79](https://github.com/videojs/videojs-vr/commit/8024a79))
+
+### Bug Fixes
+
+* Remove the postinstall script to prevent install issues ([#134](https://github.com/videojs/videojs-vr/issues/134)) ([d6d9ac0](https://github.com/videojs/videojs-vr/commit/d6d9ac0))
+
+### Chores
+
+* update to generator-videojs-plugin[@7](https://github.com/7).2.0 ([634be2b](https://github.com/videojs/videojs-vr/commit/634be2b))
+* **package:** update videojs-generate-rollup-config to version 2.2.0 🚀 ([#135](https://github.com/videojs/videojs-vr/issues/135)) ([d42d1f2](https://github.com/videojs/videojs-vr/commit/d42d1f2))
+
 <a name="1.4.7"></a>
 ## [1.4.7](https://github.com/videojs/videojs-vr/compare/v1.4.6...v1.4.7) (2018-08-23)
 
