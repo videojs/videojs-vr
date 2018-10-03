@@ -171,7 +171,7 @@ player.vr().cameraVector;
 ## Accessing THREE.js objects
 The Three.js Scene, renderer, and perspective camera are exposed under the `threeJs` object as the properties `scene`, `renderer`, and `camera` on the `vr` plugin namespace.
 
-```
+```js
 var player = videojs('my-video');
 
 player.vr().camera;
