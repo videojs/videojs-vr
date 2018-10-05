@@ -109,7 +109,7 @@
     "videojs-generate-rollup-config": "~2.2.0",
     "videojs-languages": "^1.0.0",
     "videojs-standard": "~7.1.0",
-    "videojs-generator-verify": "~1.0.3"
+    "videojs-generator-verify": "~1.1.0"
   },
   "browserslist": [
     "defaults",
