@@ -84,7 +84,7 @@
     "global": "^4.3.2",
     "three": "0.93.0",
     "video.js": "^6 || ^7",
-    "webvr-polyfill": "0.10.6"
+    "webvr-polyfill": "0.10.8"
   },
   "devDependencies": {
     "conventional-changelog-cli": "^2.0.1",
