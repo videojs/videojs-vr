@@ -48,7 +48,7 @@ Maintenance Status: Stable
 ## Installation
 
 ```sh
-npm install --save videojs-vr
+npm i videojs-vr
 ```
 
 ## Browser Support
@@ -81,7 +81,7 @@ This is the simplest case. Get the script in whatever way you prefer and include
 <script src="//path/to/video.min.js"></script>
 <script src="//path/to/videojs-vr.min.js"></script>
 <script>
-  var player = videojs('my-video');
+  const player = videojs('my-video');
 
   player.vr();
 </script>
@@ -92,14 +92,14 @@ This is the simplest case. Get the script in whatever way you prefer and include
 When using with Browserify, install videojs-vr via npm and `require` the plugin as you would any other module.
 
 ```js
-var videojs = require('video.js');
+const videojs = require('video.js');
 
 // The actual plugin function is exported by this module, but it is also
 // attached to the `Player.prototype`; so, there is no need to assign it
 // to a variable.
 require('videojs-vr');
 
-var player = videojs('my-video');
+const player = videojs('my-video');
 
 player.vr({projection: '360'});
 ```
@@ -109,8 +109,8 @@ player.vr({projection: '360'});
 When using with RequireJS (or another AMD library), get the script in whatever way you prefer and `require` the plugin as you normally would:
 
 ```js
-require(['video.js', 'videojs-vr'], function(videojs) {
-  var player = videojs('my-video');
+require(['video.js', 'videojs-vr'], videojs => {
+  const player = videojs('my-video');
 
   player.vr({projection: '360'});
 });
@@ -124,7 +124,7 @@ If you are only going to be playing 360 videos you can set the global plugin pro
 
 ```js
 
-var player = videojs('my-video');
+const player = videojs('my-video');
 
 player.vr({projection: '360'});
 
@@ -137,7 +137,7 @@ player.vr({projection: '360'});
 Set `player.mediainfo` and `player.mediainfo.projection` to a valid projection value and pass in 'AUTO' or nothing for the `projection` key when initializing this plugin.
 EX:
 ```js
-var player = videojs('my-video');
+const player = videojs('my-video');
 
 if (!player.mediainfo) {
   player.mediainfo = {};
@@ -163,7 +163,7 @@ GearVR playback requires the latest Samsung Internet for Gear VR with WebVR supp
 The Three.js rotation values are exposed under the property `cameraVector` on the `vr` plugin namespace.
 
 ```js
-var player = videojs('my-video');
+const player = videojs('my-video');
 
 player.vr().cameraVector;
 ```
@@ -172,7 +172,7 @@ player.vr().cameraVector;
 The Three.js Scene, renderer, and perspective camera are exposed under the `threeJs` object as the properties `scene`, `renderer`, and `camera` on the `vr` plugin namespace.
 
 ```js
-var player = videojs('my-video');
+const player = videojs('my-video');
 
 player.vr().camera;
 player.vr().scene;
