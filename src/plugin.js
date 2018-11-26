@@ -537,6 +537,7 @@ class VR extends Plugin {
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
     this.initialized_ = true;
+    this.trigger('initialized');
   }
 
   addCardboardButton_() {
