@@ -55,6 +55,13 @@ class OrbitOrientationControls {
     if (options.orientation) {
       this.orientation = new DeviceOrientationControls(this.object);
     }
+
+    // if projection is not full view
+    // limit the rotation angle in order to not display back half view
+    if (options.halfView) {
+      this.orbit.minAzimuthAngle = -Math.PI / 4;
+      this.orbit.maxAzimuthAngle = Math.PI / 4;
+    }
   }
 
   update() {
