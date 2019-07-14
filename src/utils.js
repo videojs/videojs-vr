@@ -32,6 +32,8 @@ export const validProjections = [
   '360_LR',
   '360_TB',
   '360_CUBE',
+  'EAC',
+  'EAC_LR',
   'NONE',
   'AUTO',
   'Sphere',

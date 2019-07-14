@@ -38,6 +38,8 @@ Maintenance Status: Stable
     - [`'AUTO'`](#auto)
     - [`'360_LR'`](#360_lr)
     - [`'360_TB'`](#360_tb)
+    - [`'EAC'`](#eac)
+    - [`'EAC_LR'`](#eac_lr)
   - [`player.mediainfo.projection`](#playermediainfoprojection)
   - [`debug`](#debug)
 - [Credits](#credits)
@@ -212,6 +214,12 @@ Used for side-by-side 360 videos
 
 #### `'360_TB'`
 Used for top-to-bottom 360 videos
+
+#### `'EAC'`
+Used for Equi-Angular Cubemap videos
+
+#### `'EAC_LR'`
+Used for side-by-side Equi-Angular Cubemap videos
 
 ### `player.mediainfo.projection`
 
