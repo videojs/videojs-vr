@@ -40,6 +40,8 @@ Maintenance Status: Stable
     - [`'360_TB'`](#360_tb)
   - [`player.mediainfo.projection`](#playermediainfoprojection)
   - [`debug`](#debug)
+  - [`enableOmnitone`](#enableomnitone)
+  - [`omnitone`](#omnitone)
 - [Credits](#credits)
 - [Support](#support)
 
@@ -227,6 +229,19 @@ See [`projection`](#projection) above for information of values. Note that `AUTO
 
 Enable debug logging for this plugin
 
+### `enableOmnitone`
+
+> type: `boolean`, default: `false`
+
+Enable Omnitone library for Spatial audio rendering
+
+### `omnitone`
+
+> type: `object`, default: `{}`
+
+Default options for omnitone library. Please check available options on https://github.com/GoogleChrome/omnitone
+
+
 ## Credits ##
 
 This project is a conglomeration of a few amazing open source libraries.
@@ -234,6 +249,7 @@ This project is a conglomeration of a few amazing open source libraries.
 * [VideoJS](http://www.videojs.com)
 * [Three.js](http://threejs.org)
 * [webvr-polyfill](https://github.com/borismus/webvr-polyfill)
+* [Omnitone] (https://googlechrome.github.io/omnitone)
 
 ## Support ##
 This work is sponsored by [Brightcove](https://www.brightcove.com), [HapYak](http://corp.hapyak.com/) and [StreamShark](https://streamshark.io)

@@ -9,6 +9,7 @@ import VREffect from 'three/examples/js/effects/VREffect.js';
 import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
+import OmnitoneController from './omnitone-controller';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
@@ -16,9 +17,11 @@ import './big-vr-play-button';
 
 // Default options for the plugin.
 const defaults = {
-  projection: 'AUTO',
+  debug: false,
+  enableOmnitone: false,
   forceCardboard: false,
-  debug: false
+  omnitone: {},
+  projection: 'AUTO'
 };
 
 const errors = {
@@ -36,6 +39,11 @@ const errors = {
     headline: '360 HLS video not supported on this device',
     type: '360_NOT_SUPPORTED',
     message: "Your browser/device does not support HLS 360 video. See <a href='http://webvr.info'>http://webvr.info</a> for assistance."
+  },
+  'web-vr-omnitone-init-error': {
+    headline: 'Omnitone initilization error',
+    type: 'OMNITONE_INIT_ERROR',
+    message: 'Omnitone initialization error. Open browser console to check the details.'
   }
 };
 
@@ -355,6 +363,9 @@ class VR extends Plugin {
     }
 
     this.controls3d.update();
+    if (this.omniController) {
+      this.omniController.update(this.camera);
+    }
     this.effect.render(this.scene, this.camera);
 
     if (window.navigator.getGamepads) {
@@ -533,6 +544,14 @@ class VR extends Plugin {
       this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
     }
 
+    if (this.options_.enableOmnitone) {
+      this.omniController = new OmnitoneController(THREE.AudioContext.getContext(), this.getVideoEl_(), this.options_.omnitone);
+      this.omniController.on('omnitone-error', (event) => {
+        videojs.log.error('videojs-vr: omnitone init error: ' + event.error);
+        this.triggerError_({code: 'web-vr-omnitone-init-error', dismiss: false});
+      });
+    }
+
     this.on(this.player_, 'fullscreenchange', this.handleResize_);
     window.addEventListener('vrdisplaypresentchange', this.handleResize_, true);
     window.addEventListener('resize', this.handleResize_, true);
@@ -555,6 +574,12 @@ class VR extends Plugin {
   reset() {
     if (!this.initialized_) {
       return;
+    }
+
+    if (this.omniController) {
+      this.omniController.off('omnitone-error');
+      this.omniController.dispose();
+      this.omniController = undefined;
     }
 
     if (this.controls3d) {
