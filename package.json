@@ -82,6 +82,7 @@
   },
   "dependencies": {
     "global": "^4.3.2",
+    "omnitone": "^1.3.0",
     "three": "0.93.0",
     "video.js": "^6 || ^7",
     "webvr-polyfill": "0.10.6"
