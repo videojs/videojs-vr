@@ -27,6 +27,9 @@ class OmnitoneController extends videojs.EventTarget {
     this.foaRenderer = Omnitone.createFOARenderer(audioContext, settings);
 
     this.foaRenderer.initialize().then(() => {
+      if (audioContext.state === 'suspended') {
+        this.trigger({type: 'audiocontext-suspended'});
+      }
       this.videoElementSource.connect(this.foaRenderer.input);
       this.foaRenderer.output.connect(audioContext.destination);
       this.initialized = true;

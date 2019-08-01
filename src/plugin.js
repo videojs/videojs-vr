@@ -545,9 +545,17 @@ class VR extends Plugin {
     }
 
     if (this.options_.enableOmnitone) {
-      this.omniController = new OmnitoneController(THREE.AudioContext.getContext(), this.getVideoEl_(), this.options_.omnitone);
+      const audiocontext = THREE.AudioContext.getContext();
+
+      this.omniController = new OmnitoneController(audiocontext, this.getVideoEl_(), this.options_.omnitone);
+      this.omniController.one('audiocontext-suspended', () => {
+        this.player.pause();
+        this.player.one('playing', () => {
+          audiocontext.resume();
+        });
+      });
       this.omniController.on('omnitone-error', (event) => {
-        videojs.log.error('videojs-vr: omnitone init error: ' + event.error);
+        videojs.log.error('videojs-vr: ' + event.error);
         this.triggerError_({code: 'web-vr-omnitone-init-error', dismiss: false});
       });
     }
@@ -578,6 +586,7 @@ class VR extends Plugin {
 
     if (this.omniController) {
       this.omniController.off('omnitone-error');
+      this.omniController.off('audiocontext-suspended');
       this.omniController.dispose();
       this.omniController = undefined;
     }
