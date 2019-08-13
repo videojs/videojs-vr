@@ -1,7 +1,6 @@
 import document from 'global/document';
 
 import QUnit from 'qunit';
-import sinon from 'sinon';
 import videojs from 'video.js';
 
 import plugin from '../src/plugin';
@@ -17,23 +16,27 @@ QUnit.test('the environment is sane', function(assert) {
 
 QUnit.module('videojs-vr', {
 
-  beforeEach() {
-
-    // Mock the environment's timers because certain things - particularly
-    // player readiness - are asynchronous in video.js 5. This MUST come
-    // before any player is created; otherwise, timers could get created
-    // with the actual timer methods!
-    this.clock = sinon.useFakeTimers();
+  beforeEach(assert) {
+    assert.timeout(50000);
 
     this.fixture = document.getElementById('qunit-fixture');
-    this.video = document.createElement('video');
+    this.video = document.createElement('video-js');
+
+    this.video.defaultPlaybackRate = 16;
+    // this.fixture.style.position = 'inherit';
+
+    this.video.setAttribute('controls', '');
+    this.video.setAttribute('muted', '');
+    this.video.width = 600;
+    this.video.height = 300;
+    this.video.defaultPlaybackRate = 16;
+
     this.fixture.appendChild(this.video);
     this.player = videojs(this.video);
   },
 
   afterEach() {
     this.player.dispose();
-    this.clock.restore();
   }
 });
 
@@ -48,7 +51,21 @@ QUnit.test('registers itself with video.js', function(assert) {
 
   this.player.vr();
 
-  // Tick the clock forward enough to trigger the player to be "ready".
-  this.clock.tick(1);
+});
 
+QUnit.test('playback', function(assert) {
+  const done = assert.async();
+
+  this.player.src({src: '/samples/eagle-360.mp4', type: 'video/mp4'});
+  this.player.mediainfo = {projection: '360'};
+
+  // AUTO is the default and looks at mediainfo
+  this.vr = this.player.vr({projection: 'AUTO', debug: true});
+
+  this.player.play();
+
+  this.player.on('ended', () => {
+    assert.ok(true, 'played back video');
+    done();
+  });
 });

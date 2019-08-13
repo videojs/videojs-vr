@@ -505,7 +505,7 @@ void main() {
       return this.vrDisplay.requestAnimationFrame(fn);
     }
 
-    return Component.prototype.requestAnimationFrame.call(this, fn);
+    return this.player_.requestAnimationFrame(fn);
   }
 
   cancelAnimationFrame(id) {
@@ -513,7 +513,7 @@ void main() {
       return this.vrDisplay.cancelAnimationFrame(id);
     }
 
-    return Component.prototype.cancelAnimationFrame.call(this, id);
+    return this.player_.cancelAnimationFrame(id);
   }
 
   togglePlay_() {
