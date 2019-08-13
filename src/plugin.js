@@ -222,6 +222,50 @@ class VR extends Plugin {
       this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
+    } else if (projection === '180') {
+      let geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+
+      // Left eye view
+      geometry.scale(-1, 1, 1);
+      let uvs = geometry.faceVertexUvs[0];
+
+      for (let i = 0; i < uvs.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          uvs[i][j].x *= 0.5;
+        }
+      }
+
+      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      this.movieMaterial = new THREE.MeshBasicMaterial({
+        map: this.videoTexture,
+        overdraw: true
+      });
+      this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
+      // display in left eye only
+      this.movieScreen.layers.set(1);
+      this.scene.add(this.movieScreen);
+
+      // Right eye view
+      geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+      geometry.scale(-1, 1, 1);
+      uvs = geometry.faceVertexUvs[0];
+
+      for (let i = 0; i < uvs.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          uvs[i][j].x *= 0.5;
+          uvs[i][j].x += 0.5;
+        }
+      }
+
+      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      this.movieMaterial = new THREE.MeshBasicMaterial({
+        map: this.videoTexture,
+        overdraw: true
+      });
+      this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
+      // display in right eye only
+      this.movieScreen.layers.set(2);
+      this.scene.add(this.movieScreen);
     }
 
     this.currentProjection_ = projection;
@@ -410,7 +454,7 @@ class VR extends Plugin {
     // Store vector representing the direction in which the camera is looking, in world space.
     this.cameraVector = new THREE.Vector3();
 
-    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB') {
+    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180') {
       // Render left eye when not in VR mode
       this.camera.layers.enable(1);
     }
@@ -511,6 +555,8 @@ class VR extends Plugin {
           const options = {
             camera: this.camera,
             canvas: this.renderedCanvas,
+            // check if its a half sphere view projection
+            halfView: this.currentProjection_ === '180',
             orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
           };
 

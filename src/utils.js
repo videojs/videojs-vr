@@ -36,7 +36,8 @@ export const validProjections = [
   'AUTO',
   'Sphere',
   'Cube',
-  'equirectangular'
+  'equirectangular',
+  '180'
 ];
 
 export const getInternalProjectionName = function(projection) {
