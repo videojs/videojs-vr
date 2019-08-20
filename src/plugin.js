@@ -495,10 +495,11 @@ class VR extends Plugin {
     this.renderedCanvas = this.renderer.domElement;
     this.renderedCanvas.setAttribute('style', 'width: 100%; height: 100%; position: absolute; top:0;');
 
-    const videoEl = this.getVideoEl_();
+    const videoElStyle = this.getVideoEl_().style;
 
-    this.player_.el().insertBefore(this.renderedCanvas, videoEl.nextSibling);
-    videoEl.style.opacity = '0';
+    this.player_.el().insertBefore(this.renderedCanvas, this.player_.el().firstChild);
+    videoElStyle.zIndex = '-1';
+    videoElStyle.opacity = '0';
 
     if (window.navigator.getVRDisplays) {
       this.log('is supported, getting vr displays');
@@ -631,7 +632,10 @@ class VR extends Plugin {
     }
 
     // reset the video element style so that it will be displayed
-    this.getVideoEl_().style.opacity = '';
+    const videoElStyle = this.getVideoEl_().style;
+
+    videoElStyle.zIndex = '';
+    videoElStyle.opacity = '';
 
     // set the current projection to the default
     this.currentProjection_ = this.defaultProjection_;
