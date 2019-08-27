@@ -7,9 +7,9 @@
    <link href="../dist/videojs-vr.css" rel="stylesheet">
 </head>
 <body>
-  <p>EAC video</p>
-  <video width="640" height="300" id="videojs-vr-player-eac" class="video-js vjs-default-skin" controls playsinline>
-    <source src="../samples/lcs15_eac.webm" type="video/webm">
+  <p>TB Equirectangular video</p>
+  <video width="640" height="300" id="videojs-vr-player-rect2" class="video-js vjs-default-skin" controls playsinline>
+    <source src="../samples/coriolis_rect.webm" type="video/webm">
   </video>
   <p>Credits: Animations for Physics and Astronomy, CC-BY-3.0</p>
 
@@ -20,7 +20,7 @@
   <script src="../dist/videojs-vr.js"></script>
   <script>
     (function(window, videojs) {
-      window.vr_eac = videojs('videojs-vr-player-eac').vr({projection: 'EAC', debug: true, forceCardboard: false});
+      window.vr_rect2 = videojs('videojs-vr-player-rect2').vr({projection: '360_TB', debug: true, forceCardboard: false});
     }(window, window.videojs));
   </script>
 </body>

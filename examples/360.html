@@ -7,12 +7,9 @@
    <link href="../dist/videojs-vr.css" rel="stylesheet">
 </head>
 <body>
-  <p>EAC video</p>
-  <video width="640" height="300" id="videojs-vr-player-eac" class="video-js vjs-default-skin" controls playsinline>
-    <source src="../samples/lcs15_eac.webm" type="video/webm">
+  <video width="640" height="300" id="videojs-vr-player" class="video-js vjs-default-skin" controls playsinline>
+    <source src="../samples/eagle-360.mp4" type="video/mp4">
   </video>
-  <p>Credits: Animations for Physics and Astronomy, CC-BY-3.0</p>
-
   <ul>
     <li><a href="../">return to main example</a></li>
   </ul>
@@ -20,7 +17,12 @@
   <script src="../dist/videojs-vr.js"></script>
   <script>
     (function(window, videojs) {
-      window.vr_eac = videojs('videojs-vr-player-eac').vr({projection: 'EAC', debug: true, forceCardboard: false});
+      var player = window.player = videojs('videojs-vr-player');
+      player.mediainfo = player.mediainfo || {};
+      player.mediainfo.projection = '360';
+
+      // AUTO is the default and looks at mediainfo
+      var vr = window.vr = player.vr({projection: 'AUTO', debug: true, forceCardboard: false});
     }(window, window.videojs));
   </script>
 </body>
