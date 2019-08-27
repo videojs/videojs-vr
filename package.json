@@ -31,6 +31,7 @@
     "version": "7.7.3"
   },
   "scripts": {
+    "netlify": "npm run build && node scripts/netlify.js",
     "build-test": "npm-run-all -s clean \"build:js -- --environment TEST_BUNDLE_ONLY\"",
     "build-prod": "npm-run-all -s clean \"build:js -- --environment NO_TEST_BUNDLE\"",
     "build": "npm-run-all -s clean -p build:*",
@@ -107,7 +108,7 @@
       "git add"
     ],
     "README.md": [
-      "npm run docs:toc",
+      "doctoc --notitle",
       "git add"
     ]
   },

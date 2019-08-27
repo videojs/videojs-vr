@@ -1,8 +1,11 @@
 # VR
 
+https://videojs-vr.netlify.com
+
 [![Build Status](https://travis-ci.org/videojs/videojs-vr.svg?branch=master)](https://travis-ci.org/videojs/videojs-vr)
 [![Greenkeeper badge](https://badges.greenkeeper.io/videojs/videojs-vr.svg)](https://greenkeeper.io/)
 [![Slack Status](http://slack.videojs.com/badge.svg)](http://slack.videojs.com)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/72fb5012-1a07-433d-a286-2f4bf152c410/deploy-status)](https://app.netlify.com/sites/videojs-vr/deploys)
 
 [![NPM](https://nodei.co/npm/videojs-vr.png?downloads=true&downloadRank=true)](https://nodei.co/npm/videojs-vr/)
 
@@ -19,6 +22,7 @@ Maintenance Status: Stable
 - [Installation](#installation)
 - [Browser Support](#browser-support)
 - [Projection support](#projection-support)
+- [Usage](#usage)
   - [`<script>` Tag](#script-tag)
   - [Browserify/CommonJS](#browserifycommonjs)
   - [RequireJS/AMD](#requirejsamd)

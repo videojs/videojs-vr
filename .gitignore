@@ -31,3 +31,4 @@ docs/api/
 test/dist/
 .eslintcache
 .yo-rc.json
+deploy/
