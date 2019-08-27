@@ -278,8 +278,7 @@ class VR extends Plugin {
             mapMatrix: {value: mapMatrix},
             contCorrect: {value: contCorrect},
             faceWH: {value: new THREE.Vector2(1 / 3, 1 / 2).applyMatrix3(scaleMatrix)},
-            vidWH: {value: new THREE.Vector2(
-              this.videoTexture.image.videoWidth, this.videoTexture.image.videoHeight).applyMatrix3(scaleMatrix)}
+            vidWH: {value: new THREE.Vector2(this.videoTexture.image.videoWidth, this.videoTexture.image.videoHeight).applyMatrix3(scaleMatrix)}
           },
           vertexShader: `
 varying vec2 vUv;
@@ -380,24 +379,20 @@ void main() {
           0, 0, 1
         );
 
-        makeScreen(
-          new THREE.Matrix3().set(
-            0, -0.5, 0.5,
-            1, 0, 0,
-            0, 0, 1
-          ), scaleMatrix
-        );
+        makeScreen(new THREE.Matrix3().set(
+          0, -0.5, 0.5,
+          1, 0, 0,
+          0, 0, 1
+        ), scaleMatrix);
         // display in left eye only
         this.movieScreen.layers.set(1);
         this.scene.add(this.movieScreen);
 
-        makeScreen(
-          new THREE.Matrix3().set(
-            0, -0.5, 1,
-            1, 0, 0,
-            0, 0, 1
-          ), scaleMatrix
-        );
+        makeScreen(new THREE.Matrix3().set(
+          0, -0.5, 1,
+          1, 0, 0,
+          0, 0, 1
+        ), scaleMatrix);
         // display in right eye only
         this.movieScreen.layers.set(2);
         this.scene.add(this.movieScreen);
