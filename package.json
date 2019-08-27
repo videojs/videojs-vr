@@ -35,6 +35,8 @@
     "build-prod": "npm-run-all -s clean \"build:js -- --environment NO_TEST_BUNDLE\"",
     "build": "npm-run-all -s clean -p build:*",
     "build:js": "rollup -c scripts/rollup.config.js",
+    "build:css": "node-sass src/plugin.scss dist/videojs-vr.css --output-style=compressed --linefeed=lf",
+    "build:lang": "vjslang --dir dist/lang",
     "clean": "shx rm -rf ./dist ./test/dist && shx mkdir -p ./dist ./test/dist",
     "lint": "vjsstandard",
     "prepublishOnly": "npm-run-all build-prod && vjsverify --verbose",
@@ -46,7 +48,8 @@
     "version": "is-prerelease || npm run update-changelog && git add CHANGELOG.md",
     "update-changelog": "conventional-changelog -p videojs -i CHANGELOG.md -s",
     "watch": "npm-run-all -p watch:*",
-    "watch:js": "npm run build:js -- -w"
+    "watch:js": "npm run build:js -- -w",
+    "watch:css": "npm run build:css -- -w"
   },
   "keywords": [
     "videojs",
