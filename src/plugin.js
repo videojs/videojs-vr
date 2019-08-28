@@ -131,7 +131,6 @@ class VR extends Plugin {
       }
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
-
       this.movieGeometry = new THREE.SphereBufferGeometry(256, 32, 32);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
@@ -142,9 +141,9 @@ class VR extends Plugin {
       this.movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
       this.scene.add(this.movieScreen);
     } else if (projection === '360_LR' || projection === '360_TB') {
+      // Left eye view
       let geometry = new THREE.SphereGeometry(256, 32, 32);
 
-      // Left eye view
       let uvs = geometry.faceVertexUvs[ 0 ];
 
       for (let i = 0; i < uvs.length; i++) {
@@ -157,13 +156,13 @@ class VR extends Plugin {
           }
         }
       }
-      geometry.scale(-1, 1, 1);
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
-      this.movieScreen.rotation.y = -Math.PI / 2;
+      this.movieScreen.scale.x = -1;
+      this.movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
       // display in left eye only
       this.movieScreen.layers.set(1);
       this.scene.add(this.movieScreen);
@@ -183,17 +182,16 @@ class VR extends Plugin {
           }
         }
       }
-      geometry.scale(-1, 1, 1);
 
       this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
-      this.movieScreen.rotation.y = -Math.PI / 2;
+      this.movieScreen.scale.x = -1;
+      this.movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
       // display in right eye only
       this.movieScreen.layers.set(2);
       this.scene.add(this.movieScreen);
-
     } else if (projection === '360_CUBE') {
       this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
@@ -230,6 +228,183 @@ class VR extends Plugin {
       this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
+    } else if (projection === '180') {
+      let geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+
+      // Left eye view
+      geometry.scale(-1, 1, 1);
+      let uvs = geometry.faceVertexUvs[0];
+
+      for (let i = 0; i < uvs.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          uvs[i][j].x *= 0.5;
+        }
+      }
+
+      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      this.movieMaterial = new THREE.MeshBasicMaterial({
+        map: this.videoTexture,
+        overdraw: true
+      });
+      this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
+      // display in left eye only
+      this.movieScreen.layers.set(1);
+      this.scene.add(this.movieScreen);
+
+      // Right eye view
+      geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+      geometry.scale(-1, 1, 1);
+      uvs = geometry.faceVertexUvs[0];
+
+      for (let i = 0; i < uvs.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          uvs[i][j].x *= 0.5;
+          uvs[i][j].x += 0.5;
+        }
+      }
+
+      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
+      this.movieMaterial = new THREE.MeshBasicMaterial({
+        map: this.videoTexture,
+        overdraw: true
+      });
+      this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
+      // display in right eye only
+      this.movieScreen.layers.set(2);
+      this.scene.add(this.movieScreen);
+    } else if (projection === 'EAC' || projection === 'EAC_LR') {
+      const makeScreen = (mapMatrix, scaleMatrix) => {
+        // "Continuity correction?": because of discontinuous faces and aliasing,
+        // we truncate the 2-pixel-wide strips on all discontinuous edges,
+        const contCorrect = 2;
+
+        this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
+        this.movieMaterial = new THREE.ShaderMaterial({
+          overdraw: true, side: THREE.BackSide,
+          uniforms: {
+            mapped: {value: this.videoTexture},
+            mapMatrix: {value: mapMatrix},
+            contCorrect: {value: contCorrect},
+            faceWH: {value: new THREE.Vector2(1 / 3, 1 / 2).applyMatrix3(scaleMatrix)},
+            vidWH: {value: new THREE.Vector2(this.videoTexture.image.videoWidth, this.videoTexture.image.videoHeight).applyMatrix3(scaleMatrix)}
+          },
+          vertexShader: `
+varying vec2 vUv;
+uniform mat3 mapMatrix;
+
+void main() {
+  vUv = (mapMatrix * vec3(uv, 1.)).xy;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+}`,
+          fragmentShader: `
+varying vec2 vUv;
+uniform sampler2D mapped;
+uniform vec2 faceWH;
+uniform vec2 vidWH;
+uniform float contCorrect;
+
+const float PI = 3.1415926535897932384626433832795;
+
+void main() {
+  vec2 corner = vUv - mod(vUv, faceWH) + vec2(0, contCorrect / vidWH.y);
+
+  vec2 faceWHadj = faceWH - vec2(0, contCorrect * 2. / vidWH.y);
+
+  vec2 p = (vUv - corner) / faceWHadj - .5;
+  vec2 q = 2. / PI * atan(2. * p) + .5;
+
+  vec2 eUv = corner + q * faceWHadj;
+
+  gl_FragColor = texture2D(mapped, eUv);
+}`
+        });
+
+        const right = [new THREE.Vector2(0, 1 / 2), new THREE.Vector2(1 / 3, 1 / 2), new THREE.Vector2(1 / 3, 1), new THREE.Vector2(0, 1)];
+        const front = [new THREE.Vector2(1 / 3, 1 / 2), new THREE.Vector2(2 / 3, 1 / 2), new THREE.Vector2(2 / 3, 1), new THREE.Vector2(1 / 3, 1)];
+        const left = [new THREE.Vector2(2 / 3, 1 / 2), new THREE.Vector2(1, 1 / 2), new THREE.Vector2(1, 1), new THREE.Vector2(2 / 3, 1)];
+        const bottom = [new THREE.Vector2(1 / 3, 0), new THREE.Vector2(1 / 3, 1 / 2), new THREE.Vector2(0, 1 / 2), new THREE.Vector2(0, 0)];
+        const back = [new THREE.Vector2(1 / 3, 1 / 2), new THREE.Vector2(1 / 3, 0), new THREE.Vector2(2 / 3, 0), new THREE.Vector2(2 / 3, 1 / 2)];
+        const top = [new THREE.Vector2(1, 0), new THREE.Vector2(1, 1 / 2), new THREE.Vector2(2 / 3, 1 / 2), new THREE.Vector2(2 / 3, 0)];
+
+        for (const face of [right, front, left, bottom, back, top]) {
+          const height = this.videoTexture.image.videoHeight;
+          let lowY = 1;
+          let highY = 0;
+
+          for (const vector of face) {
+            if (vector.y < lowY) {
+              lowY = vector.y;
+            }
+            if (vector.y > highY) {
+              highY = vector.y;
+            }
+          }
+
+          for (const vector of face) {
+            if (Math.abs(vector.y - lowY) < Number.EPSILON) {
+              vector.y += contCorrect / height;
+            }
+            if (Math.abs(vector.y - highY) < Number.EPSILON) {
+              vector.y -= contCorrect / height;
+            }
+
+            vector.x = vector.x / height * (height - contCorrect * 2) + contCorrect / height;
+          }
+        }
+
+        this.movieGeometry.faceVertexUvs[0] = [];
+
+        this.movieGeometry.faceVertexUvs[0][0] = [ right[2], right[1], right[3] ];
+        this.movieGeometry.faceVertexUvs[0][1] = [ right[1], right[0], right[3] ];
+
+        this.movieGeometry.faceVertexUvs[0][2] = [ left[2], left[1], left[3] ];
+        this.movieGeometry.faceVertexUvs[0][3] = [ left[1], left[0], left[3] ];
+
+        this.movieGeometry.faceVertexUvs[0][4] = [ top[2], top[1], top[3] ];
+        this.movieGeometry.faceVertexUvs[0][5] = [ top[1], top[0], top[3] ];
+
+        this.movieGeometry.faceVertexUvs[0][6] = [ bottom[2], bottom[1], bottom[3] ];
+        this.movieGeometry.faceVertexUvs[0][7] = [ bottom[1], bottom[0], bottom[3] ];
+
+        this.movieGeometry.faceVertexUvs[0][8] = [ front[2], front[1], front[3] ];
+        this.movieGeometry.faceVertexUvs[0][9] = [ front[1], front[0], front[3] ];
+
+        this.movieGeometry.faceVertexUvs[0][10] = [ back[2], back[1], back[3] ];
+        this.movieGeometry.faceVertexUvs[0][11] = [ back[1], back[0], back[3] ];
+
+        this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
+        this.movieScreen.position.set(position.x, position.y, position.z);
+        this.movieScreen.rotation.y = -Math.PI;
+        return this.movieScreen;
+      };
+
+      if (projection === 'EAC') {
+        this.scene.add(makeScreen(new THREE.Matrix3(), new THREE.Matrix3()));
+      } else {
+        const scaleMatrix = new THREE.Matrix3().set(
+          0, 0.5, 0,
+          1, 0, 0,
+          0, 0, 1
+        );
+
+        makeScreen(new THREE.Matrix3().set(
+          0, -0.5, 0.5,
+          1, 0, 0,
+          0, 0, 1
+        ), scaleMatrix);
+        // display in left eye only
+        this.movieScreen.layers.set(1);
+        this.scene.add(this.movieScreen);
+
+        makeScreen(new THREE.Matrix3().set(
+          0, -0.5, 1,
+          1, 0, 0,
+          0, 0, 1
+        ), scaleMatrix);
+        // display in right eye only
+        this.movieScreen.layers.set(2);
+        this.scene.add(this.movieScreen);
+      }
     }
 
     this.currentProjection_ = projection;
@@ -333,7 +508,7 @@ class VR extends Plugin {
       return this.vrDisplay.requestAnimationFrame(fn);
     }
 
-    return Component.prototype.requestAnimationFrame.call(this, fn);
+    return this.player_.requestAnimationFrame(fn);
   }
 
   cancelAnimationFrame(id) {
@@ -341,7 +516,7 @@ class VR extends Plugin {
       return this.vrDisplay.cancelAnimationFrame(id);
     }
 
-    return Component.prototype.cancelAnimationFrame.call(this, id);
+    return this.player_.cancelAnimationFrame(id);
   }
 
   togglePlay_() {
@@ -421,7 +596,7 @@ class VR extends Plugin {
     // Store vector representing the direction in which the camera is looking, in world space.
     this.cameraVector = new THREE.Vector3();
 
-    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB') {
+    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180' || this.currentProjection_ === 'EAC_LR') {
       // Render left eye when not in VR mode
       this.camera.layers.enable(1);
     }
@@ -526,6 +701,8 @@ class VR extends Plugin {
           const options = {
             camera: this.camera,
             canvas: this.renderedCanvas,
+            // check if its a half sphere view projection
+            halfView: this.currentProjection_ === '180',
             orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
           };
 
@@ -568,6 +745,7 @@ class VR extends Plugin {
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
     this.initialized_ = true;
+    this.trigger('initialized');
   }
 
   addCardboardButton_() {

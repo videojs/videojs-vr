@@ -1,16 +1,19 @@
-sudo: false
-dist: trusty
 language: node_js
 # node version is specified using the .nvmrc file
+cache: npm
 before_install:
   - npm install -g greenkeeper-lockfile@1
 before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
   - greenkeeper-lockfile-update
 after_script:
   - greenkeeper-lockfile-upload
 addons:
   firefox: latest
   chrome: stable
-
+  apt:
+    update: true
+    # libav-tools is needed by firefox for h.264 support on linux
+    packages:
+      libav-tools
+services:
+  - xvfb
