@@ -1,3 +1,29 @@
+<a name="1.6.0"></a>
+# [1.6.0](https://github.com/videojs/videojs-vr/compare/v1.5.0...v1.6.0) (2019-08-28)
+
+### Features
+
+* Add 180 projection support ([#172](https://github.com/videojs/videojs-vr/issues/172)) ([67fe78b](https://github.com/videojs/videojs-vr/commit/67fe78b))
+* Add an initialization event that triggers after init() is finished ([#158](https://github.com/videojs/videojs-vr/issues/158)) ([3c57c23](https://github.com/videojs/videojs-vr/commit/3c57c23))
+* Add YouTube Equi-Angular Cubemap (EAC) projection ([#179](https://github.com/videojs/videojs-vr/issues/179)) ([804c713](https://github.com/videojs/videojs-vr/commit/804c713)), closes [ytdl-org/youtube-dl#15267](https://github.com/ytdl-org/youtube-dl/issues/15267)
+
+### Bug Fixes
+
+* Prevent switching to lowest resolution HLS resolution, due to non-displayed video ([#177](https://github.com/videojs/videojs-vr/issues/177)) ([7338726](https://github.com/videojs/videojs-vr/commit/7338726))
+
+### Chores
+
+* **package:** update npm-run-all to 4.1.5 ([#160](https://github.com/videojs/videojs-vr/issues/160)) ([b2ee794](https://github.com/videojs/videojs-vr/commit/b2ee794))
+
+### Documentation
+
+* Fix JavaScript highlight in README.md ([#143](https://github.com/videojs/videojs-vr/issues/143)) ([dd73e51](https://github.com/videojs/videojs-vr/commit/dd73e51))
+* update examples and readme ([2440f77](https://github.com/videojs/videojs-vr/commit/2440f77))
+
+### Tests
+
+* Add a test, fix the build, update generator verison ([#184](https://github.com/videojs/videojs-vr/issues/184)) ([17c7ee0](https://github.com/videojs/videojs-vr/commit/17c7ee0))
+
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/videojs/videojs-vr/compare/v1.4.7...v1.5.0) (2018-09-17)
 
