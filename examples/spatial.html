@@ -14,6 +14,7 @@
     <li><a href="../">return to main example</a></li>
   </ul>
   <script src="../node_modules/video.js/dist/video.js"></script>
+  <script src="../node_modules/omnitone/build/omnitone.js"></script>
   <script src="../dist/videojs-vr.js"></script>
   <script>
     (function(window, videojs) {
@@ -22,7 +23,7 @@
       player.mediainfo.projection = '360';
 
       // AUTO is the default and looks at mediainfo
-      var vr = window.vr = player.vr({projection: 'AUTO', debug: true, forceCardboard: false, enableOmnitone: true, omnitone: {}});
+      var vr = window.vr = player.vr({projection: 'AUTO', debug: true, forceCardboard: false, omnitone: true, omnitoneOptions: {}});
     }(window, window.videojs));
   </script>
 </body>

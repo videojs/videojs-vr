@@ -1,4 +1,4 @@
-import Omnitone from '../node_modules/omnitone/build/omnitone.esm';
+import * as Omnitone from 'omnitone';
 import videojs from 'video.js';
 
 /**
