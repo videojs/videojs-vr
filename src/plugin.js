@@ -18,9 +18,9 @@ import './big-vr-play-button';
 // Default options for the plugin.
 const defaults = {
   debug: false,
-  enableOmnitone: false,
+  omnitone: false,
   forceCardboard: false,
-  omnitone: {},
+  omnitoneOptions: {},
   projection: 'AUTO'
 };
 
@@ -722,10 +722,10 @@ void main() {
       this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
     }
 
-    if (this.options_.enableOmnitone) {
+    if (this.options_.omnitone) {
       const audiocontext = THREE.AudioContext.getContext();
 
-      this.omniController = new OmnitoneController(audiocontext, this.getVideoEl_(), this.options_.omnitone);
+      this.omniController = new OmnitoneController(audiocontext, this.getVideoEl_(), this.options_.omnitoneOptions);
       this.omniController.one('audiocontext-suspended', () => {
         this.player.pause();
         this.player.one('playing', () => {
