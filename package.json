@@ -1,6 +1,6 @@
 {
   "name": "videojs-vr",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A plugin to add 360 and VR video support to video.js.",
   "author": {
     "name": "James Broberg",
@@ -32,8 +32,8 @@
   },
   "scripts": {
     "netlify": "npm run build && node scripts/netlify.js",
-    "build-test": "npm-run-all -s clean \"build:js -- --environment TEST_BUNDLE_ONLY\"",
-    "build-prod": "npm-run-all -s clean \"build:js -- --environment NO_TEST_BUNDLE\"",
+    "build-test": "cross-env-shell TEST_BUNDLE_ONLY=1 'npm run build'",
+    "build-prod": "cross-env-shell NO_TEST_BUNDLE=1 'npm run build'",
     "build": "npm-run-all -s clean -p build:*",
     "build:js": "rollup -c scripts/rollup.config.js",
     "build:css": "node-sass src/plugin.scss dist/videojs-vr.css --output-style=compressed --linefeed=lf",

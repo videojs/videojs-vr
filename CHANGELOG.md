@@ -1,3 +1,10 @@
+<a name="1.6.1"></a>
+## [1.6.1](https://github.com/videojs/videojs-vr/compare/v1.6.0...v1.6.1) (2019-09-05)
+
+### Bug Fixes
+
+* build css files before publish ([9a85fc9](https://github.com/videojs/videojs-vr/commit/9a85fc9))
+
 <a name="1.6.0"></a>
 # [1.6.0](https://github.com/videojs/videojs-vr/compare/v1.5.0...v1.6.0) (2019-08-28)
 
