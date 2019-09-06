@@ -35,7 +35,7 @@ class OmnitoneController extends videojs.EventTarget {
       this.initialized = true;
       this.trigger({type: 'omnitone-ready'});
     }, (error) => {
-      this.trigger({type: 'omnitone-error', error});
+      videojs.log.warn(`videojs-vr: Omnitone initializes failed with the following error: ${error})`);
     });
   }
 

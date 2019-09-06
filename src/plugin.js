@@ -39,11 +39,6 @@ const errors = {
     headline: '360 HLS video not supported on this device',
     type: '360_NOT_SUPPORTED',
     message: "Your browser/device does not support HLS 360 video. See <a href='http://webvr.info'>http://webvr.info</a> for assistance."
-  },
-  'web-vr-omnitone-init-error': {
-    headline: 'Omnitone initilization error',
-    type: 'OMNITONE_INIT_ERROR',
-    message: 'Omnitone initialization error. Open browser console to check the details.'
   }
 };
 
@@ -732,10 +727,6 @@ void main() {
           audiocontext.resume();
         });
       });
-      this.omniController.on('omnitone-error', (event) => {
-        videojs.log.error('videojs-vr: ' + event.error);
-        this.triggerError_({code: 'web-vr-omnitone-init-error', dismiss: false});
-      });
     }
 
     this.on(this.player_, 'fullscreenchange', this.handleResize_);
@@ -764,7 +755,6 @@ void main() {
     }
 
     if (this.omniController) {
-      this.omniController.off('omnitone-error');
       this.omniController.off('audiocontext-suspended');
       this.omniController.dispose();
       this.omniController = undefined;
