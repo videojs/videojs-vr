@@ -1,3 +1,10 @@
+<a name="1.7.0"></a>
+# [1.7.0](https://github.com/videojs/videojs-vr/compare/v1.6.1...v1.7.0) (2019-09-09)
+
+### Features
+
+* Add support for Spatial audio rendering via Omnitone ([#181](https://github.com/videojs/videojs-vr/issues/181)) ([2af9aa3](https://github.com/videojs/videojs-vr/commit/2af9aa3))
+
 <a name="1.6.1"></a>
 ## [1.6.1](https://github.com/videojs/videojs-vr/compare/v1.6.0...v1.6.1) (2019-09-05)
 
