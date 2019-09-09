@@ -9,6 +9,7 @@ import VREffect from 'three/examples/js/effects/VREffect.js';
 import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
+import OmnitoneController from './omnitone-controller';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
@@ -16,9 +17,11 @@ import './big-vr-play-button';
 
 // Default options for the plugin.
 const defaults = {
-  projection: 'AUTO',
+  debug: false,
+  omnitone: false,
   forceCardboard: false,
-  debug: false
+  omnitoneOptions: {},
+  projection: 'AUTO'
 };
 
 const errors = {
@@ -530,6 +533,9 @@ void main() {
     }
 
     this.controls3d.update();
+    if (this.omniController) {
+      this.omniController.update(this.camera);
+    }
     this.effect.render(this.scene, this.camera);
 
     if (window.navigator.getGamepads) {
@@ -711,6 +717,21 @@ void main() {
       this.triggerError_({code: 'web-vr-not-supported', dismiss: false});
     }
 
+    if (this.options_.omnitone) {
+      const audiocontext = THREE.AudioContext.getContext();
+
+      this.omniController = new OmnitoneController(
+        audiocontext,
+        this.options_.omnitone, this.getVideoEl_(), this.options_.omnitoneOptions
+      );
+      this.omniController.one('audiocontext-suspended', () => {
+        this.player.pause();
+        this.player.one('playing', () => {
+          audiocontext.resume();
+        });
+      });
+    }
+
     this.on(this.player_, 'fullscreenchange', this.handleResize_);
     window.addEventListener('vrdisplaypresentchange', this.handleResize_, true);
     window.addEventListener('resize', this.handleResize_, true);
@@ -734,6 +755,12 @@ void main() {
   reset() {
     if (!this.initialized_) {
       return;
+    }
+
+    if (this.omniController) {
+      this.omniController.off('audiocontext-suspended');
+      this.omniController.dispose();
+      this.omniController = undefined;
     }
 
     if (this.controls3d) {

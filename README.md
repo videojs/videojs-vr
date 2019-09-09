@@ -47,6 +47,8 @@ Maintenance Status: Stable
     - [`'EAC_LR'`](#eac_lr)
   - [`player.mediainfo.projection`](#playermediainfoprojection)
   - [`debug`](#debug)
+  - [`omnitone`](#omnitone)
+  - [`omnitoneOptions`](#omnitoneoptions)
 - [Credits](#credits)
 - [Support](#support)
 
@@ -243,6 +245,20 @@ See [`projection`](#projection) above for information of values. Note that `AUTO
 
 Enable debug logging for this plugin
 
+### `omnitone`
+
+> type: `Omnitone library object`
+
+Use this property to pass the Omnitone library object to the plugin.
+Please be aware of, the Omnitone library is not included in the build files.
+
+### `omnitoneOptions`
+
+> type: `object`, default: `{}`
+
+Default options for the Omnitone library. Please check available options on https://github.com/GoogleChrome/omnitone
+
+
 ## Credits ##
 
 This project is a conglomeration of a few amazing open source libraries.
@@ -250,6 +266,7 @@ This project is a conglomeration of a few amazing open source libraries.
 * [VideoJS](http://www.videojs.com)
 * [Three.js](http://threejs.org)
 * [webvr-polyfill](https://github.com/borismus/webvr-polyfill)
+* [Omnitone](https://googlechrome.github.io/omnitone)
 
 ## Support ##
 This work is sponsored by [Brightcove](https://www.brightcove.com), [HapYak](http://corp.hapyak.com/) and [StreamShark](https://streamshark.io)
