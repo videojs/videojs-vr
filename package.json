@@ -78,7 +78,6 @@
     ]
   },
   "dependencies": {
-    "omnitone": "^1.3.0",
     "@babel/runtime": "^7.5.5",
     "global": "^4.4.0",
     "three": "0.93.0",
@@ -89,6 +88,7 @@
     "@videojs/generator-helpers": "~1.2.0",
     "jsdoc": "BrandonOCasey/jsdoc#feat/plugin-from-cli",
     "karma": "^4.0.0",
+    "omnitone": "^1.3.0",
     "rollup": "^1.12.0",
     "sinon": "^7.2.2",
     "videojs-generate-karma-config": "~5.3.1",
