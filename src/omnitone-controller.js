@@ -1,4 +1,3 @@
-import * as Omnitone from 'omnitone';
 import videojs from 'video.js';
 
 /**
@@ -10,10 +9,11 @@ class OmnitoneController extends videojs.EventTarget {
    *
    * @class
    * @param {AudioContext} audioContext - associated AudioContext.
+   * @param {Omnitone library} omnitone - Omnitone library element.
    * @param {HTMLVideoElement} video - vidoe tag element.
    * @param {Object} options - omnitone options.
    */
-  constructor(audioContext, video, options) {
+  constructor(audioContext, omnitone, video, options) {
     super();
 
     const settings = videojs.mergeOptions({
@@ -24,7 +24,7 @@ class OmnitoneController extends videojs.EventTarget {
     }, options);
 
     this.videoElementSource = audioContext.createMediaElementSource(video);
-    this.foaRenderer = Omnitone.createFOARenderer(audioContext, settings);
+    this.foaRenderer = omnitone.createFOARenderer(audioContext, settings);
 
     this.foaRenderer.initialize().then(() => {
       if (audioContext.state === 'suspended') {

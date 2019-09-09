@@ -4,13 +4,6 @@ const replace = require('./rollup-replace');
 // see https://github.com/videojs/videojs-generate-rollup-config
 // for options
 const options = {
-  globals(defaults) {
-    Object.keys(defaults).forEach(function(type) {
-      defaults[type].omnitone = 'Omnitone';
-    });
-
-    return defaults;
-  },
   primedPlugins(defaults) {
     return Object.assign(defaults, {replace});
   },

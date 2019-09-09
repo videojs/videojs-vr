@@ -720,7 +720,10 @@ void main() {
     if (this.options_.omnitone) {
       const audiocontext = THREE.AudioContext.getContext();
 
-      this.omniController = new OmnitoneController(audiocontext, this.getVideoEl_(), this.options_.omnitoneOptions);
+      this.omniController = new OmnitoneController(
+        audiocontext,
+        this.options_.omnitone, this.getVideoEl_(), this.options_.omnitoneOptions
+      );
       this.omniController.one('audiocontext-suspended', () => {
         this.player.pause();
         this.player.one('playing', () => {
