@@ -247,9 +247,10 @@ Enable debug logging for this plugin
 
 ### `omnitone`
 
-> type: `boolean`, default: `false`
+> type: `Omnitone library object`
 
-Enable Omnitone library for Spatial audio rendering
+Use this property to pass the Omnitone library object to the plugin.
+Please be aware of, the Omnitone library is not included in the build files.
 
 ### `omnitoneOptions`
 
