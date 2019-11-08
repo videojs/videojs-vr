@@ -75,7 +75,11 @@ class CanvasPlayerControls extends videojs.EventTarget {
     // We want to have the same behavior in VR360 Player and standar player.
     // in touchend we want to know if was a touch click, for a click we show the bar,
     // otherwise continue with the mouse logic.
-    if (e.type === 'touchend' && this.touchMoveCount_ < 7) {
+    //
+    // Maximum movement allowed during a touch event to still be considered a tap
+    // Other popular libs use anywhere from 2 (hammer.js) to 15,
+    // so 10 seems like a nice, round number.
+    if (e.type === 'touchend' && this.touchMoveCount_ < 10) {
 
       if (this.player.userActive() === false) {
         this.player.userActive(true);
