@@ -99,7 +99,7 @@
     "rollup": "^1.12.0",
     "rollup-plugin-re": "^1.0.7",
     "shx": "^0.3.2",
-    "sinon": "^7.2.2",
+    "sinon": "^8.0.0",
     "videojs-generate-karma-config": "~5.3.1",
     "videojs-generate-rollup-config": "~5.0.1",
     "videojs-generator-verify": "~2.0.0",
