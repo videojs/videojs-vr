@@ -1,3 +1,10 @@
+<a name="1.7.2"></a>
+## [1.7.2](https://github.com/videojs/videojs-vr/compare/v1.7.1...v1.7.2) (2020-03-03)
+
+### Bug Fixes
+
+* null check fullscreen toggle to fix ios without it ([#197](https://github.com/videojs/videojs-vr/issues/197)) ([24f2483](https://github.com/videojs/videojs-vr/commit/24f2483))
+
 <a name="1.7.1"></a>
 ## [1.7.1](https://github.com/videojs/videojs-vr/compare/v1.7.0...v1.7.1) (2019-11-18)
 
