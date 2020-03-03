@@ -626,7 +626,7 @@ void main() {
     }
 
     // if ios remove full screen toggle
-    if (videojs.browser.IS_IOS) {
+    if (videojs.browser.IS_IOS && this.player_.controlBar && this.player_.controlBar.fullscreenToggle) {
       this.player_.controlBar.fullscreenToggle.hide();
     }
 
@@ -798,7 +798,7 @@ void main() {
     }
 
     // show the fullscreen again
-    if (videojs.browser.IS_IOS) {
+    if (videojs.browser.IS_IOS && this.player_.controlBar && this.player_.controlBar.fullscreenToggle) {
       this.player_.controlBar.fullscreenToggle.show();
     }
 
