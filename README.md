@@ -185,7 +185,7 @@ var player = videojs('my-video');
 
 player.vr().camera;
 player.vr().scene;
-player.vr().rendeer;
+player.vr().renderer;
 ```
 
 ## Options
