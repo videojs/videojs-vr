@@ -230,10 +230,10 @@ class VR extends Plugin {
       geometry.scale(-1, 1, 1);
       let uvs = geometry.faceVertexUvs[0];
 
-      if (projection != '180_MONO') {
+      if (projection !== '180_MONO') {
         for (let i = 0; i < uvs.length; i++) {
           for (let j = 0; j < 3; j++) {
-            uvs[i][j].x *= multiplierX;
+            uvs[i][j].x *= 0.5;
           }
         }
       }
@@ -593,7 +593,7 @@ void main() {
     // Store vector representing the direction in which the camera is looking, in world space.
     this.cameraVector = new THREE.Vector3();
 
-    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180' || this.currentProjection_ === '180_LR'  || this.currentProjection_ === '180_MONO' || this.currentProjection_ === 'EAC_LR') {
+    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180' || this.currentProjection_ === 'EAC_LR') {
       // Render left eye when not in VR mode
       this.camera.layers.enable(1);
     }
