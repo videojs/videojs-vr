@@ -22,7 +22,8 @@ const defaults = {
   omnitone: false,
   forceCardboard: false,
   omnitoneOptions: {},
-  projection: 'AUTO'
+  projection: 'AUTO',
+  sphereDetail: 32
 };
 
 const errors = {
@@ -127,7 +128,7 @@ class VR extends Plugin {
       }
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
-      this.movieGeometry = new THREE.SphereBufferGeometry(256, 32, 32);
+      this.movieGeometry = new THREE.SphereBufferGeometry(256, this.options_.sphereDetail, this.options_.sphereDetail);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
@@ -138,7 +139,11 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
-      let geometry = new THREE.SphereGeometry(256, 32, 32);
+      let geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail
+      );
 
       let uvs = geometry.faceVertexUvs[ 0 ];
 
@@ -164,7 +169,11 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      geometry = new THREE.SphereGeometry(256, 32, 32);
+      geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail
+      );
 
       uvs = geometry.faceVertexUvs[ 0 ];
 
@@ -225,7 +234,13 @@ class VR extends Plugin {
 
       this.scene.add(this.movieScreen);
     } else if (projection === '180') {
-      let geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+      let geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail,
+        Math.PI,
+        Math.PI
+      );
 
       // Left eye view
       geometry.scale(-1, 1, 1);
@@ -248,7 +263,13 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+      geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail,
+        Math.PI,
+        Math.PI
+      );
       geometry.scale(-1, 1, 1);
       uvs = geometry.faceVertexUvs[0];
 
