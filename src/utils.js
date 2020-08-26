@@ -68,3 +68,20 @@ export const getInternalProjectionName = function(projection) {
   }
 
 };
+
+// double currentWidth/Height for small screen device, for better quality
+// also need a high sphereDetail like 128 (https://github.com/videojs/videojs-vr/pull/225)
+// this is just a workaround
+export const doubleSizeForSmallScreen = function() {
+  let width = this.player_.currentWidth();
+  let height = this.player_.currentHeight();
+
+  if (this.player_.videoWidth() > this.player_.currentWidth() * 2) {
+    width = this.player_.currentWidth() * 2;
+    height = this.player_.currentHeight() * 2;
+  }
+  return {
+    width,
+    height
+  };
+};

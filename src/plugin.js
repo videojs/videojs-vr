@@ -14,6 +14,7 @@ import OmnitoneController from './omnitone-controller';
 // import controls so they get regisetered with videojs
 import './cardboard-button';
 import './big-vr-play-button';
+import {doubleSizeForSmallScreen} from './utils';
 
 // Default options for the plugin.
 const defaults = {
@@ -565,8 +566,9 @@ void main() {
   }
 
   handleResize_() {
-    const width = this.player_.currentWidth();
-    const height = this.player_.currentHeight();
+    const size = doubleSizeForSmallScreen();
+    const width = size.width;
+    const height = size.height;
 
     this.effect.setSize(width, height, false);
     this.camera.aspect = width / height;
@@ -653,10 +655,12 @@ void main() {
       }
     };
 
-    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    const size = doubleSizeForSmallScreen();
+
+    this.renderer.setSize(size.width, size.height, false);
     this.effect = new VREffect(this.renderer);
 
-    this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    this.effect.setSize(size.width, size.height, false);
     this.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
