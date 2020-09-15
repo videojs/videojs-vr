@@ -400,6 +400,79 @@ void main() {
         this.movieScreen.layers.set(2);
         this.scene.add(this.movieScreen);
       }
+    } else if (projection === 'FISHEYE') {
+
+        this.movieGeometry = new SphereGeometry(
+          256,         // radius - sphere´s radius
+          48,          // widthSegments - number of horizontal segments
+          48,          // heightSegments - number of vertical segments
+          0,           // phiStart - specify horizontal starting angle
+          2 * Math.PI, // phiLength - specify horizontal sweep angle size
+          0,           // thetaStart - specify vercial starting angle
+          Math.PI      // thetaLength - specify vertical sweep angle
+        );
+        
+        this.movieMaterial = new MeshBasicMaterial({
+          map: this.videoTexture,
+          overdraw: true,
+          side: BackSide
+        });
+
+        for (var i = 0; i < this.movieGeometry.faceVertexUvs[0].length; i++) {
+           var uvs = this.movieGeometry.faceVertexUvs[0][i];
+           var face = this.movieGeometry.faces[i];
+
+           for (var j = 0; j < 3; j++) {
+               var x = face.vertexNormals[j].x;
+               var y = face.vertexNormals[j].y;
+               var z = face.vertexNormals[j].z;
+
+               // Hemispherical fish-eye:
+               
+               // uvs[j].x = (x + 1) / 2;
+               // uvs[j].y = (z + 1) / 2;
+              
+               // Angular fish-eyes:
+               
+               var k = 0.0;                          // Fish-eye factor
+               // Equidistant:   k = 0
+               // Stereographic: k = 0.5
+               // Orthographic:  k = -1.0
+               // Equisolid:     k = -0.5
+               // Rectilinear:   k = 1.0
+               var theta_spherical = Math.acos(z); // Spherical angle
+               var rho             = 0;            // Radius
+
+               if (k >= -1 && k < 0) {
+                   rho = (1 / k) * Math.sin(k * theta_spherical);
+               }
+               else if (k == 0) {
+                   rho = theta_spherical;
+               }
+               else if (k > 0 && k <= 1) {
+                   rho = (1 / k) * Math.tan(k * theta_spherical);
+               }
+               else{
+                   console.error('Illegal fish-eye factor!')
+               }
+
+               rho = rho / Math.PI;               // Interval correction
+               var theta_polar = Math.atan2(y,x); // Polar angle
+
+               // Convert to Cartesian coordinates
+
+               uvs[j].x = (rho * Math.cos(theta_polar)) + 0.5;
+               uvs[j].y = (rho * Math.sin(theta_polar)) + 0.5;
+            }
+        }
+        
+        // this.movieGeometry.rotateX(-Math.PI / 2); // Floor mount
+        // this.movieGeometry.rotateX(Math.PI / 2);  // Ceiling mount
+        this.movieGeometry.rotateY(Math.PI);   // Wall mount
+        this.movieGeometry.uvsNeedUpdate = true;
+        this.movieScreen = new Mesh(this.movieGeometry, this.movieMaterial);
+        this.scene.add(this.movieScreen);
+        this.scene.background = new Color(0x444444);
     }
 
     this.currentProjection_ = projection;
