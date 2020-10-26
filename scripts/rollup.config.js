@@ -19,7 +19,7 @@ const options = {
 };
 const config = generate(options);
 
-// Add additonal builds/customization here!
+// Add additional builds/customization here!
 
 // export the builds to rollup
 export default Object.values(config.builds);

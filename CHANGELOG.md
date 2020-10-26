@@ -56,7 +56,7 @@
 
 ### Tests
 
-* Add a test, fix the build, update generator verison ([#184](https://github.com/videojs/videojs-vr/issues/184)) ([17c7ee0](https://github.com/videojs/videojs-vr/commit/17c7ee0))
+* Add a test, fix the build, update generator version ([#184](https://github.com/videojs/videojs-vr/issues/184)) ([17c7ee0](https://github.com/videojs/videojs-vr/commit/17c7ee0))
 
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/videojs/videojs-vr/compare/v1.4.7...v1.5.0) (2018-09-17)

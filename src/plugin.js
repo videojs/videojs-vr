@@ -118,7 +118,7 @@ class VR extends Plugin {
     }
     if (projection === 'AUTO') {
       // mediainfo cannot be set to auto or we would infinite loop here
-      // each source should know wether they are 360 or not, if using AUTO
+      // each source should know whatever they are 360 or not, if using AUTO
       if (this.player_.mediainfo && this.player_.mediainfo.projection && this.player_.mediainfo.projection !== 'AUTO') {
         const autoProjection = utils.getInternalProjectionName(this.player_.mediainfo.projection);
 
