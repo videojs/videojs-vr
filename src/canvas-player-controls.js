@@ -10,11 +10,12 @@ import videojs from 'video.js';
  *    show the control bar. Moving around the scene in the canvas should not.
  */
 class CanvasPlayerControls extends videojs.EventTarget {
-  constructor(player, canvas) {
+  constructor(player, canvas, options) {
     super();
 
     this.player = player;
     this.canvas = canvas;
+    this.options = options;
 
     this.onMoveEnd = videojs.bind(this, this.onMoveEnd);
     this.onMoveStart = videojs.bind(this, this.onMoveStart);
@@ -61,7 +62,7 @@ class CanvasPlayerControls extends videojs.EventTarget {
     // if the player does not have a controlbar or
     // the move was a mouse click but not left click do not
     // toggle play.
-    if (!this.player.controls() || (e.type === 'mousedown' && !videojs.dom.isSingleLeftClick(e))) {
+    if (this.options.disableTogglePlay || !this.player.controls() || (e.type === 'mousedown' && !videojs.dom.isSingleLeftClick(e))) {
       this.shouldTogglePlay = false;
       return;
     }
