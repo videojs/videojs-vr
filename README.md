@@ -69,7 +69,7 @@ The most recent versions of:
   * Firefox
   * Safari
 * Mobile
-  * Chrome on Andriod
+  * Chrome on Android
   * Safari on iOS
 
 ## Projection support
