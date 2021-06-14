@@ -18,7 +18,6 @@ Maintenance Status: Stable
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Installation](#installation)
 - [Browser Support](#browser-support)
 - [Projection support](#projection-support)
@@ -60,7 +59,7 @@ Maintenance Status: Stable
 ## Installation
 
 ```sh
-npm install --save videojs-vr
+npm i videojs-vr
 ```
 
 ## Browser Support
@@ -212,7 +211,7 @@ The video is half sphere and the user should not be able to look behind themselv
 
 #### `'180_lr'`
 Used for side-by-side 180 videos
-The video is half sphere and the user should not be able to look behind themselves 
+The video is half sphere and the user should not be able to look behind themselves
 
 #### `'180_mono'`
 Used for monoscopic 180 videos
