@@ -47,6 +47,7 @@ Maintenance Status: Stable
     - [`'360_TB'`](#360_tb)
     - [`'EAC'`](#eac)
     - [`'EAC_LR'`](#eac_lr)
+  - [`sphereDetail`](#spheredetail)
   - [`player.mediainfo.projection`](#playermediainfoprojection)
   - [`debug`](#debug)
   - [`omnitone`](#omnitone)
@@ -240,6 +241,14 @@ Used for Equi-Angular Cubemap videos
 
 #### `'EAC_LR'`
 Used for side-by-side Equi-Angular Cubemap videos
+
+### `sphereDetail`
+
+> type: `number`, default: `32`
+
+This alters the number of segments in the spherical mesh onto which equirectangular
+videos are projected. The default is `32` but in some circumstances you may notice
+artifacts and need to increase this number.
 
 ### `player.mediainfo.projection`
 
