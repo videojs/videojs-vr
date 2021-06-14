@@ -17,11 +17,12 @@ QUnit.test('the environment is sane', function(assert) {
 QUnit.module('videojs-vr', {
 
   beforeEach(assert) {
-    assert.timeout(50000);
+    assert.timeout(80000);
 
     this.fixture = document.getElementById('qunit-fixture');
     this.video = document.createElement('video-js');
 
+    this.video.muted = true;
     this.video.defaultPlaybackRate = 16;
     // this.fixture.style.position = 'inherit';
 
