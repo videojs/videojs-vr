@@ -244,7 +244,7 @@ Used for side-by-side Equi-Angular Cubemap videos
 
 ### `sphereDetail`
 
-> type: `number`
+> type: `number`, default: `32`
 
 This alters the number of segments in the spherical mesh onto which equirectangular
 videos are projected. The default is `32` but in some circumstances you may notice
