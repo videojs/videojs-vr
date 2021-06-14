@@ -37,6 +37,8 @@ Maintenance Status: Stable
   - [`motionControls`](#motioncontrols)
   - [`projection`](#projection)
     - [`'180'`](#180)
+    - [`'180_lr'`](#180_lr)
+    - [`'180_mono'`](#180_mono)
     - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
     - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
     - [`'NONE'`](#none)
@@ -205,6 +207,14 @@ Whether motion/gyro controls should be enabled.
 Can be any of the following:
 
 #### `'180'`
+The video is half sphere and the user should not be able to look behind themselves
+
+#### `'180_lr'`
+Used for side-by-side 180 videos
+The video is half sphere and the user should not be able to look behind themselves 
+
+#### `'180_mono'`
+Used for monoscopic 180 videos
 The video is half sphere and the user should not be able to look behind themselves
 
 #### `'360'`, `'Sphere'`, or `'equirectangular'`
