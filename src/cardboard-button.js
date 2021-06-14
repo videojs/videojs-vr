@@ -92,7 +92,7 @@ class CardboardButton extends Button {
     // otherwise deactivate it
     if (!this.active_) {
       // This starts playback mode when the cardboard button
-      // is clicked on Andriod. We need to do this as the controls
+      // is clicked on Android. We need to do this as the controls
       // disappear
       if (!this.player_.hasStarted() && videojs.browser.IS_ANDROID) {
         this.player_.play();

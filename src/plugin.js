@@ -119,7 +119,7 @@ class VR extends Plugin {
     }
     if (projection === 'AUTO') {
       // mediainfo cannot be set to auto or we would infinite loop here
-      // each source should know wether they are 360 or not, if using AUTO
+      // each source should know whatever they are 360 or not, if using AUTO
       if (this.player_.mediainfo && this.player_.mediainfo.projection && this.player_.mediainfo.projection !== 'AUTO') {
         const autoProjection = utils.getInternalProjectionName(this.player_.mediainfo.projection);
 
@@ -232,8 +232,8 @@ class VR extends Plugin {
       this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
-    } else if (projection === '180') {
-      let geometry = new THREE.SphereGeometry(
+    } else if (projection === '180' || projection === '180_LR' || projection === '180_MONO') {
+       let geometry = new THREE.SphereGeometry(
         256,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
@@ -241,13 +241,16 @@ class VR extends Plugin {
         Math.PI
       );
 
+
       // Left eye view
       geometry.scale(-1, 1, 1);
       let uvs = geometry.faceVertexUvs[0];
 
-      for (let i = 0; i < uvs.length; i++) {
-        for (let j = 0; j < 3; j++) {
-          uvs[i][j].x *= 0.5;
+      if (projection !== '180_MONO') {
+        for (let i = 0; i < uvs.length; i++) {
+          for (let j = 0; j < 3; j++) {
+            uvs[i][j].x *= 0.5;
+          }
         }
       }
 
@@ -612,7 +615,7 @@ void main() {
     // Store vector representing the direction in which the camera is looking, in world space.
     this.cameraVector = new THREE.Vector3();
 
-    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180' || this.currentProjection_ === 'EAC_LR') {
+    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180' || this.currentProjection_ === '180_LR' || this.currentProjection_ === '180_MONO' || this.currentProjection_ === 'EAC_LR') {
       // Render left eye when not in VR mode
       this.camera.layers.enable(1);
     }
@@ -718,7 +721,7 @@ void main() {
             camera: this.camera,
             canvas: this.renderedCanvas,
             // check if its a half sphere view projection
-            halfView: this.currentProjection_ === '180',
+            halfView: this.currentProjection_.indexOf('180') === 0,
             orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
           };
 
