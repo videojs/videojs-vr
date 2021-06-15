@@ -60,7 +60,7 @@ Maintenance Status: Stable
 ## Installation
 
 ```sh
-npm install --save videojs-vr
+npm i videojs-vr
 ```
 
 ## Browser Support
