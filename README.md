@@ -49,6 +49,7 @@ Maintenance Status: Stable
   - [`debug`](#debug)
   - [`omnitone`](#omnitone)
   - [`omnitoneOptions`](#omnitoneoptions)
+  - [`disableTogglePlay`](#disableTogglePlay)
 - [Credits](#credits)
 - [Support](#support)
 
@@ -258,6 +259,12 @@ Please be aware of, the Omnitone library is not included in the build files.
 
 Default options for the Omnitone library. Please check available options on https://github.com/GoogleChrome/omnitone
 
+### `disableTogglePlay`
+
+> type: `boolean`, default: `false`
+
+Feature to disable the togglePlay manually.
+This functionality is useful in live events so that users cannot stop the live, but still have a controlBar available.
 
 ## Credits ##
 
