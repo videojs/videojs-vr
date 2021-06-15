@@ -36,8 +36,8 @@ Maintenance Status: Stable
   - [`motionControls`](#motioncontrols)
   - [`projection`](#projection)
     - [`'180'`](#180)
-    - [`'180_lr'`](#180_lr)
-    - [`'180_mono'`](#180_mono)
+    - [`'180_LR'`](#180_lr)
+    - [`'180_MONO'`](#180_mono)
     - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
     - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
     - [`'NONE'`](#none)
@@ -51,6 +51,7 @@ Maintenance Status: Stable
   - [`debug`](#debug)
   - [`omnitone`](#omnitone)
   - [`omnitoneOptions`](#omnitoneoptions)
+  - [`disableTogglePlay`](#disableTogglePlay)
 - [Credits](#credits)
 - [Support](#support)
 
@@ -209,11 +210,11 @@ Can be any of the following:
 #### `'180'`
 The video is half sphere and the user should not be able to look behind themselves
 
-#### `'180_lr'`
+#### `'180_LR'`
 Used for side-by-side 180 videos
 The video is half sphere and the user should not be able to look behind themselves
 
-#### `'180_mono'`
+#### `'180_MONO'`
 Used for monoscopic 180 videos
 The video is half sphere and the user should not be able to look behind themselves
 
@@ -276,6 +277,12 @@ Please be aware of, the Omnitone library is not included in the build files.
 
 Default options for the Omnitone library. Please check available options on https://github.com/GoogleChrome/omnitone
 
+### `disableTogglePlay`
+
+> type: `boolean`, default: `false`
+
+Feature to disable the togglePlay manually.
+This functionality is useful in live events so that users cannot stop the live, but still have a controlBar available.
 
 ## Credits ##
 
