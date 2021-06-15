@@ -1,3 +1,26 @@
+<a name="1.8.0"></a>
+# [1.8.0](https://github.com/videojs/videojs-vr/compare/v1.7.2...v1.8.0) (2021-06-15)
+
+### Features
+
+* Add an option to prevent clicks from toggling playback ([#239](https://github.com/videojs/videojs-vr/issues/239)) ([7dc2684](https://github.com/videojs/videojs-vr/commit/7dc2684))
+* add option to change the detail level of the projection sphere ([#225](https://github.com/videojs/videojs-vr/issues/225)) ([9293eb4](https://github.com/videojs/videojs-vr/commit/9293eb4))
+
+### Bug Fixes
+
+* include edited three.js examples in module dist files ([#238](https://github.com/videojs/videojs-vr/issues/238)) ([93bec48](https://github.com/videojs/videojs-vr/commit/93bec48))
+* separate 180_LR/180_TB, add 180_MONO, fix cropping in 180 views. ([91b7963](https://github.com/videojs/videojs-vr/commit/91b7963))
+
+### Chores
+
+* fix publish by skipping require verification ([360abb7](https://github.com/videojs/videojs-vr/commit/360abb7))
+* update dependencies, readme, examples, and switch to github actions ci ([#242](https://github.com/videojs/videojs-vr/issues/242)) ([bf97c5b](https://github.com/videojs/videojs-vr/commit/bf97c5b))
+
+### Documentation
+
+* correct some typos ([#232](https://github.com/videojs/videojs-vr/issues/232)) ([643dead](https://github.com/videojs/videojs-vr/commit/643dead))
+* fixed a typo in README ([#207](https://github.com/videojs/videojs-vr/issues/207)) ([153c690](https://github.com/videojs/videojs-vr/commit/153c690))
+
 <a name="1.7.2"></a>
 ## [1.7.2](https://github.com/videojs/videojs-vr/compare/v1.7.1...v1.7.2) (2020-03-03)
 
