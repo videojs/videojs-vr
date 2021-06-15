@@ -22,8 +22,8 @@ const defaults = {
   forceCardboard: false,
   omnitoneOptions: {},
   projection: 'AUTO',
+  sphereDetail: 32,
   disableTogglePlay: false
-  sphereDetail: 32
 };
 
 const errors = {
