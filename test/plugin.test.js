@@ -65,8 +65,13 @@ QUnit.test('playback', function(assert) {
 
   this.player.play();
 
-  this.player.on('ended', () => {
-    assert.ok(true, 'played back video');
-    done();
-  });
+  const onTimeupdate = () => {
+    if (this.player.currentTime() > 0) {
+      this.player.off('timeupdate', onTimeupdate);
+      assert.ok(true, 'played back video');
+      done();
+    }
+  };
+
+  this.player.on('timeupdate', onTimeupdate);
 });
