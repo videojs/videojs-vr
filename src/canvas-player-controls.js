@@ -73,7 +73,7 @@ class CanvasPlayerControls extends videojs.EventTarget {
 
   onMoveEnd(e) {
 
-    // We want to have the same behavior in VR360 Player and standar player.
+    // We want to have the same behavior in VR360 Player and standard player.
     // in touchend we want to know if was a touch click, for a click we show the bar,
     // otherwise continue with the mouse logic.
     //
@@ -95,8 +95,8 @@ class CanvasPlayerControls extends videojs.EventTarget {
       return;
     }
 
-    // We want the same behavior in Desktop for VR360  and standar player
-    if(e.type == 'mouseup') {
+    // We want the same behavior in Desktop for VR360  and standard player
+    if (e.type == 'mouseup') {
       this.togglePlay();
     }
 
@@ -104,7 +104,7 @@ class CanvasPlayerControls extends videojs.EventTarget {
 
   onMove(e) {
 
-    // Increase touchMoveCount_ since Android detects 1 - 6 touches when user click normaly
+    // Increase touchMoveCount_ since Android detects 1 - 6 touches when user click normally
     this.touchMoveCount_++;
 
     this.shouldTogglePlay = false;

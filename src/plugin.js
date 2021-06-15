@@ -23,6 +23,7 @@ const defaults = {
   omnitoneOptions: {},
   projection: 'AUTO',
   disableTogglePlay: false
+  sphereDetail: 32
 };
 
 const errors = {
@@ -119,7 +120,7 @@ class VR extends Plugin {
     }
     if (projection === 'AUTO') {
       // mediainfo cannot be set to auto or we would infinite loop here
-      // each source should know wether they are 360 or not, if using AUTO
+      // each source should know whatever they are 360 or not, if using AUTO
       if (this.player_.mediainfo && this.player_.mediainfo.projection && this.player_.mediainfo.projection !== 'AUTO') {
         const autoProjection = utils.getInternalProjectionName(this.player_.mediainfo.projection);
 
@@ -127,7 +128,7 @@ class VR extends Plugin {
       }
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
-      this.movieGeometry = new THREE.SphereBufferGeometry(256, 32, 32);
+      this.movieGeometry = new THREE.SphereBufferGeometry(256, this.options_.sphereDetail, this.options_.sphereDetail);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
@@ -138,7 +139,11 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
-      let geometry = new THREE.SphereGeometry(256, 32, 32);
+      let geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail
+      );
 
       let uvs = geometry.faceVertexUvs[ 0 ];
 
@@ -164,7 +169,11 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      geometry = new THREE.SphereGeometry(256, 32, 32);
+      geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail
+      );
 
       uvs = geometry.faceVertexUvs[ 0 ];
 
@@ -224,16 +233,25 @@ class VR extends Plugin {
       this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
-    } else if (projection === '180') {
-      let geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+    } else if (projection === '180' || projection === '180_LR' || projection === '180_MONO') {
+       let geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail,
+        Math.PI,
+        Math.PI
+      );
+
 
       // Left eye view
       geometry.scale(-1, 1, 1);
       let uvs = geometry.faceVertexUvs[0];
 
-      for (let i = 0; i < uvs.length; i++) {
-        for (let j = 0; j < 3; j++) {
-          uvs[i][j].x *= 0.5;
+      if (projection !== '180_MONO') {
+        for (let i = 0; i < uvs.length; i++) {
+          for (let j = 0; j < 3; j++) {
+            uvs[i][j].x *= 0.5;
+          }
         }
       }
 
@@ -248,7 +266,13 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      geometry = new THREE.SphereGeometry(256, 32, 32, Math.PI, Math.PI);
+      geometry = new THREE.SphereGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail,
+        Math.PI,
+        Math.PI
+      );
       geometry.scale(-1, 1, 1);
       uvs = geometry.faceVertexUvs[0];
 
@@ -592,7 +616,7 @@ void main() {
     // Store vector representing the direction in which the camera is looking, in world space.
     this.cameraVector = new THREE.Vector3();
 
-    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180' || this.currentProjection_ === 'EAC_LR') {
+    if (this.currentProjection_ === '360_LR' || this.currentProjection_ === '360_TB' || this.currentProjection_ === '180' || this.currentProjection_ === '180_LR' || this.currentProjection_ === '180_MONO' || this.currentProjection_ === 'EAC_LR') {
       // Render left eye when not in VR mode
       this.camera.layers.enable(1);
     }
@@ -698,7 +722,7 @@ void main() {
             camera: this.camera,
             canvas: this.renderedCanvas,
             // check if its a half sphere view projection
-            halfView: this.currentProjection_ === '180',
+            halfView: this.currentProjection_.indexOf('180') === 0,
             orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
           };
 
