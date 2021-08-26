@@ -60,6 +60,7 @@
     "ignore": [
       "dist",
       "docs",
+      "vendor",
       "test/dist"
     ]
   },
