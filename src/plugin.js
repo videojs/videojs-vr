@@ -4,8 +4,8 @@ import document from 'global/document';
 import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
-import VRControls from 'three/examples/js/controls/VRControls.js';
-import VREffect from 'three/examples/js/effects/VREffect.js';
+import VRControls from '../vendor/three/VRControls.js';
+import VREffect from '../vendor/three/VREffect.js';
 import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
@@ -234,14 +234,13 @@ class VR extends Plugin {
 
       this.scene.add(this.movieScreen);
     } else if (projection === '180' || projection === '180_LR' || projection === '180_MONO') {
-       let geometry = new THREE.SphereGeometry(
+      let geometry = new THREE.SphereGeometry(
         256,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
         Math.PI
       );
-
 
       // Left eye view
       geometry.scale(-1, 1, 1);
