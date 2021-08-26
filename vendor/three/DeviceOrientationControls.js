@@ -111,3 +111,5 @@ THREE.DeviceOrientationControls = function ( object ) {
 	this.connect();
 
 };
+
+export default DeviceOrientationControls;
