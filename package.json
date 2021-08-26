@@ -81,7 +81,7 @@
   "dependencies": {
     "@babel/runtime": "^7.14.5",
     "global": "^4.4.0",
-    "three": "0.93.0",
+    "three": "0.132.0",
     "video.js": "^6 || ^7",
     "webvr-polyfill": "0.10.12"
   },
