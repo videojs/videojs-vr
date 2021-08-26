@@ -3,6 +3,8 @@
  * @author WestLangley / http://github.com/WestLangley
  *
  * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
+ *
+ * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/controls/DeviceOrientationControls.js
  */
 
 THREE.DeviceOrientationControls = function ( object ) {

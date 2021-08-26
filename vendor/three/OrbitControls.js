@@ -4,6 +4,8 @@
  * @author alteredq / http://alteredqualia.com/
  * @author WestLangley / http://github.com/WestLangley
  * @author erich666 / http://erichaines.com
+ *
+ * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/controls/OrbitControls.js
  */
 import * as THREE from 'three';
 

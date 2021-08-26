@@ -1,6 +1,8 @@
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
+ *
+ * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/controls/VRControls.js
  */
 import * as THREE from 'three';
 

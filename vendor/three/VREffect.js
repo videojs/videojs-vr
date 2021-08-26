@@ -6,6 +6,8 @@
  *
  * Firefox: http://mozvr.com/downloads/
  * Chromium: https://webvr.info/get-chrome
+ *
+ * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/effects/VREffect.js
  */
 import * as THREE from 'three';
 
