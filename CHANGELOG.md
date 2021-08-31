@@ -1,3 +1,15 @@
+<a name="1.9.0"></a>
+# [1.9.0](https://github.com/videojs/videojs-vr/compare/v1.8.0...v1.9.0) (2021-08-31)
+
+### Features
+
+* vendor threejs files ([#247](https://github.com/videojs/videojs-vr/issues/247)) ([6a76537](https://github.com/videojs/videojs-vr/commit/6a76537)), closes [#244](https://github.com/videojs/videojs-vr/issues/244)
+
+### Chores
+
+* don't run tests on version ([4cfb996](https://github.com/videojs/videojs-vr/commit/4cfb996))
+* udpate generator-helpers ([#248](https://github.com/videojs/videojs-vr/issues/248)) ([a3020df](https://github.com/videojs/videojs-vr/commit/a3020df))
+
 <a name="1.8.0"></a>
 # [1.8.0](https://github.com/videojs/videojs-vr/compare/v1.7.2...v1.8.0) (2021-06-15)
 
