@@ -1,3 +1,10 @@
+<a name="1.10.0"></a>
+# [1.10.0](https://github.com/videojs/videojs-vr/compare/v1.9.0...v1.10.0) (2021-08-31)
+
+### Chores
+
+* skip syntax check with vjsverify due to three ([#249](https://github.com/videojs/videojs-vr/issues/249)) ([3d9df3c](https://github.com/videojs/videojs-vr/commit/3d9df3c))
+
 <a name="1.9.0"></a>
 # [1.9.0](https://github.com/videojs/videojs-vr/compare/v1.8.0...v1.9.0) (2021-08-31)
 
