@@ -96,7 +96,7 @@ class CanvasPlayerControls extends videojs.EventTarget {
     }
 
     // We want the same behavior in Desktop for VR360  and standard player
-    if (e.type == 'mouseup') {
+    if (e.type === 'mouseup') {
       this.togglePlay();
     }
 
