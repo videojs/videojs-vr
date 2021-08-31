@@ -40,7 +40,7 @@
     "build:lang": "vjslang --dir dist/lang",
     "clean": "shx rm -rf ./dist ./test/dist && shx mkdir -p ./dist ./test/dist",
     "lint": "vjsstandard",
-    "prepublishOnly": "npm-run-all build-prod && vjsverify --skip-require --verbose",
+    "prepublishOnly": "npm-run-all build-prod && vjsverify --skip-require --verbose --skip-syntax",
     "start": "npm-run-all -p server watch",
     "server": "karma start scripts/karma.conf.js --singleRun=false --auto-watch",
     "test": "npm run build-test && karma start scripts/karma.conf.js",
