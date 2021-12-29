@@ -10,6 +10,7 @@ var document$1 = _interopDefault(require('global/document'));
 var WebVRPolyfill = _interopDefault(require('webvr-polyfill'));
 var videojs = _interopDefault(require('video.js'));
 var THREE = require('three');
+var webvrui = require('webvr-ui');
 
 var version = "1.10.0";
 
@@ -2412,6 +2413,14 @@ var VR = /*#__PURE__*/function (_Plugin) {
       clearColor: 0xffffff,
       antialias: true
     });
+    var options = {
+      color: 'black',
+      background: 'white',
+      corners: 'square'
+    };
+    var enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
+    this.player_.el().appendChild(enterVR.domElement);
+    enterVR.on('show', function () {});
     var webglContext = this.renderer.getContext('webgl');
     var oldTexImage2D = webglContext.texImage2D;
     /* this is a workaround since threejs uses try catch */
@@ -2474,7 +2483,7 @@ var VR = /*#__PURE__*/function (_Plugin) {
         if (!_this4.controls3d) {
           _this4.log('no HMD found Using Orbit & Orientation Controls');
 
-          var options = {
+          var _options = {
             camera: _this4.camera,
             canvas: _this4.renderedCanvas,
             // check if its a half sphere view projection
@@ -2483,10 +2492,10 @@ var VR = /*#__PURE__*/function (_Plugin) {
           };
 
           if (_this4.options_.motionControls === false) {
-            options.orientation = false;
+            _options.orientation = false;
           }
 
-          _this4.controls3d = new OrbitOrientationControls(options);
+          _this4.controls3d = new OrbitOrientationControls(_options);
           _this4.canvasPlayerControls = new CanvasPlayerControls(_this4.player_, _this4.renderedCanvas, _this4.options_);
         }
 

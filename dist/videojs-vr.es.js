@@ -6,6 +6,7 @@ import document$1 from 'global/document';
 import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
 import { Matrix4, Vector3, PerspectiveCamera, Quaternion, EventDispatcher, MOUSE, Spherical, Vector2, Euler, Math as Math$1, SphereBufferGeometry, MeshBasicMaterial, BackSide, Mesh, SphereGeometry, BufferGeometry, BoxGeometry, Matrix3, Scene, VideoTexture, LinearFilter, RGBFormat, WebGLRenderer, AudioContext, ShaderMaterial } from 'three';
+import { EnterVRButton } from 'webvr-ui';
 
 var version = "1.10.0";
 
@@ -2408,6 +2409,14 @@ var VR = /*#__PURE__*/function (_Plugin) {
       clearColor: 0xffffff,
       antialias: true
     });
+    var options = {
+      color: 'black',
+      background: 'white',
+      corners: 'square'
+    };
+    var enterVR = new EnterVRButton(this.renderer.domElement, options);
+    this.player_.el().appendChild(enterVR.domElement);
+    enterVR.on('show', function () {});
     var webglContext = this.renderer.getContext('webgl');
     var oldTexImage2D = webglContext.texImage2D;
     /* this is a workaround since threejs uses try catch */
@@ -2470,7 +2479,7 @@ var VR = /*#__PURE__*/function (_Plugin) {
         if (!_this4.controls3d) {
           _this4.log('no HMD found Using Orbit & Orientation Controls');
 
-          var options = {
+          var _options = {
             camera: _this4.camera,
             canvas: _this4.renderedCanvas,
             // check if its a half sphere view projection
@@ -2479,10 +2488,10 @@ var VR = /*#__PURE__*/function (_Plugin) {
           };
 
           if (_this4.options_.motionControls === false) {
-            options.orientation = false;
+            _options.orientation = false;
           }
 
-          _this4.controls3d = new OrbitOrientationControls(options);
+          _this4.controls3d = new OrbitOrientationControls(_options);
           _this4.canvasPlayerControls = new CanvasPlayerControls(_this4.player_, _this4.renderedCanvas, _this4.options_);
         }
 

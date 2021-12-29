@@ -10,7 +10,7 @@ import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
 import OmnitoneController from './omnitone-controller';
-
+import * as webvrui from 'webvr-ui';
 // import controls so they get regisetered with videojs
 import './cardboard-button';
 import './big-vr-play-button';
@@ -660,6 +660,17 @@ void main() {
       alpha: false,
       clearColor: 0xffffff,
       antialias: true
+    });
+
+    let options = {
+        color: 'black',
+        background: 'white',
+        corners: 'square'
+    };
+    let enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
+    this.player_.el().appendChild(enterVR.domElement);
+    enterVR.on('show', function() {
+
     });
 
     const webglContext = this.renderer.getContext('webgl');
