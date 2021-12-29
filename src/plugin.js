@@ -557,11 +557,11 @@ void main() {
 
     this.controls3d.update();
     if (this.omniController) {
-      //this.omniController.update(this.camera);
+      this.omniController.update(this.camera);
     }
     this.effect.render(this.scene, this.camera);
 
-    if (window.navigator.getGamepads) {
+    /*if (window.navigator.getGamepads) {
       // Grab all gamepads
       const gamepads = window.navigator.getGamepads();
 
@@ -581,7 +581,7 @@ void main() {
           }
         }
       }
-    }
+    }*/
     this.camera.getWorldDirection(this.cameraVector);
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);

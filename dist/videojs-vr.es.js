@@ -2188,23 +2188,22 @@ var VR = /*#__PURE__*/function (_Plugin) {
 
     this.controls3d.update();
 
-    if (this.omniController) ;
+    if (this.omniController) {
+      this.omniController.update(this.camera);
+    }
 
     this.effect.render(this.scene, this.camera);
-
-    if (window$1.navigator.getGamepads) {
+    /*if (window.navigator.getGamepads) {
       // Grab all gamepads
-      var gamepads = window$1.navigator.getGamepads();
-
-      for (var i = 0; i < gamepads.length; ++i) {
-        var gamepad = gamepads[i]; // Make sure gamepad is defined
+      const gamepads = window.navigator.getGamepads();
+       for (let i = 0; i < gamepads.length; ++i) {
+        const gamepad = gamepads[i];
+         // Make sure gamepad is defined
         // Only take input if state has changed since we checked last
-
         if (!gamepad || !gamepad.timestamp || gamepad.timestamp === this.prevTimestamps_[i]) {
           continue;
         }
-
-        for (var j = 0; j < gamepad.buttons.length; ++j) {
+        for (let j = 0; j < gamepad.buttons.length; ++j) {
           if (gamepad.buttons[j].pressed) {
             this.togglePlay_();
             this.prevTimestamps_[i] = gamepad.timestamp;
@@ -2212,7 +2211,7 @@ var VR = /*#__PURE__*/function (_Plugin) {
           }
         }
       }
-    }
+    }*/
 
     this.camera.getWorldDirection(this.cameraVector);
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
