@@ -624,7 +624,7 @@ void main() {
 
     // shared regardless of wether VideoTexture is used or
     // an image canvas is used
-    this.videoTexture.generateMipmaps = false;
+    //this.videoTexture.generateMipmaps = false;
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
     this.videoTexture.format = THREE.RGBFormat;
@@ -646,6 +646,16 @@ void main() {
         videojs.browser.IS_ANDROID ||
         videojs.browser.IS_IOS) {
 
+        let options = {
+          color: 'black',
+          background: 'white',
+          corners: 'square'
+        };
+        let enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
+        this.player_.el().appendChild(enterVR.domElement);
+        enterVR.on('show', function() {
+
+        });
     }
 
     // if ios remove full screen toggle
@@ -661,21 +671,9 @@ void main() {
       antialias: true
     });
 
-    let options = {
-        color: 'black',
-        background: 'white',
-        corners: 'square'
-    };
-    let enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
-    this.player_.el().appendChild(enterVR.domElement);
-    enterVR.on('show', function() {
-
-    });
-
+    /*
     const webglContext = this.renderer.getContext('webgl');
     const oldTexImage2D = webglContext.texImage2D;
-
-    /* this is a workaround since threejs uses try catch */
     webglContext.texImage2D = (...args) => {
       try {
         return oldTexImage2D.apply(webglContext, args);
@@ -685,7 +683,7 @@ void main() {
         this.triggerError_({code: 'web-vr-hls-cors-not-supported', dismiss: false});
         throw new Error(e);
       }
-    };
+    };*/
 
     this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.effect = new VREffect(this.renderer);
@@ -770,6 +768,8 @@ void main() {
     //window.addEventListener('resize', this.handleResize_, true);
     //window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     //window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
+
+
 
     this.initialized_ = true;
     this.trigger('initialized');

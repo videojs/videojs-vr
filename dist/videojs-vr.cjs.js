@@ -2258,8 +2258,8 @@ var VR = /*#__PURE__*/function (_Plugin) {
     this.scene = new THREE.Scene();
     this.videoTexture = new THREE.VideoTexture(this.getVideoEl_()); // shared regardless of wether VideoTexture is used or
     // an image canvas is used
+    //this.videoTexture.generateMipmaps = false;
 
-    this.videoTexture.generateMipmaps = false;
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
     this.videoTexture.format = THREE.RGBFormat;
@@ -2275,7 +2275,16 @@ var VR = /*#__PURE__*/function (_Plugin) {
     this.player_.addChild('BigVrPlayButton', {}, this.bigPlayButtonIndex_);
     this.player_.bigPlayButton = this.player_.getChild('BigVrPlayButton'); // mobile devices, or cardboard forced to on
 
-    if (this.options_.forceCardboard || videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) ; // if ios remove full screen toggle
+    if (this.options_.forceCardboard || videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
+      var options = {
+        color: 'black',
+        background: 'white',
+        corners: 'square'
+      };
+      var enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
+      this.player_.el().appendChild(enterVR.domElement);
+      enterVR.on('show', function () {});
+    } // if ios remove full screen toggle
 
 
     if (videojs.browser.IS_IOS && this.player_.controlBar && this.player_.controlBar.fullscreenToggle) {
@@ -2289,38 +2298,19 @@ var VR = /*#__PURE__*/function (_Plugin) {
       clearColor: 0xffffff,
       antialias: true
     });
-    var options = {
-      color: 'black',
-      background: 'white',
-      corners: 'square'
-    };
-    var enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
-    this.player_.el().appendChild(enterVR.domElement);
-    enterVR.on('show', function () {});
-    var webglContext = this.renderer.getContext('webgl');
-    var oldTexImage2D = webglContext.texImage2D;
-    /* this is a workaround since threejs uses try catch */
-
-    webglContext.texImage2D = function () {
+    /*
+    const webglContext = this.renderer.getContext('webgl');
+    const oldTexImage2D = webglContext.texImage2D;
+    webglContext.texImage2D = (...args) => {
       try {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments[_key2];
-        }
-
         return oldTexImage2D.apply(webglContext, args);
       } catch (e) {
-        _this4.reset();
-
-        _this4.player_.pause();
-
-        _this4.triggerError_({
-          code: 'web-vr-hls-cors-not-supported',
-          dismiss: false
-        });
-
+        this.reset();
+        this.player_.pause();
+        this.triggerError_({code: 'web-vr-hls-cors-not-supported', dismiss: false});
         throw new Error(e);
       }
-    };
+    };*/
 
     this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.effect = new VREffect(this.renderer);
