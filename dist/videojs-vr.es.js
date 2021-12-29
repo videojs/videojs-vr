@@ -5,7 +5,7 @@ import window$1 from 'global/window';
 import document$1 from 'global/document';
 import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
-import { Matrix4, Vector3, PerspectiveCamera, Quaternion, EventDispatcher, MOUSE, Spherical, Vector2, Euler, Math as Math$1, SphereBufferGeometry, MeshBasicMaterial, BackSide, Mesh, SphereGeometry, BufferGeometry, BoxGeometry, Matrix3, Scene, VideoTexture, LinearFilter, RGBFormat, WebGLRenderer, AudioContext, ShaderMaterial } from 'three';
+import { Matrix4, Vector3, PerspectiveCamera, Quaternion, EventDispatcher, MOUSE, Spherical, Vector2, SphereBufferGeometry, MeshBasicMaterial, BackSide, Mesh, SphereGeometry, BufferGeometry, BoxGeometry, Matrix3, Scene, VideoTexture, LinearFilter, RGBFormat, WebGLRenderer, AudioContext, ShaderMaterial } from 'three';
 import { EnterVRButton } from 'webvr-ui';
 
 var version = "1.10.0";
@@ -1216,178 +1216,6 @@ Object.defineProperties(OrbitControls.prototype, {
  * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/controls/DeviceOrientationControls.js
  */
 
-var DeviceOrientationControls = function DeviceOrientationControls(object) {
-  var scope = this;
-  this.object = object;
-  this.object.rotation.reorder('YXZ');
-  this.enabled = true;
-  this.deviceOrientation = {};
-  this.screenOrientation = 0;
-  this.alphaOffset = 0; // radians
-
-  var onDeviceOrientationChangeEvent = function onDeviceOrientationChangeEvent(event) {
-    scope.deviceOrientation = event;
-  };
-
-  var onScreenOrientationChangeEvent = function onScreenOrientationChangeEvent() {
-    scope.screenOrientation = window.orientation || 0;
-  }; // The angles alpha, beta and gamma form a set of intrinsic Tait-Bryan angles of type Z-X'-Y''
-
-
-  var setObjectQuaternion = function () {
-    var zee = new Vector3(0, 0, 1);
-    var euler = new Euler();
-    var q0 = new Quaternion();
-    var q1 = new Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)); // - PI/2 around the x-axis
-
-    return function (quaternion, alpha, beta, gamma, orient) {
-      euler.set(beta, alpha, -gamma, 'YXZ'); // 'ZXY' for the device, but 'YXZ' for us
-
-      quaternion.setFromEuler(euler); // orient the device
-
-      quaternion.multiply(q1); // camera looks out the back of the device, not the top
-
-      quaternion.multiply(q0.setFromAxisAngle(zee, -orient)); // adjust for screen orientation
-    };
-  }();
-
-  this.connect = function () {
-    onScreenOrientationChangeEvent(); // run once on load
-
-    window.addEventListener('orientationchange', onScreenOrientationChangeEvent, false);
-    window.addEventListener('deviceorientation', onDeviceOrientationChangeEvent, false);
-    scope.enabled = true;
-  };
-
-  this.disconnect = function () {
-    window.removeEventListener('orientationchange', onScreenOrientationChangeEvent, false);
-    window.removeEventListener('deviceorientation', onDeviceOrientationChangeEvent, false);
-    scope.enabled = false;
-  };
-
-  this.update = function () {
-    if (scope.enabled === false) return;
-    var device = scope.deviceOrientation;
-
-    if (device) {
-      var alpha = device.alpha ? Math$1.degToRad(device.alpha) + scope.alphaOffset : 0; // Z
-
-      var beta = device.beta ? Math$1.degToRad(device.beta) : 0; // X'
-
-      var gamma = device.gamma ? Math$1.degToRad(device.gamma) : 0; // Y''
-
-      var orient = scope.screenOrientation ? Math$1.degToRad(scope.screenOrientation) : 0; // O
-
-      setObjectQuaternion(scope.object.quaternion, alpha, beta, gamma, orient);
-    }
-  };
-
-  this.dispose = function () {
-    scope.disconnect();
-  };
-
-  this.connect();
-};
-
-/**
- * Convert a quaternion to an angle
- *
- * Taken from https://stackoverflow.com/a/35448946
- * Thanks P. Ellul
- */
-
-function Quat2Angle(x, y, z, w) {
-  var test = x * y + z * w; // singularity at north pole
-
-  if (test > 0.499) {
-    var _yaw = 2 * Math.atan2(x, w);
-
-    var _pitch = Math.PI / 2;
-
-    var _roll = 0;
-    return new Vector3(_pitch, _roll, _yaw);
-  } // singularity at south pole
-
-
-  if (test < -0.499) {
-    var _yaw2 = -2 * Math.atan2(x, w);
-
-    var _pitch2 = -Math.PI / 2;
-
-    var _roll2 = 0;
-    return new Vector3(_pitch2, _roll2, _yaw2);
-  }
-
-  var sqx = x * x;
-  var sqy = y * y;
-  var sqz = z * z;
-  var yaw = Math.atan2(2 * y * w - 2 * x * z, 1 - 2 * sqy - 2 * sqz);
-  var pitch = Math.asin(2 * test);
-  var roll = Math.atan2(2 * x * w - 2 * y * z, 1 - 2 * sqx - 2 * sqz);
-  return new Vector3(pitch, roll, yaw);
-}
-
-var OrbitOrientationControls = /*#__PURE__*/function () {
-  function OrbitOrientationControls(options) {
-    this.object = options.camera;
-    this.domElement = options.canvas;
-    this.orbit = new OrbitControls(this.object, this.domElement);
-    this.speed = 0.5;
-    this.orbit.target.set(0, 0, -1);
-    this.orbit.enableZoom = false;
-    this.orbit.enablePan = false;
-    this.orbit.rotateSpeed = -this.speed; // if orientation is supported
-
-    if (options.orientation) {
-      this.orientation = new DeviceOrientationControls(this.object);
-    } // if projection is not full view
-    // limit the rotation angle in order to not display back half view
-
-
-    if (options.halfView) {
-      this.orbit.minAzimuthAngle = -Math.PI / 4;
-      this.orbit.maxAzimuthAngle = Math.PI / 4;
-    }
-  }
-
-  var _proto = OrbitOrientationControls.prototype;
-
-  _proto.update = function update() {
-    // orientation updates the camera using quaternions and
-    // orbit updates the camera using angles. They are incompatible
-    // and one update overrides the other. So before
-    // orbit overrides orientation we convert our quaternion changes to
-    // an angle change. Then save the angle into orbit so that
-    // it will take those into account when it updates the camera and overrides
-    // our changes
-    if (this.orientation) {
-      this.orientation.update();
-      var quat = this.orientation.object.quaternion;
-      var currentAngle = Quat2Angle(quat.x, quat.y, quat.z, quat.w); // we also have to store the last angle since quaternions are b
-
-      if (typeof this.lastAngle_ === 'undefined') {
-        this.lastAngle_ = currentAngle;
-      }
-
-      this.orbit.rotateLeft((this.lastAngle_.z - currentAngle.z) * (1 + this.speed));
-      this.orbit.rotateUp((this.lastAngle_.y - currentAngle.y) * (1 + this.speed));
-      this.lastAngle_ = currentAngle;
-    }
-
-    this.orbit.update();
-  };
-
-  _proto.dispose = function dispose() {
-    this.orbit.dispose();
-
-    if (this.orientation) {
-      this.orientation.dispose();
-    }
-  };
-
-  return OrbitOrientationControls;
-}();
-
 var corsSupport = function () {
   var video = document$1.createElement('video');
   video.crossOrigin = 'anonymous';
@@ -2338,9 +2166,9 @@ var VR = /*#__PURE__*/function (_Plugin) {
 
           if (_this4.options_.motionControls === false) {
             _options.orientation = false;
-          }
+          } //this.controls3d = new OrbitOrientationContols(options);
 
-          _this4.controls3d = new OrbitOrientationControls(_options);
+
           _this4.canvasPlayerControls = new CanvasPlayerControls(_this4.player_, _this4.renderedCanvas, _this4.options_);
         }
 

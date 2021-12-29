@@ -719,7 +719,7 @@ void main() {
             options.orientation = false;
           }
 
-          this.controls3d = new OrbitOrientationContols(options);
+          //this.controls3d = new OrbitOrientationContols(options);
           this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas, this.options_);
         }
 
