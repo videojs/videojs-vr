@@ -50703,12 +50703,12 @@
 	        });
 	      });
 	    } //this.on(this.player_, 'fullscreenchange', this.handleResize_);
+	    //window.addEventListener('vrdisplaypresentchange', this.handleResize_, true);
+	    //window.addEventListener('resize', this.handleResize_, true);
+	    //window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
+	    //window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
 
-	    window$1.addEventListener('vrdisplaypresentchange', this.handleResize_, true); //window.addEventListener('resize', this.handleResize_, true);
-
-	    window$1.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
-	    window$1.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 	    this.initialized_ = true;
 	    this.trigger('initialized');
 	  };
