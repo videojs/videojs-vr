@@ -82,7 +82,8 @@
     "global": "^4.4.0",
     "three": "0.125.2",
     "video.js": "^6 || ^7",
-    "webvr-polyfill": "0.10.12"
+    "webvr-polyfill": "0.10.12",
+    "webvr-ui": "^0.10.0"
   },
   "devDependencies": {
     "@videojs/generator-helpers": "^3.0.1",
