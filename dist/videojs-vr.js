@@ -50578,19 +50578,7 @@
 
 	    this.player_.removeChild('BigPlayButton');
 	    this.player_.addChild('BigVrPlayButton', {}, this.bigPlayButtonIndex_);
-	    this.player_.bigPlayButton = this.player_.getChild('BigVrPlayButton'); // mobile devices, or cardboard forced to on
-
-	    if (this.options_.forceCardboard || videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
-	      var options = {
-	        color: 'black',
-	        background: 'white',
-	        corners: 'square'
-	      };
-	      var enterVR = new EnterVRButton(this.renderer.domElement, options);
-	      this.player_.el().appendChild(enterVR.domElement);
-	      enterVR.on('show', function () {});
-	    } // if ios remove full screen toggle
-
+	    this.player_.bigPlayButton = this.player_.getChild('BigVrPlayButton'); // if ios remove full screen toggle
 
 	    if (videojs.browser.IS_IOS && this.player_.controlBar && this.player_.controlBar.fullscreenToggle) {
 	      this.player_.controlBar.fullscreenToggle.hide();
@@ -50602,7 +50590,18 @@
 	      alpha: false,
 	      clearColor: 0xffffff,
 	      antialias: true
-	    });
+	    }); // mobile devices, or cardboard forced to on
+
+	    if (this.options_.forceCardboard || videojs.browser.IS_ANDROID || videojs.browser.IS_IOS) {
+	      var options = {
+	        color: 'black',
+	        background: 'white',
+	        corners: 'square'
+	      };
+	      var enterVR = new EnterVRButton(this.renderer.domElement, options);
+	      this.player_.el().appendChild(enterVR.domElement);
+	      enterVR.on('show', function () {});
+	    }
 	    /*
 	    const webglContext = this.renderer.getContext('webgl');
 	    const oldTexImage2D = webglContext.texImage2D;
@@ -50616,6 +50615,7 @@
 	        throw new Error(e);
 	      }
 	    };*/
+
 
 	    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
 	    this.effect = new VREffect(this.renderer);

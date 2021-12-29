@@ -641,23 +641,6 @@ void main() {
     this.player_.addChild('BigVrPlayButton', {}, this.bigPlayButtonIndex_);
     this.player_.bigPlayButton = this.player_.getChild('BigVrPlayButton');
 
-    // mobile devices, or cardboard forced to on
-    if (this.options_.forceCardboard ||
-        videojs.browser.IS_ANDROID ||
-        videojs.browser.IS_IOS) {
-
-        let options = {
-          color: 'black',
-          background: 'white',
-          corners: 'square'
-        };
-        let enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
-        this.player_.el().appendChild(enterVR.domElement);
-        enterVR.on('show', function() {
-
-        });
-    }
-
     // if ios remove full screen toggle
     if (videojs.browser.IS_IOS && this.player_.controlBar && this.player_.controlBar.fullscreenToggle) {
       this.player_.controlBar.fullscreenToggle.hide();
@@ -670,6 +653,23 @@ void main() {
       clearColor: 0xffffff,
       antialias: true
     });
+
+    // mobile devices, or cardboard forced to on
+    if (this.options_.forceCardboard ||
+      videojs.browser.IS_ANDROID ||
+      videojs.browser.IS_IOS) {
+
+      let options = {
+        color: 'black',
+        background: 'white',
+        corners: 'square'
+      };
+      let enterVR = new webvrui.EnterVRButton(this.renderer.domElement, options);
+      this.player_.el().appendChild(enterVR.domElement);
+      enterVR.on('show', function() {
+
+      });
+    }
 
     /*
     const webglContext = this.renderer.getContext('webgl');
