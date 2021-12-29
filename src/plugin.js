@@ -92,7 +92,7 @@ class VR extends Plugin {
     if (!projection) {
       projection = 'NONE';
     }
-
+console.log('projection',projection);
     const position = {x: 0, y: 0, z: 0 };
 
     if (this.scene) {

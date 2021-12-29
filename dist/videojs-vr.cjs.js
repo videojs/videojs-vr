@@ -1747,6 +1747,7 @@ var VR = /*#__PURE__*/function (_Plugin) {
       projection = 'NONE';
     }
 
+    console.log('projection', projection);
     var position = {
       x: 0,
       y: 0,

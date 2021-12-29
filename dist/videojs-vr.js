@@ -50052,6 +50052,7 @@
 	      projection = 'NONE';
 	    }
 
+	    console.log('projection', projection);
 	    var position = {
 	      x: 0,
 	      y: 0,
