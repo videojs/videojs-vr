@@ -42,3 +42,12 @@
   }
 
 }
+
+.webvr-ui-button {
+  position: absolute !important;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  background: #fff !important;
+}
