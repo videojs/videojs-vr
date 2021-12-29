@@ -536,7 +536,7 @@ void main() {
       }
     }
 
-    this.controls3d.update();
+    //this.controls3d.update();
     if (this.omniController) {
       this.omniController.update(this.camera);
     }
@@ -701,7 +701,7 @@ void main() {
 
             // We use VRControls here since we are working with an HMD
             // and we only want orientation controls.
-            this.controls3d = new VRControls(this.camera);
+            //this.controls3d = new VRControls(this.camera);
           }
         }
 
@@ -771,10 +771,10 @@ void main() {
       this.omniController = undefined;
     }
 
-    if (this.controls3d) {
+    /*if (this.controls3d) {
       this.controls3d.dispose();
       this.controls3d = null;
-    }
+    }*/
 
     if (this.canvasPlayerControls) {
       this.canvasPlayerControls.dispose();
