@@ -13,13 +13,10 @@ import * as THREE from 'three';
 
 const VREffect = function ( renderer, onError ) {
 
-	var vrDisplay, vrDisplays;
+  var vrDisplay, vrDisplays;
 	var eyeTranslationL = new THREE.Vector3();
 	var eyeTranslationR = new THREE.Vector3();
 	var renderRectL, renderRectR;
-	var headMatrix = new THREE.Matrix4();
-	var eyeMatrixL = new THREE.Matrix4();
-	var eyeMatrixR = new THREE.Matrix4();
 
 	var frameData = null;
 
@@ -47,7 +44,7 @@ const VREffect = function ( renderer, onError ) {
 
 	if ( navigator.getVRDisplays ) {
 
-		navigator.getVRDisplays().then( gotVRDisplays ).catch( function () {
+		navigator.getVRDisplays().then( gotVRDisplays ).catch( function() {
 
 			console.warn( 'THREE.VREffect: Unable to get VR Displays' );
 
@@ -58,6 +55,7 @@ const VREffect = function ( renderer, onError ) {
 	//
 
 	this.isPresenting = false;
+	this.scale = 1;
 
 	var scope = this;
 
@@ -65,26 +63,26 @@ const VREffect = function ( renderer, onError ) {
 	var rendererUpdateStyle = false;
 	var rendererPixelRatio = renderer.getPixelRatio();
 
-	this.getVRDisplay = function () {
+	this.getVRDisplay = function() {
 
 		return vrDisplay;
 
 	};
 
-	this.setVRDisplay = function ( value ) {
+	this.setVRDisplay = function( value ) {
 
 		vrDisplay = value;
 
 	};
 
-	this.getVRDisplays = function () {
+	this.getVRDisplays = function() {
 
 		console.warn( 'THREE.VREffect: getVRDisplays() is being deprecated.' );
 		return vrDisplays;
 
 	};
 
-	this.setSize = function ( width, height, updateStyle ) {
+	this.setSize = function( width, height, updateStyle ) {
 
 		rendererSize = { width: width, height: height };
 		rendererUpdateStyle = updateStyle;
@@ -142,9 +140,9 @@ const VREffect = function ( renderer, onError ) {
 
 	window.addEventListener( 'vrdisplaypresentchange', onVRDisplayPresentChange, false );
 
-	this.setFullScreen = function ( boolean ) {
+	this.setFullScreen = function( boolean ) {
 
-		return new Promise( function ( resolve, reject ) {
+		return new Promise( function( resolve, reject ) {
 
 			if ( vrDisplay === undefined ) {
 
@@ -174,19 +172,19 @@ const VREffect = function ( renderer, onError ) {
 
 	};
 
-	this.requestPresent = function () {
+	this.requestPresent = function() {
 
 		return this.setFullScreen( true );
 
 	};
 
-	this.exitPresent = function () {
+	this.exitPresent = function() {
 
 		return this.setFullScreen( false );
 
 	};
 
-	this.requestAnimationFrame = function ( f ) {
+	this.requestAnimationFrame = function( f ) {
 
 		if ( vrDisplay !== undefined ) {
 
@@ -200,7 +198,7 @@ const VREffect = function ( renderer, onError ) {
 
 	};
 
-	this.cancelAnimationFrame = function ( h ) {
+	this.cancelAnimationFrame = function( h ) {
 
 		if ( vrDisplay !== undefined ) {
 
@@ -214,7 +212,7 @@ const VREffect = function ( renderer, onError ) {
 
 	};
 
-	this.submitFrame = function () {
+	this.submitFrame = function() {
 
 		if ( vrDisplay !== undefined && scope.isPresenting ) {
 
@@ -234,7 +232,7 @@ const VREffect = function ( renderer, onError ) {
 	var cameraR = new THREE.PerspectiveCamera();
 	cameraR.layers.enable( 2 );
 
-	this.render = function ( scene, camera, renderTarget, forceClear ) {
+	this.render = function( scene, camera, renderTarget, forceClear ) {
 
 		if ( vrDisplay && scope.isPresenting ) {
 
@@ -246,6 +244,12 @@ const VREffect = function ( renderer, onError ) {
 				scene.autoUpdate = false;
 
 			}
+
+			var eyeParamsL = vrDisplay.getEyeParameters( 'left' );
+			var eyeParamsR = vrDisplay.getEyeParameters( 'right' );
+
+			eyeTranslationL.fromArray( eyeParamsL.offset );
+			eyeTranslationR.fromArray( eyeParamsR.offset );
 
 			if ( Array.isArray( scene ) ) {
 
@@ -305,10 +309,11 @@ const VREffect = function ( renderer, onError ) {
 			if ( camera.parent === null ) camera.updateMatrixWorld();
 
 			camera.matrixWorld.decompose( cameraL.position, cameraL.quaternion, cameraL.scale );
+			camera.matrixWorld.decompose( cameraR.position, cameraR.quaternion, cameraR.scale );
 
-			cameraR.position.copy( cameraL.position );
-			cameraR.quaternion.copy( cameraL.quaternion );
-			cameraR.scale.copy( cameraL.scale );
+			var scale = this.scale;
+			cameraL.translateOnAxis( eyeTranslationL, scale );
+			cameraR.translateOnAxis( eyeTranslationR, scale );
 
 			if ( vrDisplay.getFrameData ) {
 
@@ -320,29 +325,10 @@ const VREffect = function ( renderer, onError ) {
 				cameraL.projectionMatrix.elements = frameData.leftProjectionMatrix;
 				cameraR.projectionMatrix.elements = frameData.rightProjectionMatrix;
 
-				getEyeMatrices( frameData );
-
-				cameraL.updateMatrix();
-				cameraL.matrix.multiply( eyeMatrixL );
-				cameraL.matrix.decompose( cameraL.position, cameraL.quaternion, cameraL.scale );
-
-				cameraR.updateMatrix();
-				cameraR.matrix.multiply( eyeMatrixR );
-				cameraR.matrix.decompose( cameraR.position, cameraR.quaternion, cameraR.scale );
-
 			} else {
-
-				var eyeParamsL = vrDisplay.getEyeParameters( 'left' );
-				var eyeParamsR = vrDisplay.getEyeParameters( 'right' );
 
 				cameraL.projectionMatrix = fovToProjection( eyeParamsL.fieldOfView, true, camera.near, camera.far );
 				cameraR.projectionMatrix = fovToProjection( eyeParamsR.fieldOfView, true, camera.near, camera.far );
-
-				eyeTranslationL.fromArray( eyeParamsL.offset );
-				eyeTranslationR.fromArray( eyeParamsR.offset );
-
-				cameraL.translateOnAxis( eyeTranslationL, cameraL.scale.x );
-				cameraR.translateOnAxis( eyeTranslationR, cameraR.scale.x );
 
 			}
 
@@ -410,57 +396,13 @@ const VREffect = function ( renderer, onError ) {
 
 	};
 
-	this.dispose = function () {
+	this.dispose = function() {
 
 		window.removeEventListener( 'vrdisplaypresentchange', onVRDisplayPresentChange, false );
 
 	};
 
 	//
-
-	var poseOrientation = new THREE.Quaternion();
-	var posePosition = new THREE.Vector3();
-
-	// Compute model matrices of the eyes with respect to the head.
-	function getEyeMatrices( frameData ) {
-
-		// Compute the matrix for the position of the head based on the pose
-		if ( frameData.pose.orientation ) {
-
-			poseOrientation.fromArray( frameData.pose.orientation );
-			headMatrix.makeRotationFromQuaternion( poseOrientation );
-
-		}	else {
-
-			headMatrix.identity();
-
-		}
-
-		if ( frameData.pose.position ) {
-
-			posePosition.fromArray( frameData.pose.position );
-			headMatrix.setPosition( posePosition );
-
-		}
-
-		// The view matrix transforms vertices from sitting space to eye space. As such, the view matrix can be thought of as a product of two matrices:
-		// headToEyeMatrix * sittingToHeadMatrix
-
-		// The headMatrix that we've calculated above is the model matrix of the head in sitting space, which is the inverse of sittingToHeadMatrix.
-		// So when we multiply the view matrix with headMatrix, we're left with headToEyeMatrix:
-		// viewMatrix * headMatrix = headToEyeMatrix * sittingToHeadMatrix * headMatrix = headToEyeMatrix
-
-		eyeMatrixL.fromArray( frameData.leftViewMatrix );
-		eyeMatrixL.multiply( headMatrix );
-		eyeMatrixR.fromArray( frameData.rightViewMatrix );
-		eyeMatrixR.multiply( headMatrix );
-
-		// The eye's model matrix in head space is the inverse of headToEyeMatrix we calculated above.
-
-		eyeMatrixL.getInverse( eyeMatrixL );
-		eyeMatrixR.getInverse( eyeMatrixR );
-
-	}
 
 	function fovToNDCScaleOffset( fov ) {
 
@@ -514,6 +456,7 @@ const VREffect = function ( renderer, onError ) {
 		m[ 3 * 4 + 3 ] = 0.0;
 
 		mobj.transpose();
+
 		return mobj;
 
 	}

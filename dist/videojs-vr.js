@@ -47054,9 +47054,6 @@
 	  var eyeTranslationL = new Vector3();
 	  var eyeTranslationR = new Vector3();
 	  var renderRectL, renderRectR;
-	  var headMatrix = new Matrix4();
-	  var eyeMatrixL = new Matrix4();
-	  var eyeMatrixR = new Matrix4();
 	  var frameData = null;
 
 	  if ('VRFrameData' in window) {
@@ -47081,6 +47078,7 @@
 
 
 	  this.isPresenting = false;
+	  this.scale = 1;
 	  var scope = this;
 	  var rendererSize = renderer.getSize();
 	  var rendererUpdateStyle = false;
@@ -47212,6 +47210,11 @@
 	        scene.autoUpdate = false;
 	      }
 
+	      var eyeParamsL = vrDisplay.getEyeParameters('left');
+	      var eyeParamsR = vrDisplay.getEyeParameters('right');
+	      eyeTranslationL.fromArray(eyeParamsL.offset);
+	      eyeTranslationR.fromArray(eyeParamsR.offset);
+
 	      if (Array.isArray(scene)) {
 	        console.warn('THREE.VREffect.render() no longer supports arrays. Use object.layers instead.');
 	        scene = scene[0];
@@ -47257,9 +47260,10 @@
 	      if (renderer.autoClear || forceClear) renderer.clear();
 	      if (camera.parent === null) camera.updateMatrixWorld();
 	      camera.matrixWorld.decompose(cameraL.position, cameraL.quaternion, cameraL.scale);
-	      cameraR.position.copy(cameraL.position);
-	      cameraR.quaternion.copy(cameraL.quaternion);
-	      cameraR.scale.copy(cameraL.scale);
+	      camera.matrixWorld.decompose(cameraR.position, cameraR.quaternion, cameraR.scale);
+	      var scale = this.scale;
+	      cameraL.translateOnAxis(eyeTranslationL, scale);
+	      cameraR.translateOnAxis(eyeTranslationR, scale);
 
 	      if (vrDisplay.getFrameData) {
 	        vrDisplay.depthNear = camera.near;
@@ -47267,22 +47271,9 @@
 	        vrDisplay.getFrameData(frameData);
 	        cameraL.projectionMatrix.elements = frameData.leftProjectionMatrix;
 	        cameraR.projectionMatrix.elements = frameData.rightProjectionMatrix;
-	        getEyeMatrices(frameData);
-	        cameraL.updateMatrix();
-	        cameraL.matrix.multiply(eyeMatrixL);
-	        cameraL.matrix.decompose(cameraL.position, cameraL.quaternion, cameraL.scale);
-	        cameraR.updateMatrix();
-	        cameraR.matrix.multiply(eyeMatrixR);
-	        cameraR.matrix.decompose(cameraR.position, cameraR.quaternion, cameraR.scale);
 	      } else {
-	        var eyeParamsL = vrDisplay.getEyeParameters('left');
-	        var eyeParamsR = vrDisplay.getEyeParameters('right');
 	        cameraL.projectionMatrix = fovToProjection(eyeParamsL.fieldOfView, true, camera.near, camera.far);
 	        cameraR.projectionMatrix = fovToProjection(eyeParamsR.fieldOfView, true, camera.near, camera.far);
-	        eyeTranslationL.fromArray(eyeParamsL.offset);
-	        eyeTranslationR.fromArray(eyeParamsR.offset);
-	        cameraL.translateOnAxis(eyeTranslationL, cameraL.scale.x);
-	        cameraR.translateOnAxis(eyeTranslationR, cameraR.scale.x);
 	      } // render left eye
 
 
@@ -47335,37 +47326,6 @@
 	    window.removeEventListener('vrdisplaypresentchange', onVRDisplayPresentChange, false);
 	  }; //
 
-
-	  var poseOrientation = new Quaternion();
-	  var posePosition = new Vector3(); // Compute model matrices of the eyes with respect to the head.
-
-	  function getEyeMatrices(frameData) {
-	    // Compute the matrix for the position of the head based on the pose
-	    if (frameData.pose.orientation) {
-	      poseOrientation.fromArray(frameData.pose.orientation);
-	      headMatrix.makeRotationFromQuaternion(poseOrientation);
-	    } else {
-	      headMatrix.identity();
-	    }
-
-	    if (frameData.pose.position) {
-	      posePosition.fromArray(frameData.pose.position);
-	      headMatrix.setPosition(posePosition);
-	    } // The view matrix transforms vertices from sitting space to eye space. As such, the view matrix can be thought of as a product of two matrices:
-	    // headToEyeMatrix * sittingToHeadMatrix
-	    // The headMatrix that we've calculated above is the model matrix of the head in sitting space, which is the inverse of sittingToHeadMatrix.
-	    // So when we multiply the view matrix with headMatrix, we're left with headToEyeMatrix:
-	    // viewMatrix * headMatrix = headToEyeMatrix * sittingToHeadMatrix * headMatrix = headToEyeMatrix
-
-
-	    eyeMatrixL.fromArray(frameData.leftViewMatrix);
-	    eyeMatrixL.multiply(headMatrix);
-	    eyeMatrixR.fromArray(frameData.rightViewMatrix);
-	    eyeMatrixR.multiply(headMatrix); // The eye's model matrix in head space is the inverse of headToEyeMatrix we calculated above.
-
-	    eyeMatrixL.getInverse(eyeMatrixL);
-	    eyeMatrixR.getInverse(eyeMatrixR);
-	  }
 
 	  function fovToNDCScaleOffset(fov) {
 	    var pxscale = 2.0 / (fov.leftTan + fov.rightTan);
