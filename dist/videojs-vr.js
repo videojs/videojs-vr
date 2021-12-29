@@ -47897,7 +47897,7 @@
 	      DeviceMotionEvent.requestPermission().then(function (permissionState) {
 	        if (permissionState === 'granted') {
 	          window.addEventListener('devicemotion', function () {
-	            alert('granted');
+	            document.getElementById('granted').innerHTML = 'Permission Granted';
 	          });
 	        }
 	      }).catch(console.error);
