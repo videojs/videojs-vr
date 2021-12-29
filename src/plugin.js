@@ -557,7 +557,7 @@ void main() {
 
     this.controls3d.update();
     if (this.omniController) {
-      this.omniController.update(this.camera);
+      //this.omniController.update(this.camera);
     }
     this.effect.render(this.scene, this.camera);
 

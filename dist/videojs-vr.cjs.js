@@ -974,7 +974,9 @@ var OrbitControls = function OrbitControls(object, domElement) {
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
       DeviceMotionEvent.requestPermission().then(function (permissionState) {
         if (permissionState === 'granted') {
-          window.addEventListener('devicemotion', function () {});
+          window.addEventListener('devicemotion', function () {
+            alert('granted');
+          });
         }
       }).catch(console.error);
     }
@@ -2190,9 +2192,7 @@ var VR = /*#__PURE__*/function (_Plugin) {
 
     this.controls3d.update();
 
-    if (this.omniController) {
-      this.omniController.update(this.camera);
-    }
+    if (this.omniController) ;
 
     this.effect.render(this.scene, this.camera);
 
