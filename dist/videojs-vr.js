@@ -50032,10 +50032,10 @@
 	      // do not show rotate instructions
 	      ROTATE_INSTRUCTIONS_DISABLED: true
 	    });
-	    _this.polyfill_ = new WebVRPolyfill();
-	    _this.handleVrDisplayActivate_ = videojs.bind(_assertThisInitialized(_this), _this.handleVrDisplayActivate_);
-	    _this.handleVrDisplayDeactivate_ = videojs.bind(_assertThisInitialized(_this), _this.handleVrDisplayDeactivate_);
-	    _this.handleResize_ = videojs.bind(_assertThisInitialized(_this), _this.handleResize_);
+	    _this.polyfill_ = new WebVRPolyfill(); //this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
+	    //this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
+	    //this.handleResize_ = videojs.bind(this, this.handleResize_);
+
 	    _this.animate_ = videojs.bind(_assertThisInitialized(_this), _this.animate_);
 
 	    _this.setProjection(_this.options_.projection); // any time the video element is recycled for ads

@@ -80,9 +80,9 @@ class VR extends Plugin {
     });
     this.polyfill_ = new WebVRPolyfill();
 
-    this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
-    this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
-    this.handleResize_ = videojs.bind(this, this.handleResize_);
+    //this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
+    //this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
+    //this.handleResize_ = videojs.bind(this, this.handleResize_);
     this.animate_ = videojs.bind(this, this.animate_);
 
     this.setProjection(this.options_.projection);
