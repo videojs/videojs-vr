@@ -2211,9 +2211,9 @@ var VR = /*#__PURE__*/function (_Plugin) {
           }
         }
       }
-    }*/
+    }
+    this.camera.getWorldDirection(this.cameraVector);*/
 
-    this.camera.getWorldDirection(this.cameraVector);
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   };
 

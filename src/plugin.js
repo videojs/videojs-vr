@@ -581,8 +581,8 @@ void main() {
           }
         }
       }
-    }*/
-    this.camera.getWorldDirection(this.cameraVector);
+    }
+    this.camera.getWorldDirection(this.cameraVector);*/
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   }
