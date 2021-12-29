@@ -12,7 +12,6 @@ import CanvasPlayerControls from './canvas-player-controls';
 import OmnitoneController from './omnitone-controller';
 import * as webvrui from 'webvr-ui';
 // import controls so they get regisetered with videojs
-import './cardboard-button';
 import './big-vr-play-button';
 
 // Default options for the plugin.
@@ -646,7 +645,7 @@ void main() {
     if (this.options_.forceCardboard ||
         videojs.browser.IS_ANDROID ||
         videojs.browser.IS_IOS) {
-      this.addCardboardButton_();
+
     }
 
     // if ios remove full screen toggle
@@ -718,7 +717,6 @@ void main() {
           // so, we want to add the button if we're not polyfilled.
           if (!this.vrDisplay.isPolyfilled) {
             this.log('Real HMD found using VRControls', this.vrDisplay);
-            this.addCardboardButton_();
 
             // We use VRControls here since we are working with an HMD
             // and we only want orientation controls.
@@ -777,12 +775,6 @@ void main() {
     this.trigger('initialized');
   }
 
-  addCardboardButton_() {
-    if (!this.player_.controlBar.getChild('CardboardButton')) {
-      this.player_.controlBar.addChild('CardboardButton', {});
-    }
-  }
-
   getVideoEl_() {
     return this.player_.el().getElementsByTagName('video')[0];
   }
@@ -825,11 +817,6 @@ void main() {
 
     if (this.player_.getChild('BigVrPlayButton')) {
       this.player_.removeChild('BigVrPlayButton');
-    }
-
-    // remove the cardboard button
-    if (this.player_.getChild('CardboardButton')) {
-      this.player_.controlBar.removeChild('CardboardButton');
     }
 
     // show the fullscreen again
