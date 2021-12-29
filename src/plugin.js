@@ -74,14 +74,33 @@ class VR extends Plugin {
       return;
     }
 
+    this.polyfill_ = new WebVRPolyfill({
+      // do not show rotate instructions
+      ROTATE_INSTRUCTIONS_DISABLED: true
+    });
     this.polyfill_ = new WebVRPolyfill();
 
-    //this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
-    //this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
-    //this.handleResize_ = videojs.bind(this, this.handleResize_);
+    this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
+    this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
+    this.handleResize_ = videojs.bind(this, this.handleResize_);
     this.animate_ = videojs.bind(this, this.animate_);
 
     this.setProjection(this.options_.projection);
+
+    // any time the video element is recycled for ads
+    // we have to reset the vr state and re-init after ad
+    this.on(player, 'adstart', () => player.setTimeout(() => {
+      // if the video element was recycled for this ad
+      if (!player.ads || !player.ads.videoElementRecycled()) {
+        this.log('video element not recycled for this ad, no need to reset');
+        return;
+      }
+
+      this.log('video element recycled for this ad, reseting');
+      this.reset();
+
+      this.one(player, 'playing', this.init);
+    }), 1);
 
     this.on(player, 'loadedmetadata', this.init);
   }
@@ -92,7 +111,7 @@ class VR extends Plugin {
     if (!projection) {
       projection = 'NONE';
     }
-console.log('projection',projection);
+
     const position = {x: 0, y: 0, z: 0 };
 
     if (this.scene) {
@@ -536,13 +555,13 @@ void main() {
       }
     }
 
-    //this.controls3d.update();
+    this.controls3d.update();
     if (this.omniController) {
       this.omniController.update(this.camera);
     }
     this.effect.render(this.scene, this.camera);
 
-    /*if (window.navigator.getGamepads) {
+    if (window.navigator.getGamepads) {
       // Grab all gamepads
       const gamepads = window.navigator.getGamepads();
 
@@ -563,7 +582,7 @@ void main() {
         }
       }
     }
-    this.camera.getWorldDirection(this.cameraVector);*/
+    this.camera.getWorldDirection(this.cameraVector);
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   }
@@ -701,7 +720,7 @@ void main() {
 
             // We use VRControls here since we are working with an HMD
             // and we only want orientation controls.
-            //this.controls3d = new VRControls(this.camera);
+            this.controls3d = new VRControls(this.camera);
           }
         }
 
@@ -719,7 +738,7 @@ void main() {
             options.orientation = false;
           }
 
-          //this.controls3d = new OrbitOrientationContols(options);
+          this.controls3d = new OrbitOrientationContols(options);
           this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas, this.options_);
         }
 
@@ -746,9 +765,9 @@ void main() {
       });
     }
 
-    this.on(this.player_, 'fullscreenchange', this.handleResize_);
+    //this.on(this.player_, 'fullscreenchange', this.handleResize_);
     window.addEventListener('vrdisplaypresentchange', this.handleResize_, true);
-    window.addEventListener('resize', this.handleResize_, true);
+    //window.addEventListener('resize', this.handleResize_, true);
     window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
@@ -771,10 +790,10 @@ void main() {
       this.omniController = undefined;
     }
 
-    /*if (this.controls3d) {
+    if (this.controls3d) {
       this.controls3d.dispose();
       this.controls3d = null;
-    }*/
+    }
 
     if (this.canvasPlayerControls) {
       this.canvasPlayerControls.dispose();

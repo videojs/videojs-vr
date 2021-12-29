@@ -46943,6 +46943,100 @@
 	 * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/controls/VRControls.js
 	 */
 
+	var VRControls = function VRControls(object, onError) {
+	  var scope = this;
+	  var vrDisplay, vrDisplays;
+	  var standingMatrix = new Matrix4();
+	  var frameData = null;
+
+	  if ('VRFrameData' in window) {
+	    frameData = new VRFrameData();
+	  }
+
+	  function gotVRDisplays(displays) {
+	    vrDisplays = displays;
+
+	    if (displays.length > 0) {
+	      vrDisplay = displays[0];
+	    } else {
+	      if (onError) onError('VR input not available.');
+	    }
+	  }
+
+	  if (navigator.getVRDisplays) {
+	    navigator.getVRDisplays().then(gotVRDisplays).catch(function () {
+	      console.warn('THREE.VRControls: Unable to get VR Displays');
+	    });
+	  } // the Rift SDK returns the position in meters
+	  // this scale factor allows the user to define how meters
+	  // are converted to scene units.
+
+
+	  this.scale = 1; // If true will use "standing space" coordinate system where y=0 is the
+	  // floor and x=0, z=0 is the center of the room.
+
+	  this.standing = false; // Distance from the users eyes to the floor in meters. Used when
+	  // standing=true but the VRDisplay doesn't provide stageParameters.
+
+	  this.userHeight = 1.6;
+
+	  this.getVRDisplay = function () {
+	    return vrDisplay;
+	  };
+
+	  this.setVRDisplay = function (value) {
+	    vrDisplay = value;
+	  };
+
+	  this.getVRDisplays = function () {
+	    console.warn('THREE.VRControls: getVRDisplays() is being deprecated.');
+	    return vrDisplays;
+	  };
+
+	  this.getStandingMatrix = function () {
+	    return standingMatrix;
+	  };
+
+	  this.update = function () {
+	    if (vrDisplay) {
+	      var pose;
+
+	      if (vrDisplay.getFrameData) {
+	        vrDisplay.getFrameData(frameData);
+	        pose = frameData.pose;
+	      } else if (vrDisplay.getPose) {
+	        pose = vrDisplay.getPose();
+	      }
+
+	      if (pose.orientation !== null) {
+	        object.quaternion.fromArray(pose.orientation);
+	      }
+
+	      if (pose.position !== null) {
+	        object.position.fromArray(pose.position);
+	      } else {
+	        object.position.set(0, 0, 0);
+	      }
+
+	      if (this.standing) {
+	        if (vrDisplay.stageParameters) {
+	          object.updateMatrix();
+	          standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
+	          object.applyMatrix(standingMatrix);
+	        } else {
+	          object.position.setY(object.position.y + this.userHeight);
+	        }
+	      }
+
+	      object.position.multiplyScalar(scope.scale);
+	    }
+	  };
+
+	  this.dispose = function () {
+	    vrDisplay = null;
+	  };
+	};
+
 	/**
 	 * @author dmarcos / https://github.com/dmarcos
 	 * @author mrdoob / http://mrdoob.com
@@ -48047,6 +48141,178 @@
 	 *
 	 * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/controls/DeviceOrientationControls.js
 	 */
+
+	var DeviceOrientationControls = function DeviceOrientationControls(object) {
+	  var scope = this;
+	  this.object = object;
+	  this.object.rotation.reorder('YXZ');
+	  this.enabled = true;
+	  this.deviceOrientation = {};
+	  this.screenOrientation = 0;
+	  this.alphaOffset = 0; // radians
+
+	  var onDeviceOrientationChangeEvent = function onDeviceOrientationChangeEvent(event) {
+	    scope.deviceOrientation = event;
+	  };
+
+	  var onScreenOrientationChangeEvent = function onScreenOrientationChangeEvent() {
+	    scope.screenOrientation = window.orientation || 0;
+	  }; // The angles alpha, beta and gamma form a set of intrinsic Tait-Bryan angles of type Z-X'-Y''
+
+
+	  var setObjectQuaternion = function () {
+	    var zee = new Vector3(0, 0, 1);
+	    var euler = new Euler();
+	    var q0 = new Quaternion();
+	    var q1 = new Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)); // - PI/2 around the x-axis
+
+	    return function (quaternion, alpha, beta, gamma, orient) {
+	      euler.set(beta, alpha, -gamma, 'YXZ'); // 'ZXY' for the device, but 'YXZ' for us
+
+	      quaternion.setFromEuler(euler); // orient the device
+
+	      quaternion.multiply(q1); // camera looks out the back of the device, not the top
+
+	      quaternion.multiply(q0.setFromAxisAngle(zee, -orient)); // adjust for screen orientation
+	    };
+	  }();
+
+	  this.connect = function () {
+	    onScreenOrientationChangeEvent(); // run once on load
+
+	    window.addEventListener('orientationchange', onScreenOrientationChangeEvent, false);
+	    window.addEventListener('deviceorientation', onDeviceOrientationChangeEvent, false);
+	    scope.enabled = true;
+	  };
+
+	  this.disconnect = function () {
+	    window.removeEventListener('orientationchange', onScreenOrientationChangeEvent, false);
+	    window.removeEventListener('deviceorientation', onDeviceOrientationChangeEvent, false);
+	    scope.enabled = false;
+	  };
+
+	  this.update = function () {
+	    if (scope.enabled === false) return;
+	    var device = scope.deviceOrientation;
+
+	    if (device) {
+	      var alpha = device.alpha ? MathUtils.degToRad(device.alpha) + scope.alphaOffset : 0; // Z
+
+	      var beta = device.beta ? MathUtils.degToRad(device.beta) : 0; // X'
+
+	      var gamma = device.gamma ? MathUtils.degToRad(device.gamma) : 0; // Y''
+
+	      var orient = scope.screenOrientation ? MathUtils.degToRad(scope.screenOrientation) : 0; // O
+
+	      setObjectQuaternion(scope.object.quaternion, alpha, beta, gamma, orient);
+	    }
+	  };
+
+	  this.dispose = function () {
+	    scope.disconnect();
+	  };
+
+	  this.connect();
+	};
+
+	/**
+	 * Convert a quaternion to an angle
+	 *
+	 * Taken from https://stackoverflow.com/a/35448946
+	 * Thanks P. Ellul
+	 */
+
+	function Quat2Angle(x, y, z, w) {
+	  var test = x * y + z * w; // singularity at north pole
+
+	  if (test > 0.499) {
+	    var _yaw = 2 * Math.atan2(x, w);
+
+	    var _pitch = Math.PI / 2;
+
+	    var _roll = 0;
+	    return new Vector3(_pitch, _roll, _yaw);
+	  } // singularity at south pole
+
+
+	  if (test < -0.499) {
+	    var _yaw2 = -2 * Math.atan2(x, w);
+
+	    var _pitch2 = -Math.PI / 2;
+
+	    var _roll2 = 0;
+	    return new Vector3(_pitch2, _roll2, _yaw2);
+	  }
+
+	  var sqx = x * x;
+	  var sqy = y * y;
+	  var sqz = z * z;
+	  var yaw = Math.atan2(2 * y * w - 2 * x * z, 1 - 2 * sqy - 2 * sqz);
+	  var pitch = Math.asin(2 * test);
+	  var roll = Math.atan2(2 * x * w - 2 * y * z, 1 - 2 * sqx - 2 * sqz);
+	  return new Vector3(pitch, roll, yaw);
+	}
+
+	var OrbitOrientationControls = /*#__PURE__*/function () {
+	  function OrbitOrientationControls(options) {
+	    this.object = options.camera;
+	    this.domElement = options.canvas;
+	    this.orbit = new OrbitControls(this.object, this.domElement);
+	    this.speed = 0.5;
+	    this.orbit.target.set(0, 0, -1);
+	    this.orbit.enableZoom = false;
+	    this.orbit.enablePan = false;
+	    this.orbit.rotateSpeed = -this.speed; // if orientation is supported
+
+	    if (options.orientation) {
+	      this.orientation = new DeviceOrientationControls(this.object);
+	    } // if projection is not full view
+	    // limit the rotation angle in order to not display back half view
+
+
+	    if (options.halfView) {
+	      this.orbit.minAzimuthAngle = -Math.PI / 4;
+	      this.orbit.maxAzimuthAngle = Math.PI / 4;
+	    }
+	  }
+
+	  var _proto = OrbitOrientationControls.prototype;
+
+	  _proto.update = function update() {
+	    // orientation updates the camera using quaternions and
+	    // orbit updates the camera using angles. They are incompatible
+	    // and one update overrides the other. So before
+	    // orbit overrides orientation we convert our quaternion changes to
+	    // an angle change. Then save the angle into orbit so that
+	    // it will take those into account when it updates the camera and overrides
+	    // our changes
+	    if (this.orientation) {
+	      this.orientation.update();
+	      var quat = this.orientation.object.quaternion;
+	      var currentAngle = Quat2Angle(quat.x, quat.y, quat.z, quat.w); // we also have to store the last angle since quaternions are b
+
+	      if (typeof this.lastAngle_ === 'undefined') {
+	        this.lastAngle_ = currentAngle;
+	      }
+
+	      this.orbit.rotateLeft((this.lastAngle_.z - currentAngle.z) * (1 + this.speed));
+	      this.orbit.rotateUp((this.lastAngle_.y - currentAngle.y) * (1 + this.speed));
+	      this.lastAngle_ = currentAngle;
+	    }
+
+	    this.orbit.update();
+	  };
+
+	  _proto.dispose = function dispose() {
+	    this.orbit.dispose();
+
+	    if (this.orientation) {
+	      this.orientation.dispose();
+	    }
+	  };
+
+	  return OrbitOrientationControls;
+	}();
 
 	var corsSupport = function () {
 	  var video = document$1.createElement('video');
@@ -49762,13 +50028,36 @@
 	      return _assertThisInitialized(_this);
 	    }
 
-	    _this.polyfill_ = new WebVRPolyfill(); //this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
-	    //this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
-	    //this.handleResize_ = videojs.bind(this, this.handleResize_);
-
+	    _this.polyfill_ = new WebVRPolyfill({
+	      // do not show rotate instructions
+	      ROTATE_INSTRUCTIONS_DISABLED: true
+	    });
+	    _this.polyfill_ = new WebVRPolyfill();
+	    _this.handleVrDisplayActivate_ = videojs.bind(_assertThisInitialized(_this), _this.handleVrDisplayActivate_);
+	    _this.handleVrDisplayDeactivate_ = videojs.bind(_assertThisInitialized(_this), _this.handleVrDisplayDeactivate_);
+	    _this.handleResize_ = videojs.bind(_assertThisInitialized(_this), _this.handleResize_);
 	    _this.animate_ = videojs.bind(_assertThisInitialized(_this), _this.animate_);
 
-	    _this.setProjection(_this.options_.projection);
+	    _this.setProjection(_this.options_.projection); // any time the video element is recycled for ads
+	    // we have to reset the vr state and re-init after ad
+
+
+	    _this.on(player, 'adstart', function () {
+	      return player.setTimeout(function () {
+	        // if the video element was recycled for this ad
+	        if (!player.ads || !player.ads.videoElementRecycled()) {
+	          _this.log('video element not recycled for this ad, no need to reset');
+
+	          return;
+	        }
+
+	        _this.log('video element recycled for this ad, reseting');
+
+	        _this.reset();
+
+	        _this.one(player, 'playing', _this.init);
+	      });
+	    }, 1);
 
 	    _this.on(player, 'loadedmetadata', _this.init);
 
@@ -49786,7 +50075,6 @@
 	      projection = 'NONE';
 	    }
 
-	    console.log('projection', projection);
 	    var position = {
 	      x: 0,
 	      y: 0,
@@ -50205,25 +50493,29 @@
 	      if (this.videoTexture) {
 	        this.videoTexture.needsUpdate = true;
 	      }
-	    } //this.controls3d.update();
+	    }
 
+	    this.controls3d.update();
 
 	    if (this.omniController) {
 	      this.omniController.update(this.camera);
 	    }
 
 	    this.effect.render(this.scene, this.camera);
-	    /*if (window.navigator.getGamepads) {
+
+	    if (window$1.navigator.getGamepads) {
 	      // Grab all gamepads
-	      const gamepads = window.navigator.getGamepads();
-	       for (let i = 0; i < gamepads.length; ++i) {
-	        const gamepad = gamepads[i];
-	         // Make sure gamepad is defined
+	      var gamepads = window$1.navigator.getGamepads();
+
+	      for (var i = 0; i < gamepads.length; ++i) {
+	        var gamepad = gamepads[i]; // Make sure gamepad is defined
 	        // Only take input if state has changed since we checked last
+
 	        if (!gamepad || !gamepad.timestamp || gamepad.timestamp === this.prevTimestamps_[i]) {
 	          continue;
 	        }
-	        for (let j = 0; j < gamepad.buttons.length; ++j) {
+
+	        for (var j = 0; j < gamepad.buttons.length; ++j) {
 	          if (gamepad.buttons[j].pressed) {
 	            this.togglePlay_();
 	            this.prevTimestamps_[i] = gamepad.timestamp;
@@ -50232,8 +50524,8 @@
 	        }
 	      }
 	    }
-	    this.camera.getWorldDirection(this.cameraVector);*/
 
+	    this.camera.getWorldDirection(this.cameraVector);
 	    this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
 	  };
 
@@ -50361,8 +50653,9 @@
 	          if (!_this4.vrDisplay.isPolyfilled) {
 	            _this4.log('Real HMD found using VRControls', _this4.vrDisplay); // We use VRControls here since we are working with an HMD
 	            // and we only want orientation controls.
-	            //this.controls3d = new VRControls(this.camera);
 
+
+	            _this4.controls3d = new VRControls(_this4.camera);
 	          }
 	        }
 
@@ -50379,9 +50672,9 @@
 
 	          if (_this4.options_.motionControls === false) {
 	            _options.orientation = false;
-	          } //this.controls3d = new OrbitOrientationContols(options);
+	          }
 
-
+	          _this4.controls3d = new OrbitOrientationControls(_options);
 	          _this4.canvasPlayerControls = new CanvasPlayerControls(_this4.player_, _this4.renderedCanvas, _this4.options_);
 	        }
 
@@ -50409,11 +50702,11 @@
 	          audiocontext.resume();
 	        });
 	      });
-	    }
+	    } //this.on(this.player_, 'fullscreenchange', this.handleResize_);
 
-	    this.on(this.player_, 'fullscreenchange', this.handleResize_);
-	    window$1.addEventListener('vrdisplaypresentchange', this.handleResize_, true);
-	    window$1.addEventListener('resize', this.handleResize_, true);
+
+	    window$1.addEventListener('vrdisplaypresentchange', this.handleResize_, true); //window.addEventListener('resize', this.handleResize_, true);
+
 	    window$1.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
 	    window$1.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 	    this.initialized_ = true;
@@ -50434,11 +50727,11 @@
 	      this.omniController.dispose();
 	      this.omniController = undefined;
 	    }
-	    /*if (this.controls3d) {
+
+	    if (this.controls3d) {
 	      this.controls3d.dispose();
 	      this.controls3d = null;
-	    }*/
-
+	    }
 
 	    if (this.canvasPlayerControls) {
 	      this.canvasPlayerControls.dispose();
