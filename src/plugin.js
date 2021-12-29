@@ -74,10 +74,6 @@ class VR extends Plugin {
       return;
     }
 
-    this.polyfill_ = new WebVRPolyfill({
-      // do not show rotate instructions
-      ROTATE_INSTRUCTIONS_DISABLED: true
-    });
     this.polyfill_ = new WebVRPolyfill();
 
     //this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
@@ -86,21 +82,6 @@ class VR extends Plugin {
     this.animate_ = videojs.bind(this, this.animate_);
 
     this.setProjection(this.options_.projection);
-
-    // any time the video element is recycled for ads
-    // we have to reset the vr state and re-init after ad
-    this.on(player, 'adstart', () => player.setTimeout(() => {
-      // if the video element was recycled for this ad
-      if (!player.ads || !player.ads.videoElementRecycled()) {
-        this.log('video element not recycled for this ad, no need to reset');
-        return;
-      }
-
-      this.log('video element recycled for this ad, reseting');
-      this.reset();
-
-      this.one(player, 'playing', this.init);
-    }), 1);
 
     this.on(player, 'loadedmetadata', this.init);
   }

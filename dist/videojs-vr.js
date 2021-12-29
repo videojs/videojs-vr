@@ -50028,36 +50028,13 @@
 	      return _assertThisInitialized(_this);
 	    }
 
-	    _this.polyfill_ = new WebVRPolyfill({
-	      // do not show rotate instructions
-	      ROTATE_INSTRUCTIONS_DISABLED: true
-	    });
 	    _this.polyfill_ = new WebVRPolyfill(); //this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
 	    //this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
 	    //this.handleResize_ = videojs.bind(this, this.handleResize_);
 
 	    _this.animate_ = videojs.bind(_assertThisInitialized(_this), _this.animate_);
 
-	    _this.setProjection(_this.options_.projection); // any time the video element is recycled for ads
-	    // we have to reset the vr state and re-init after ad
-
-
-	    _this.on(player, 'adstart', function () {
-	      return player.setTimeout(function () {
-	        // if the video element was recycled for this ad
-	        if (!player.ads || !player.ads.videoElementRecycled()) {
-	          _this.log('video element not recycled for this ad, no need to reset');
-
-	          return;
-	        }
-
-	        _this.log('video element recycled for this ad, reseting');
-
-	        _this.reset();
-
-	        _this.one(player, 'playing', _this.init);
-	      });
-	    }, 1);
+	    _this.setProjection(_this.options_.projection);
 
 	    _this.on(player, 'loadedmetadata', _this.init);
 
