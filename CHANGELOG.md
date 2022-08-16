@@ -1,3 +1,14 @@
+<a name="1.10.1"></a>
+## [1.10.1](https://github.com/videojs/videojs-vr/compare/v1.10.0...v1.10.1) (2022-08-16)
+
+### Chores
+
+* **pkg.json:** set license field back to MIT ([#265](https://github.com/videojs/videojs-vr/issues/265)) ([fd7abed](https://github.com/videojs/videojs-vr/commit/fd7abed)), closes [#264](https://github.com/videojs/videojs-vr/issues/264)
+
+### Documentation
+
+* add caveats section for safari ([eb80c8a](https://github.com/videojs/videojs-vr/commit/eb80c8a))
+
 <a name="1.10.0"></a>
 # [1.10.0](https://github.com/videojs/videojs-vr/compare/v1.9.0...v1.10.0) (2021-08-31)
 
