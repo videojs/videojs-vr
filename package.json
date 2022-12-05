@@ -1,6 +1,6 @@
 {
   "name": "videojs-vr",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "A plugin to add 360 and VR video support to video.js.",
   "author": {
     "name": "James Broberg",
@@ -18,6 +18,10 @@
     {
       "name": "Brandon Casey",
       "email": "branonocasey@gmail.com"
+    },
+    {
+      "name": "Kevin Staunton-Lambert",
+      "email": "kevin.staunton-lambert@metacdn.com"
     }
   ],
   "license": "MIT",
@@ -83,7 +87,7 @@
     "global": "^4.4.0",
     "three": "0.125.2",
     "video.js": "^6 || ^7",
-    "webvr-polyfill": "0.10.12"
+    "webxr-polyfill": "^2.0.3"
   },
   "devDependencies": {
     "@videojs/generator-helpers": "^3.0.1",

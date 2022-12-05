@@ -1,7 +1,7 @@
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
 import document from 'global/document';
-import WebVRPolyfill from 'webvr-polyfill';
+import WebXRPolyfill from 'webxr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from '../vendor/three/VRControls.js';
@@ -75,11 +75,11 @@ class VR extends Plugin {
       return;
     }
 
-    this.polyfill_ = new WebVRPolyfill({
+    this.polyfill_ = new WebXRPolyfill({
       // do not show rotate instructions
       ROTATE_INSTRUCTIONS_DISABLED: true
     });
-    this.polyfill_ = new WebVRPolyfill();
+    this.polyfill_ = new WebXRPolyfill();
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
@@ -470,7 +470,7 @@ void main() {
         return;
       }
 
-      // webvr-polyfill/cardboard ui only watches for click events
+      // webxr-polyfill/cardboard ui only watches for click events
       // to tell that the back arrow button is pressed during cardboard vr.
       // but somewhere along the line these events are silenced with preventDefault
       // but only on iOS, so we translate them ourselves here
@@ -522,6 +522,7 @@ void main() {
 
   }
 
+  /* KJSL: TODO: requestAnimationFrame -> setAnimationLoop */
   requestAnimationFrame(fn) {
     if (this.vrDisplay) {
       return this.vrDisplay.requestAnimationFrame(fn);
@@ -585,6 +586,7 @@ void main() {
     }
     this.camera.getWorldDirection(this.cameraVector);
 
+    /* KJSL: TODO: requestAnimationFrame -> setAnimationLoop */
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   }
 
@@ -733,6 +735,7 @@ void main() {
           this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas, this.options_);
         }
 
+        /* KJSL: TODO: requestAnimationFrame -> setAnimationLoop */
         this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
       });
     } else if (window.navigator.getVRDevices) {
@@ -858,7 +861,7 @@ void main() {
   }
 
   polyfillVersion() {
-    return WebVRPolyfill.version;
+    return WebXRPolyfill.version;
   }
 }
 
