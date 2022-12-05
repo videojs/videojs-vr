@@ -1,6 +1,7 @@
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
 import document from 'global/document';
+import WebVRPolyfill from 'webvr-polyfill';
 import WebXRPolyfill from 'webxr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
@@ -75,7 +76,7 @@ class VR extends Plugin {
       return;
     }
 
-    this.polyfill_ = new WebXRPolyfill({
+    this.polyfill_ = new WebVRPolyfill({
       // do not show rotate instructions
       ROTATE_INSTRUCTIONS_DISABLED: true
     });
