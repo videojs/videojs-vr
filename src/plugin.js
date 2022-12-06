@@ -1,3 +1,6 @@
+require('babel-polyfill');
+
+import 'babel-polyfill';
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
 import document from 'global/document';
@@ -10,6 +13,7 @@ import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
 import OmnitoneController from './omnitone-controller';
+import { VRButton } from '../vendor/three/VRButton.js';
 
 // import controls so they get regisetered with videojs
 import './cardboard-button';
@@ -701,7 +705,9 @@ void main() {
       this.log('is supported, getting vr displays');
 
       window.navigator.xr.isSessionSupported('immersive-vr').then((displays) => {
-        // ShowEnterVRButton();
+
+        // ShowEnterVRButton
+        document.body.appendChild(VRButton.createButton(this.renderer));
 
         if (displays.length > 0) {
           this.log('Displays found', displays);
