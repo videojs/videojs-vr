@@ -1,7 +1,6 @@
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
 import document from 'global/document';
-import WebVRPolyfill from 'webvr-polyfill';
 import WebXRPolyfill from 'webxr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
@@ -76,7 +75,7 @@ class VR extends Plugin {
       return;
     }
 
-    this.polyfill_ = new WebVRPolyfill({
+    this.polyfill_ = new WebXRPolyfill({
       // do not show rotate instructions
       ROTATE_INSTRUCTIONS_DISABLED: true
     });
@@ -698,9 +697,12 @@ void main() {
     videoElStyle.zIndex = '-1';
     videoElStyle.opacity = '0';
 
-    if (window.navigator.getVRDisplays) {
+    if (window.navigator.xr) {
       this.log('is supported, getting vr displays');
-      window.navigator.getVRDisplays().then((displays) => {
+
+      window.navigator.xr.isSessionSupported('immersive-vr').then((displays) => {
+        // ShowEnterVRButton();
+
         if (displays.length > 0) {
           this.log('Displays found', displays);
           this.vrDisplay = displays[0];
