@@ -9,6 +9,9 @@
  *
  * originally from https://github.com/mrdoob/three.js/blob/r93/examples/js/effects/VREffect.js
  */
+
+/* KJSL: TODO REMOVE REFACTOR */
+
 import * as THREE from 'three';
 
 const VREffect = function ( renderer, onError ) {
