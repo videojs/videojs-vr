@@ -562,7 +562,6 @@ void main() {
     if (this.omniController) {
       this.omniController.update(this.camera);
     }
-    this.effect.render(this.scene, this.camera);
 
     if (window.navigator.getGamepads) {
       // Grab all gamepads
@@ -595,7 +594,6 @@ void main() {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
-    this.effect.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
   }
@@ -680,7 +678,10 @@ void main() {
       }
     };
 
-    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    //    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+
+    // KJSL temp Quest Pro testing
+    this.renderer.setSize(2880, 1584, false);
     this.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
@@ -807,11 +808,6 @@ void main() {
     if (this.canvasPlayerControls) {
       this.canvasPlayerControls.dispose();
       this.canvasPlayerControls = null;
-    }
-
-    if (this.effect) {
-      this.effect.dispose();
-      this.effect = null;
     }
 
     window.removeEventListener('resize', this.handleResize_, true);
