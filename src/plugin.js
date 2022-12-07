@@ -1,5 +1,3 @@
-require('babel-polyfill');
-
 import 'babel-polyfill';
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
@@ -709,6 +707,8 @@ void main() {
         // ShowEnterVRButton
         document.body.appendChild(VRButton.createButton(this.renderer));
 
+        this.renderer.setAnimationLoop(this.render.bind(this));
+
         if (displays.length > 0) {
           this.log('Displays found', displays);
           this.vrDisplay = displays[0];
@@ -716,7 +716,7 @@ void main() {
           // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
           // also need the cardboard button to enter fully immersive mode
           // so, we want to add the button if we're not polyfilled.
-          if (!this.vrDisplay.isPolyfilled) {
+          if (1 || !this.vrDisplay.isPolyfilled) {
             this.log('Real HMD found using VRControls', this.vrDisplay);
             this.addCardboardButton_();
 
@@ -776,6 +776,10 @@ void main() {
 
     this.initialized_ = true;
     this.trigger('initialized');
+  }
+
+  render() {
+    this.renderer.render(this.scene, this.camera);
   }
 
   addCardboardButton_() {
