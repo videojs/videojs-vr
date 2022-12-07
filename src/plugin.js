@@ -6,7 +6,6 @@ import WebXRPolyfill from 'webxr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from '../vendor/three/VRControls.js';
-import VREffect from '../vendor/three/VREffect.js';
 import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
@@ -682,9 +681,6 @@ void main() {
     };
 
     this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
-    this.effect = new VREffect(this.renderer);
-
-    this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
