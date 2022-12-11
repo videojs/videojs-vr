@@ -680,10 +680,7 @@ void main() {
       }
     };
 
-    //    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
-
-    // KJSL temp Quest Pro testing
-    this.renderer.setSize(2880, 1584, false);
+    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
@@ -712,7 +709,7 @@ void main() {
         this.renderer.xr.setReferenceSpaceType('local');
         this.renderer.setAnimationLoop(this.render.bind(this));
 
-        if (displays.length > 0) {
+        if (1 || displays.length > 0) {
           this.log('Displays found', displays);
           this.vrDisplay = displays[0];
 
