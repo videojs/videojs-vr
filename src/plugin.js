@@ -6,7 +6,6 @@ import WebXRPolyfill from 'webxr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from '../vendor/three/VRControls.js';
-import VREffect from '../vendor/three/VREffect.js';
 import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
@@ -563,7 +562,6 @@ void main() {
     if (this.omniController) {
       this.omniController.update(this.camera);
     }
-    this.effect.render(this.scene, this.camera);
 
     if (window.navigator.getGamepads) {
       // Grab all gamepads
@@ -596,7 +594,6 @@ void main() {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
-    this.effect.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
   }
@@ -615,7 +612,9 @@ void main() {
   init() {
     this.reset();
 
-    this.camera = new THREE.PerspectiveCamera(75, this.player_.currentWidth() / this.player_.currentHeight(), 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(70, this.player_.currentWidth() / this.player_.currentHeight(), 1, 2000);
+    this.camera.layers.enable(1);
+
     // Store vector representing the direction in which the camera is looking, in world space.
     this.cameraVector = new THREE.Vector3();
 
@@ -681,14 +680,16 @@ void main() {
       }
     };
 
-    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
-    this.effect = new VREffect(this.renderer);
+    //    this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
 
-    this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    // KJSL temp Quest Pro testing
+    this.renderer.setSize(2880, 1584, false);
     this.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
     this.prevTimestamps_ = [];
+
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
     this.renderedCanvas = this.renderer.domElement;
     this.renderedCanvas.setAttribute('style', 'width: 100%; height: 100%; position: absolute; top:0;');
@@ -707,6 +708,8 @@ void main() {
         // ShowEnterVRButton
         document.body.appendChild(VRButton.createButton(this.renderer));
 
+        this.renderer.xr.enabled = true;
+        this.renderer.xr.setReferenceSpaceType('local');
         this.renderer.setAnimationLoop(this.render.bind(this));
 
         if (displays.length > 0) {
@@ -811,11 +814,6 @@ void main() {
     if (this.canvasPlayerControls) {
       this.canvasPlayerControls.dispose();
       this.canvasPlayerControls = null;
-    }
-
-    if (this.effect) {
-      this.effect.dispose();
-      this.effect = null;
     }
 
     window.removeEventListener('resize', this.handleResize_, true);
