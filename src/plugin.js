@@ -612,7 +612,9 @@ void main() {
   init() {
     this.reset();
 
-    this.camera = new THREE.PerspectiveCamera(75, this.player_.currentWidth() / this.player_.currentHeight(), 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(70, this.player_.currentWidth() / this.player_.currentHeight(), 1, 2000);
+    this.camera.layers.enable(1);
+
     // Store vector representing the direction in which the camera is looking, in world space.
     this.cameraVector = new THREE.Vector3();
 
@@ -687,6 +689,8 @@ void main() {
     // Previous timestamps for gamepad updates
     this.prevTimestamps_ = [];
 
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+
     this.renderedCanvas = this.renderer.domElement;
     this.renderedCanvas.setAttribute('style', 'width: 100%; height: 100%; position: absolute; top:0;');
 
@@ -704,6 +708,8 @@ void main() {
         // ShowEnterVRButton
         document.body.appendChild(VRButton.createButton(this.renderer));
 
+        this.renderer.xr.enabled = true;
+        this.renderer.xr.setReferenceSpaceType('local');
         this.renderer.setAnimationLoop(this.render.bind(this));
 
         if (displays.length > 0) {
