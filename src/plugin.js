@@ -3,9 +3,11 @@ import {version as VERSION} from '../package.json';
 import window from 'global/window';
 import document from 'global/document';
 import WebXRPolyfill from 'webxr-polyfill';
+import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from '../vendor/three/VRControls.js';
+import VREffect from '../vendor/three/VREffect.js';
 import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
@@ -76,7 +78,7 @@ class VR extends Plugin {
       return;
     }
 
-    this.polyfill_ = new WebXRPolyfill({
+    this.polyfill_ = new WebVRPolyfill({
       // do not show rotate instructions
       ROTATE_INSTRUCTIONS_DISABLED: true
     });
@@ -471,7 +473,7 @@ void main() {
         return;
       }
 
-      // webxr-polyfill/cardboard ui only watches for click events
+      // webvr-polyfill/cardboard ui only watches for click events
       // to tell that the back arrow button is pressed during cardboard vr.
       // but somewhere along the line these events are silenced with preventDefault
       // but only on iOS, so we translate them ourselves here
@@ -523,7 +525,6 @@ void main() {
 
   }
 
-  /* KJSL: TODO: requestAnimationFrame -> setAnimationLoop */
   requestAnimationFrame(fn) {
     if (this.vrDisplay) {
       return this.vrDisplay.requestAnimationFrame(fn);
@@ -563,6 +564,10 @@ void main() {
       this.omniController.update(this.camera);
     }
 
+    if (this.effect) {
+      this.effect.render(this.scene, this.camera);
+    }
+
     if (window.navigator.getGamepads) {
       // Grab all gamepads
       const gamepads = window.navigator.getGamepads();
@@ -586,7 +591,6 @@ void main() {
     }
     this.camera.getWorldDirection(this.cameraVector);
 
-    /* KJSL: TODO: requestAnimationFrame -> setAnimationLoop */
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   }
 
@@ -594,6 +598,9 @@ void main() {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
+    if (this.effect) {
+      this.effect.setSize(width, height, false);
+    }
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
   }
@@ -681,12 +688,11 @@ void main() {
     };
 
     this.renderer.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+
     this.vrDisplay = null;
 
     // Previous timestamps for gamepad updates
     this.prevTimestamps_ = [];
-
-    this.renderer.setPixelRatio(window.devicePixelRatio);
 
     this.renderedCanvas = this.renderer.domElement;
     this.renderedCanvas.setAttribute('style', 'width: 100%; height: 100%; position: absolute; top:0;');
@@ -697,56 +703,72 @@ void main() {
     videoElStyle.zIndex = '-1';
     videoElStyle.opacity = '0';
 
+    let displays = [];
+
+    if (window.navigator.getVRDisplays) {
+      this.log('is supported, getting vr displays');
+
+      window.navigator.getVRDisplays().then((displaysArray) => {
+        displays = displaysArray;
+      });
+    }
+
     if (window.navigator.xr) {
       this.log('is supported, getting vr displays');
 
-      window.navigator.xr.isSessionSupported('immersive-vr').then((displays) => {
+      window.navigator.xr.isSessionSupported('immersive-vr').then((supportsImmersiveVR) => {
+        if (supportsImmersiveVR) {
+          // ShowEnterVRButton
+          document.body.appendChild(VRButton.createButton(this.renderer));
 
-        // ShowEnterVRButton
-        document.body.appendChild(VRButton.createButton(this.renderer));
+          this.renderer.xr.enabled = true;
+          this.renderer.xr.setReferenceSpaceType('local');
+          this.renderer.setPixelRatio(window.devicePixelRatio);
+          this.renderer.setAnimationLoop(this.render.bind(this));
+        } else {
+          // WebVR polyfill fall back
+          this.effect = new VREffect(this.renderer);
+          this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
 
-        this.renderer.xr.enabled = true;
-        this.renderer.xr.setReferenceSpaceType('local');
-        this.renderer.setAnimationLoop(this.render.bind(this));
+          if (displays.length > 0) {
+            this.log('Displays found', displays);
+            this.vrDisplay = displays[0];
 
-        if (1 || displays.length > 0) {
-          this.log('Displays found', displays);
-          this.vrDisplay = displays[0];
+            // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
+            // also need the cardboard button to enter fully immersive mode
+            // so, we want to add the button if we're not polyfilled.
+            if (!this.vrDisplay.isPolyfilled) {
+              this.log('Real HMD found using VRControls', this.vrDisplay);
+              this.addCardboardButton_();
 
-          // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
-          // also need the cardboard button to enter fully immersive mode
-          // so, we want to add the button if we're not polyfilled.
-          if (1 || !this.vrDisplay.isPolyfilled) {
-            this.log('Real HMD found using VRControls', this.vrDisplay);
-            this.addCardboardButton_();
-
-            // We use VRControls here since we are working with an HMD
-            // and we only want orientation controls.
-            this.controls3d = new VRControls(this.camera);
-          }
-        }
-
-        if (!this.controls3d) {
-          this.log('no HMD found Using Orbit & Orientation Controls');
-          const options = {
-            camera: this.camera,
-            canvas: this.renderedCanvas,
-            // check if its a half sphere view projection
-            halfView: this.currentProjection_.indexOf('180') === 0,
-            orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
-          };
-
-          if (this.options_.motionControls === false) {
-            options.orientation = false;
+              // We use VRControls here since we are working with an HMD
+              // and we only want orientation controls.
+              this.controls3d = new VRControls(this.camera);
+            }
           }
 
-          this.controls3d = new OrbitOrientationContols(options);
-          this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas, this.options_);
-        }
+          if (!this.controls3d) {
+            this.log('no HMD found Using Orbit & Orientation Controls');
+            const options = {
+              camera: this.camera,
+              canvas: this.renderedCanvas,
+              // check if its a half sphere view projection
+              halfView: this.currentProjection_.indexOf('180') === 0,
+              orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
+            };
 
-        /* KJSL: TODO: requestAnimationFrame -> setAnimationLoop */
-        this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
+            if (this.options_.motionControls === false) {
+              options.orientation = false;
+            }
+
+            this.controls3d = new OrbitOrientationContols(options);
+            this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas, this.options_);
+
+          }
+        }
       });
+
+      this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
     } else if (window.navigator.getVRDevices) {
       this.triggerError_({code: 'web-vr-out-of-date', dismiss: false});
     } else {
@@ -813,6 +835,11 @@ void main() {
       this.canvasPlayerControls = null;
     }
 
+    if (this.effect) {
+      this.effect.dispose();
+      this.effect = null;
+    }
+
     window.removeEventListener('resize', this.handleResize_, true);
     window.removeEventListener('vrdisplaypresentchange', this.handleResize_, true);
     window.removeEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
@@ -869,6 +896,10 @@ void main() {
   }
 
   polyfillVersion() {
+    return WebVRPolyfill.version;
+  }
+
+  polyfillVersionXR() {
     return WebXRPolyfill.version;
   }
 }
