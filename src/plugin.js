@@ -17,6 +17,8 @@ import { VRButton } from '../vendor/three/VRButton.js';
 // import controls so they get regisetered with videojs
 import './cardboard-button';
 import './big-vr-play-button';
+import {XRControllerModelFactory} from '../webxr/libs/three/jsm/XRControllerModelFactory';
+import {BoxLineGeometry} from '../webxr/libs/three/jsm/BoxLineGeometry';
 
 // Default options for the plugin.
 const defaults = {
@@ -140,6 +142,15 @@ class VR extends Plugin {
       this.movieScreen.scale.x = -1;
       this.movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
       this.scene.add(this.movieScreen);
+
+      const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.7);
+
+      this.scene.add(ambient);
+
+      // const mesh1 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 16), new THREE.MeshStandardMaterial({ color: 0xffff00, side: THREE.DoubleSide }));
+      // mesh1.position.set(position.x, -3, -8.5);
+      // this.scene.add(mesh1);
+
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
       let geometry = new THREE.SphereGeometry(
@@ -718,15 +729,12 @@ void main() {
 
       window.navigator.xr.isSessionSupported('immersive-vr').then((supportsImmersiveVR) => {
         if (supportsImmersiveVR) {
-          // ShowEnterVRButton
-          document.body.appendChild(VRButton.createButton(this.renderer));
-
-          this.renderer.xr.enabled = true;
-          this.renderer.xr.setReferenceSpaceType('local');
-          this.renderer.setPixelRatio(window.devicePixelRatio);
-          this.renderer.setAnimationLoop(this.render.bind(this));
+          // We support WebXR show the enter VRButton
+          this.vrButton = VRButton.createButton(this.renderer);
+          document.body.appendChild(this.vrButton);
+          this.initImmersiveVR();
         } else {
-          // WebVR polyfill fall back
+          // No WebXR support WebVR polyfill fall back
           this.effect = new VREffect(this.renderer);
           this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
 
@@ -800,7 +808,143 @@ void main() {
     this.trigger('initialized');
   }
 
+  buildControllers() {
+    const controllerModelFactory = new XRControllerModelFactory();
+
+    const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -1)]);
+
+    const line = new THREE.Line(geometry);
+
+    line.name = 'line';
+    line.scale.z = 0;
+
+    const controllers = [];
+
+    for (let i = 0; i <= 1; i++) {
+      const controller = this.renderer.xr.getController(i);
+
+      controller.add(line.clone());
+      controller.userData.selectPressed = false;
+      this.scene.add(controller);
+
+      controllers.push(controller);
+
+      const grip = this.renderer.xr.getControllerGrip(i);
+
+      grip.add(controllerModelFactory.createControllerModel(grip));
+      this.scene.add(grip);
+    }
+
+    return controllers;
+  }
+
+  initShuttleControls() {
+    this.holodeck = new THREE.LineSegments(new BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }));
+    this.holodeck.geometry.translate(0, 3, 0);
+
+    const geometry = new THREE.IcosahedronBufferGeometry(0.1, 2);
+
+    this.scene.add(this.holodeck);
+
+    // Play/Pause
+    const buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0x00ffff}));
+
+    buttonPlayPause.position.x = -0.4;
+    buttonPlayPause.position.y = -2.0;
+    buttonPlayPause.position.z = -4.0;
+    buttonPlayPause.buttonid = 'playpause';
+    this.holodeck.add(buttonPlayPause);
+
+    // ExitVR
+    const buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xff0000}));
+
+    buttonExit.position.x = 0.4;
+    buttonExit.position.y = -2.0;
+    buttonExit.position.z = -4.0;
+    buttonExit.buttonid = 'exit';
+    this.holodeck.add(buttonExit);
+
+    this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide}));
+    this.highlight.scale.set(1.1, 1.1, 1.1);
+    this.scene.add(this.highlight);
+  }
+
+  renderController(controller) {
+    if (controller.userData.selectPressed) {
+      controller.children[0].scale.z = 10;
+      this.workingMatrix.identity().extractRotation(controller.matrixWorld);
+      this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+      this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.workingMatrix);
+      const rayTargets = this.raycaster.intersectObjects(this.holodeck.children);
+
+      if (rayTargets.length > 0) {
+        rayTargets[0].object.add(this.highlight);
+        this.highlight.visible = true;
+        if (controller.userData.selectPressed) {
+          switch (rayTargets[0].object.buttonid) {
+          case 'playpause':
+            this.togglePlay_();
+            break;
+
+          case 'exit':
+          default:
+            this.vrButton.click();
+            break;
+          }
+          controller.userData.selectPressed = false;
+        }
+        controller.children[0].scale.z = rayTargets[0].distance;
+      } else {
+        this.highlight.visible = false;
+      }
+    }
+  }
+
+  initImmersiveVR() {
+    this.renderer.xr.enabled = true;
+    this.renderer.xr.setReferenceSpaceType('local');
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setAnimationLoop(this.render.bind(this));
+
+    this.raycaster = new THREE.Raycaster();
+    this.workingMatrix = new THREE.Matrix4();
+    this.workingVector = new THREE.Vector3();
+
+    this.initShuttleControls();
+
+    const self = this;
+
+    this.controllers = this.buildControllers();
+
+    function onSelectStart() {
+      this.children[0].scale.z = 10;
+      this.userData.selectPressed = true;
+    }
+
+    function onSelectEnd() {
+      this.children[0].scale.z = 0;
+      self.highlight.visible = false;
+      this.userData.selectPressed = false;
+    }
+
+    this.controllers.forEach((controller) => {
+      controller.addEventListener('selectstart', onSelectStart);
+      controller.addEventListener('selectend', onSelectEnd);
+      controller.addEventListener('squeezestart', onSelectStart);
+      controller.addEventListener('squeezeend', onSelectEnd);
+    });
+
+  }
+
   render() {
+    if (this.controllers) {
+      const self = this;
+
+      this.controllers.forEach((controller) => {
+        self.renderController(controller);
+      });
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
