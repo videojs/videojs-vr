@@ -171,7 +171,6 @@ class VRButton {
       return message;
 
     }
-
   }
 
   static registerSessionGrantedListener() {
