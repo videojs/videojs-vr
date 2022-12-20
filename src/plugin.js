@@ -145,6 +145,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.7);
+
       this.scene.add(ambient);
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
@@ -802,8 +803,10 @@ void main() {
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
     // For iOS we need permission for the device orientation data, this will pop up an 'Allow'
-    if (window.typeof(DeviceMotionEvent) === 'function' && typeof(window.DeviceMotionEvent.requestPermission) === "function") {
+    // eslint-disable-next-line
+    if (typeof(window.DeviceMotionEvent) === 'function' && typeof(window.DeviceMotionEvent.requestPermission) === "function") {
       const self = this;
+
       window.DeviceMotionEvent.requestPermission().then(response => {
         if (response === 'granted') {
           window.addEventListener('deviceorientation', (event) => {
@@ -818,7 +821,7 @@ void main() {
   }
 
   onDeviceOrientationChange(pitch, roll, yaw) {
-    this.log(`orientation pitch=${parseInt(pitch)} roll=${parseInt(roll)} yaw=${parseInt(yaw)}`);
+    this.log(`orientation pitch=${parseInt(pitch, 10)} roll=${parseInt(roll, 10)} yaw=${parseInt(yaw, 10)}`);
   }
 
   buildControllers() {
