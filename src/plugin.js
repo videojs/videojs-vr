@@ -804,7 +804,8 @@ void main() {
 
     // For iOS we need permission for the device orientation data, this will pop up an 'Allow'
     // eslint-disable-next-line
-    if (typeof(window.DeviceMotionEvent) === 'function' && typeof(window.DeviceMotionEvent.requestPermission) === "function") {
+    if (typeof window.DeviceMotionEvent === 'function' &&
+        typeof window.DeviceMotionEvent.requestPermission === "function") {
       const self = this;
 
       window.DeviceMotionEvent.requestPermission().then(response => {
