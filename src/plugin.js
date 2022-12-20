@@ -84,7 +84,8 @@ class VR extends Plugin {
       // do not show rotate instructions
       ROTATE_INSTRUCTIONS_DISABLED: true
     });
-    this.polyfill_ = new WebXRPolyfill();
+    this.polyfill_ = new WebVRPolyfill();
+    this.polyfillXR_ = new WebXRPolyfill();
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
@@ -144,13 +145,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.7);
-
       this.scene.add(ambient);
-
-      // const mesh1 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 16), new THREE.MeshStandardMaterial({ color: 0xffff00, side: THREE.DoubleSide }));
-      // mesh1.position.set(position.x, -3, -8.5);
-      // this.scene.add(mesh1);
-
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
       let geometry = new THREE.SphereGeometry(
@@ -715,6 +710,7 @@ void main() {
     videoElStyle.opacity = '0';
 
     let displays = [];
+    let hasWebXR = false;
 
     if (window.navigator.getVRDisplays) {
       this.log('is supported, getting vr displays');
@@ -724,58 +720,59 @@ void main() {
       });
     }
 
+    // Detect WebXR is supported
     if (window.navigator.xr) {
-      this.log('is supported, getting vr displays');
-
+      this.log('WebXR is supported');
       window.navigator.xr.isSessionSupported('immersive-vr').then((supportsImmersiveVR) => {
         if (supportsImmersiveVR) {
+          hasWebXR = true;
           // We support WebXR show the enter VRButton
           this.vrButton = VRButton.createButton(this.renderer);
           document.body.appendChild(this.vrButton);
           this.initImmersiveVR();
-        } else {
-          // No WebXR support WebVR polyfill fall back
-          this.effect = new VREffect(this.renderer);
-          this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
-
-          if (displays.length > 0) {
-            this.log('Displays found', displays);
-            this.vrDisplay = displays[0];
-
-            // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
-            // also need the cardboard button to enter fully immersive mode
-            // so, we want to add the button if we're not polyfilled.
-            if (!this.vrDisplay.isPolyfilled) {
-              this.log('Real HMD found using VRControls', this.vrDisplay);
-              this.addCardboardButton_();
-
-              // We use VRControls here since we are working with an HMD
-              // and we only want orientation controls.
-              this.controls3d = new VRControls(this.camera);
-            }
-          }
-
-          if (!this.controls3d) {
-            this.log('no HMD found Using Orbit & Orientation Controls');
-            const options = {
-              camera: this.camera,
-              canvas: this.renderedCanvas,
-              // check if its a half sphere view projection
-              halfView: this.currentProjection_.indexOf('180') === 0,
-              orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
-            };
-
-            if (this.options_.motionControls === false) {
-              options.orientation = false;
-            }
-
-            this.controls3d = new OrbitOrientationContols(options);
-            this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas, this.options_);
-
-          }
         }
       });
+    }
 
+    // No WebXR support fall back to using WebVR polyfill
+    if (!hasWebXR) {
+      this.effect = new VREffect(this.renderer);
+      this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    }
+
+    if (displays.length && displays.length > 0) {
+      this.log('Displays found', displays);
+      this.vrDisplay = displays[0];
+
+      // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
+      // also need the cardboard button to enter fully immersive mode
+      // so, we want to add the button if we're not polyfilled.
+      if (!this.vrDisplay.isPolyfilled) {
+        this.log('Real HMD found using VRControls', this.vrDisplay);
+        this.addCardboardButton_();
+
+        // We use VRControls here since we are working with an HMD
+        // and we only want orientation controls.
+        this.controls3d = new VRControls(this.camera);
+      }
+    }
+
+    if (!this.controls3d) {
+      this.log('no HMD found Using Orbit & Orientation Controls');
+      const options = {
+        camera: this.camera,
+        canvas: this.renderedCanvas,
+        // check if its a half sphere view projection
+        halfView: this.currentProjection_.indexOf('180') === 0,
+        orientation: videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false
+      };
+
+      if (this.options_.motionControls === false) {
+        options.orientation = false;
+      }
+
+      this.controls3d = new OrbitOrientationContols(options);
+      this.canvasPlayerControls = new CanvasPlayerControls(this.player_, this.renderedCanvas, this.options_);
       this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
     } else if (window.navigator.getVRDevices) {
       this.triggerError_({code: 'web-vr-out-of-date', dismiss: false});
@@ -804,8 +801,24 @@ void main() {
     window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
 
+    // For iOS we need permission for the device orientation data, this will pop up an 'Allow'
+    if (window.typeof(DeviceMotionEvent) === 'function' && typeof(window.DeviceMotionEvent.requestPermission) === "function") {
+      const self = this;
+      window.DeviceMotionEvent.requestPermission().then(response => {
+        if (response === 'granted') {
+          window.addEventListener('deviceorientation', (event) => {
+            self.onDeviceOrientationChange(event.beta, event.gamma, event.alpha);
+          });
+        }
+      });
+    }
+
     this.initialized_ = true;
     this.trigger('initialized');
+  }
+
+  onDeviceOrientationChange(pitch, roll, yaw) {
+    this.log(`orientation pitch=${parseInt(pitch)} roll=${parseInt(roll)} yaw=${parseInt(yaw)}`);
   }
 
   buildControllers() {

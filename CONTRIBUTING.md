@@ -21,7 +21,7 @@ When you've made your changes, push your commit(s) to your fork and issue a pull
 Testing is a crucial part of any software project. For all but the most trivial changes (typos, etc) test cases are expected. Tests are run in actual browsers using [Karma][karma].
 
 - In all available and supported browsers: `npm test`
-- In a specific browser: `npm run test:chrome`, `npm run test:firefox`, etc.
+- In a specific browser: `npm run test`
 - While development server is running (`npm start`), navigate to [`http://localhost:9999/test/`][local]
 
 

@@ -73,6 +73,9 @@ The most recent versions of:
 * Mobile
   * Chrome on Android
   * Safari on iOS
+* Headsets
+  * Meta Quest Browser
+  * WebXR plug-in (Chrome/Firefox)
 
 ## Caveats
 * HLS captions on safari will not be visible as they are located inside of the shadowRoot in the video element and we cannot get access to them.
