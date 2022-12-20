@@ -1,10 +1,3 @@
-<a name="1.10.2"></a>
-## [1.10.2](https://github.com/videojs/videojs-vr/compare/v1.1.1...v1.1.2) (2018-02-20)
-
-### Chores
-
-* **package:** Move from WebVR polyfill to WebXR ([#216](https://github.com/videojs/videojs-vr/issues/216))
-
 <a name="1.10.1"></a>
 ## [1.10.1](https://github.com/videojs/videojs-vr/compare/v1.10.0...v1.10.1) (2022-08-16)
 
