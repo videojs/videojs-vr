@@ -9,7 +9,7 @@ class BigVrPlayButton extends BigPlayButton {
   }
 
   async onSessionStarted(session) {
-    await window.setXRSession(session);
+    await window.navigator.xr.setSession(session);
   }
 
   handleClick(event) {
