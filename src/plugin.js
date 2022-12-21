@@ -734,6 +734,9 @@ void main() {
           document.body.appendChild(this.vrButton);
           this.initImmersiveVR();
         }
+        window.setXRSession = (session) => {
+          this.renderer.xr.setSession(session);
+        };
       });
     }
 
