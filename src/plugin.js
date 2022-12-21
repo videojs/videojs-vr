@@ -734,6 +734,10 @@ void main() {
           document.body.appendChild(this.vrButton);
           this.initImmersiveVR();
         }
+        window.navigator.xr.setSession = (session) => {
+          this.currentSession = session;
+          this.renderer.xr.setSession(this.currentSession);
+        };
       });
     }
 
@@ -909,6 +913,9 @@ void main() {
           case 'exit':
           default:
             this.vrButton.click();
+            if (this.currentSession) {
+              this.currentSession.end();
+            }
             break;
           }
           controller.userData.selectPressed = false;
