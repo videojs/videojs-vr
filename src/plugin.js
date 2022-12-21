@@ -2,7 +2,6 @@ import 'babel-polyfill';
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
 import document from 'global/document';
-import WebXRPolyfill from 'webxr-polyfill';
 import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
@@ -12,13 +11,16 @@ import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
 import OmnitoneController from './omnitone-controller';
-import { VRButton } from '../vendor/three/VRButton.js';
 
-// import controls so they get regisetered with videojs
+// WebXR related imports
+import WebXRPolyfill from 'webxr-polyfill';
+import {VRButton} from '../node_modules/three/examples/jsm/webxr/VRButton';
+import {XRControllerModelFactory} from '../node_modules/three/examples/jsm/webxr/XRControllerModelFactory';
+import {BoxLineGeometry} from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry';
+
+// import controls so they get registered with videojs
 import './cardboard-button';
 import './big-vr-play-button';
-import {XRControllerModelFactory} from '../webxr/libs/three/jsm/XRControllerModelFactory';
-import {BoxLineGeometry} from '../webxr/libs/three/jsm/BoxLineGeometry';
 
 // Default options for the plugin.
 const defaults = {
@@ -864,25 +866,26 @@ void main() {
     this.scene.add(this.holodeck);
 
     // Play/Pause
-    const buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0x00ffff}));
-
-    buttonPlayPause.position.x = -0.4;
-    buttonPlayPause.position.y = -2.0;
-    buttonPlayPause.position.z = -4.0;
-    buttonPlayPause.buttonid = 'playpause';
-    this.holodeck.add(buttonPlayPause);
+    this.buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0x00ffff}));
+    this.buttonPlayPause.position.x = -0.4;
+    this.buttonPlayPause.position.y = -2.0;
+    this.buttonPlayPause.position.z = -4.0;
+    this.buttonPlayPause.buttonid = 'playpause';
+    this.buttonPlayPause.visible = false;
+    this.holodeck.add(this.buttonPlayPause);
 
     // ExitVR
-    const buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xff0000}));
-
-    buttonExit.position.x = 0.4;
-    buttonExit.position.y = -2.0;
-    buttonExit.position.z = -4.0;
-    buttonExit.buttonid = 'exit';
-    this.holodeck.add(buttonExit);
+    this.buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xff0000}));
+    this.buttonExit.position.x = 0.4;
+    this.buttonExit.position.y = -2.0;
+    this.buttonExit.position.z = -4.0;
+    this.buttonExit.buttonid = 'exit';
+    this.buttonExit.visible = false;
+    this.holodeck.add(this.buttonExit);
 
     this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide}));
     this.highlight.scale.set(1.1, 1.1, 1.1);
+    this.highlight.visible = false;
     this.scene.add(this.highlight);
   }
 
@@ -936,12 +939,16 @@ void main() {
     function onSelectStart() {
       this.children[0].scale.z = 10;
       this.userData.selectPressed = true;
+      self.buttonExit.visible = true;
+      self.buttonPlayPause.visible = true;
     }
 
     function onSelectEnd() {
       this.children[0].scale.z = 0;
       self.highlight.visible = false;
       this.userData.selectPressed = false;
+      self.buttonExit.visible = false;
+      self.buttonPlayPause.visible = false;
     }
 
     this.controllers.forEach((controller) => {
