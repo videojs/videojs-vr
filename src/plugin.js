@@ -915,6 +915,7 @@ void main() {
             this.vrButton.click();
             if (this.currentSession) {
               this.currentSession.end();
+              this.player_.pause();
             }
             break;
           }
