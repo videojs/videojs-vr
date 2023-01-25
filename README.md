@@ -38,6 +38,7 @@ Maintenance Status: Stable
   - [`projection`](#projection)
     - [`'180'`](#180)
     - [`'180_LR'`](#180_lr)
+    - [`'180_TB'`](#180_tb)
     - [`'180_MONO'`](#180_mono)
     - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
     - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
@@ -220,6 +221,10 @@ The video is half sphere and the user should not be able to look behind themselv
 
 #### `'180_LR'`
 Used for side-by-side 180 videos
+The video is half sphere and the user should not be able to look behind themselves
+
+#### `'180_TB'`
+Used for top/bottom 180 videos
 The video is half sphere and the user should not be able to look behind themselves
 
 #### `'180_MONO'`
