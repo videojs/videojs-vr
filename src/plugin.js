@@ -151,26 +151,29 @@ class VR extends Plugin {
       this.scene.add(ambient);
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
-      let geometry = new THREE.SphereGeometry(
+      this.movieGeometry = new THREE.SphereBufferGeometry(
         256,
         this.options_.sphereDetail,
         this.options_.sphereDetail
       );
 
-      let uvs = geometry.faceVertexUvs[ 0 ];
+      let uvs = this.movieGeometry.getAttribute('uv');
 
-      for (let i = 0; i < uvs.length; i++) {
-        for (let j = 0; j < 3; j++) {
-          if (projection === '360_LR') {
-            uvs[ i ][ j ].x *= 0.5;
-          } else {
-            uvs[ i ][ j ].y *= 0.5;
-            uvs[ i ][ j ].y += 0.5;
-          }
+      for (let i = 0; i < uvs.count; i++) {
+        if (projection === '360_LR') {
+          let xTransform = uvs.getX(i);
+
+          xTransform *= 0.5;
+          uvs.setX(i, xTransform);
+        } else {
+          let yTransform = uvs.getY(i);
+
+          yTransform *= 0.5;
+          yTransform += 0.5;
+          uvs.setY(i, yTransform);
         }
       }
 
-      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
@@ -181,26 +184,28 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      geometry = new THREE.SphereGeometry(
+      this.movieGeometry = new THREE.SphereBufferGeometry(
         256,
         this.options_.sphereDetail,
         this.options_.sphereDetail
       );
 
-      uvs = geometry.faceVertexUvs[ 0 ];
+      uvs = this.movieGeometry.getAttribute('uv');
+      for (let i = 0; i < uvs.count; i++) {
+        if (projection === '360_LR') {
+          let xTransform = uvs.getX(i);
 
-      for (let i = 0; i < uvs.length; i++) {
-        for (let j = 0; j < 3; j++) {
-          if (projection === '360_LR') {
-            uvs[ i ][ j ].x *= 0.5;
-            uvs[ i ][ j ].x += 0.5;
-          } else {
-            uvs[ i ][ j ].y *= 0.5;
-          }
+          xTransform *= 0.5;
+          xTransform += 0.5;
+          uvs.setX(i, xTransform);
+        } else {
+          let yTransform = uvs.getY(i);
+
+          yTransform *= 0.5;
+          uvs.setY(i, yTransform);
         }
       }
 
-      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
@@ -220,6 +225,7 @@ class VR extends Plugin {
       const front = [new THREE.Vector2(0.333, 0), new THREE.Vector2(0.666, 0), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
       const back = [new THREE.Vector2(0.666, 0), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
 
+      // TODO: geometry can nolonger be modifed like this
       this.movieGeometry.faceVertexUvs[0] = [];
 
       this.movieGeometry.faceVertexUvs[0][0] = [ right[2], right[1], right[3] ];
@@ -245,8 +251,8 @@ class VR extends Plugin {
       this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
-    } else if (projection === '180' || projection === '180_LR' || projection === '180_MONO') {
-      let geometry = new THREE.SphereGeometry(
+    } else if (projection === '180' || projection === '180_LR' || projection === '180_TB' || projection === '180_MONO') {
+      this.movieGeometry = new THREE.SphereBufferGeometry(
         256,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
@@ -255,26 +261,27 @@ class VR extends Plugin {
       );
 
       // Left eye view
-      geometry.scale(-1, 1, 1);
-      let uvs = geometry.faceVertexUvs[0];
+      this.movieGeometry.scale(-1, 1, 1);
+      let uvs = this.movieGeometry.getAttribute('uv');
 
       if (projection !== '180_MONO') {
         if (projection !== '180_TB') {
-          for (let i = 0; i < uvs.length; i++) {
-            for (let j = 0; j < 3; j++) {
-              uvs[i][j].x *= 0.5;
-            }
+          for (let i = 0; i < uvs.count; i++) {
+            let xTransform = uvs.getX(i);
+
+            xTransform *= 0.5;
+            uvs.setX(i, xTransform);
           }
         } else {
-          for (let i = 0; i < uvs.length; i++) {
-            for (let j = 0; j < 3; j++) {
-              uvs[i][j].y *= 0.5;
-            }
+          for (let i = 0; i < uvs.count; i++) {
+            let yTransform = uvs.getY(i);
+
+            yTransform *= 0.5;
+            uvs.setY(i, yTransform);
           }
         }
       }
 
-      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({
         map: this.videoTexture,
         overdraw: true
@@ -285,33 +292,33 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      geometry = new THREE.SphereGeometry(
+      this.movieGeometry = new THREE.SphereBufferGeometry(
         256,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
         Math.PI
       );
-      geometry.scale(-1, 1, 1);
-      uvs = geometry.faceVertexUvs[0];
-
+      this.movieGeometry.scale(-1, 1, 1);
+      uvs = this.movieGeometry.getAttribute('uv');
       if (projection !== '180_TB') {
-        for (let i = 0; i < uvs.length; i++) {
-          for (let j = 0; j < 3; j++) {
-            uvs[i][j].x *= 0.5;
-            uvs[i][j].x += 0.5;
-          }
+        for (let i = 0; i < uvs.count; i++) {
+          let xTransform = uvs.getX(i);
+
+          xTransform *= 0.5;
+          xTransform += 0.5;
+          uvs.setX(i, xTransform);
         }
       } else {
-        for (let i = 0; i < uvs.length; i++) {
-          for (let j = 0; j < 3; j++) {
-            uvs[i][j].y *= 0.5;
-            uvs[i][j].y += 0.5;
-          }
+        for (let i = 0; i < uvs.count; i++) {
+          let yTransform = uvs.getY(i);
+
+          yTransform *= 0.5;
+          yTransform += 0.5;
+          uvs.setY(i, yTransform);
         }
       }
 
-      this.movieGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
       this.movieMaterial = new THREE.MeshBasicMaterial({
         map: this.videoTexture,
         overdraw: true
@@ -730,7 +737,6 @@ void main() {
     videoElStyle.opacity = '0';
 
     let displays = [];
-    let hasWebXR = false;
 
     if (window.navigator.getVRDisplays) {
       this.log('is supported, getting vr displays');
@@ -745,25 +751,29 @@ void main() {
       this.log('WebXR is supported');
       window.navigator.xr.isSessionSupported('immersive-vr').then((supportsImmersiveVR) => {
         if (supportsImmersiveVR) {
-          hasWebXR = true;
           // We support WebXR show the enter VRButton
           this.vrButton = VRButton.createButton(this.renderer);
           document.body.appendChild(this.vrButton);
           this.initImmersiveVR();
+          this.initXRPolyfill(displays);
         }
         window.navigator.xr.setSession = (session) => {
           this.currentSession = session;
           this.renderer.xr.setSession(this.currentSession);
         };
       });
+    } else {
+      this.initVRPolyfill(displays);
     }
+  }
 
-    // No WebXR support fall back to using WebVR polyfill
-    if (!hasWebXR) {
-      this.effect = new VREffect(this.renderer);
-      this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
-    }
+  initVRPolyfill(displays) {
+    this.effect = new VREffect(this.renderer);
+    this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    this.initXRPolyfill(displays);
+  }
 
+  initXRPolyfill(displays) {
     if (displays.length && displays.length > 0) {
       this.log('Displays found', displays);
       this.vrDisplay = displays[0];
@@ -828,7 +838,7 @@ void main() {
     // For iOS we need permission for the device orientation data, this will pop up an 'Allow'
     // eslint-disable-next-line
     if (typeof window.DeviceMotionEvent === 'function' &&
-        typeof window.DeviceMotionEvent.requestPermission === 'function') {
+      typeof window.DeviceMotionEvent.requestPermission === 'function') {
       const self = this;
 
       window.DeviceMotionEvent.requestPermission().then(response => {
