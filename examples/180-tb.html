@@ -19,9 +19,9 @@
     (function(window, videojs) {
       var player = window.player = videojs('videojs-vr-player');
       player.mediainfo = player.mediainfo || {};
-      player.mediainfo.projection = '180';
+      player.mediainfo.projection = '180_TB';
 
-      var vr = window.vr = player.vr({projection: '180', debug: true, forceCardboard: false});
+      var vr = window.vr = player.vr({projection: '180_TB', debug: true, forceCardboard: false});
     }(window, window.videojs));
   </script>
 </body>
