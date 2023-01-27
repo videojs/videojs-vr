@@ -760,7 +760,7 @@ void main() {
           this.renderer.xr.setSession(this.currentSession);
         };
       });
-    } else {
+
       this.initVRPolyfill(displays);
     }
   }
