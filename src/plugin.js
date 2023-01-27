@@ -2,7 +2,6 @@ import 'babel-polyfill';
 import {version as VERSION} from '../package.json';
 import window from 'global/window';
 import document from 'global/document';
-import WebVRPolyfill from 'webvr-polyfill';
 import videojs from 'video.js';
 import * as THREE from 'three';
 import VRControls from '../vendor/three/VRControls.js';
@@ -82,12 +81,7 @@ class VR extends Plugin {
       return;
     }
 
-    this.polyfill_ = new WebVRPolyfill({
-      // do not show rotate instructions
-      ROTATE_INSTRUCTIONS_DISABLED: true
-    });
-    this.polyfill_ = new WebVRPolyfill();
-    this.polyfillXR_ = new WebXRPolyfill();
+    this.polyfill_ = new WebXRPolyfill();
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
@@ -215,7 +209,7 @@ class VR extends Plugin {
       this.movieScreen.layers.set(2);
       this.scene.add(this.movieScreen);
     } else if (projection === '360_CUBE') {
-      this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
+      this.movieGeometry = new THREE.BoxBufferGeometry(256, 256, 256);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       const left = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
@@ -225,33 +219,32 @@ class VR extends Plugin {
       const front = [new THREE.Vector2(0.333, 0), new THREE.Vector2(0.666, 0), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
       const back = [new THREE.Vector2(0.666, 0), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
 
-      // TODO: geometry can nolonger be modifed like this
-      this.movieGeometry.faceVertexUvs[0] = [];
+      const uvs = this.movieGeometry.getAttribute('uv');
 
-      this.movieGeometry.faceVertexUvs[0][0] = [ right[2], right[1], right[3] ];
-      this.movieGeometry.faceVertexUvs[0][1] = [ right[1], right[0], right[3] ];
+      uvs.setXYZ(0, right[2], right[1], right[3]);
+      uvs.setXYZ(1, right[1], right[0], right[3]);
 
-      this.movieGeometry.faceVertexUvs[0][2] = [ left[2], left[1], left[3] ];
-      this.movieGeometry.faceVertexUvs[0][3] = [ left[1], left[0], left[3] ];
+      uvs.setXYZ(2, left[2], left[1], left[3]);
+      uvs.setXYZ(3, left[1], left[0], left[3]);
 
-      this.movieGeometry.faceVertexUvs[0][4] = [ top[2], top[1], top[3] ];
-      this.movieGeometry.faceVertexUvs[0][5] = [ top[1], top[0], top[3] ];
+      uvs.setXYZ(4, top[2], top[1], top[3]);
+      uvs.setXYZ(5, top[1], top[0], top[3]);
 
-      this.movieGeometry.faceVertexUvs[0][6] = [ bottom[2], bottom[1], bottom[3] ];
-      this.movieGeometry.faceVertexUvs[0][7] = [ bottom[1], bottom[0], bottom[3] ];
+      uvs.setXYZ(6, bottom[2], bottom[1], bottom[3]);
+      uvs.setXYZ(7, bottom[1], bottom[0], bottom[3]);
 
-      this.movieGeometry.faceVertexUvs[0][8] = [ front[2], front[1], front[3] ];
-      this.movieGeometry.faceVertexUvs[0][9] = [ front[1], front[0], front[3] ];
+      uvs.setXYZ(8, front[2], front[1], front[3]);
+      uvs.setXYZ(9, front[1], front[0], front[3]);
 
-      this.movieGeometry.faceVertexUvs[0][10] = [ back[2], back[1], back[3] ];
-      this.movieGeometry.faceVertexUvs[0][11] = [ back[1], back[0], back[3] ];
+      uvs.setXYZ(10, back[2], back[1], back[3]);
+      uvs.setXYZ(11, back[1], back[0], back[3]);
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.position.set(position.x, position.y, position.z);
       this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
-    } else if (projection === '180' || projection === '180_LR' || projection === '180_TB' || projection === '180_MONO') {
+    } else if (projection === '180' || projection === '180_LR' || projection === '180_TB') {
       this.movieGeometry = new THREE.SphereBufferGeometry(
         256,
         this.options_.sphereDetail,
@@ -264,21 +257,19 @@ class VR extends Plugin {
       this.movieGeometry.scale(-1, 1, 1);
       let uvs = this.movieGeometry.getAttribute('uv');
 
-      if (projection !== '180_MONO') {
-        if (projection !== '180_TB') {
-          for (let i = 0; i < uvs.count; i++) {
-            let xTransform = uvs.getX(i);
+      if (projection !== '180_TB') {
+        for (let i = 0; i < uvs.count; i++) {
+          let xTransform = uvs.getX(i);
 
-            xTransform *= 0.5;
-            uvs.setX(i, xTransform);
-          }
-        } else {
-          for (let i = 0; i < uvs.count; i++) {
-            let yTransform = uvs.getY(i);
+          xTransform *= 0.5;
+          uvs.setX(i, xTransform);
+        }
+      } else {
+        for (let i = 0; i < uvs.count; i++) {
+          let yTransform = uvs.getY(i);
 
-            yTransform *= 0.5;
-            uvs.setY(i, yTransform);
-          }
+          yTransform *= 0.5;
+          uvs.setY(i, yTransform);
         }
       }
 
@@ -325,13 +316,29 @@ class VR extends Plugin {
       // display in right eye only
       this.movieScreen.layers.set(2);
       this.scene.add(this.movieScreen);
+    } else if (projection === '180_MONO') {
+      this.movieGeometry = new THREE.SphereBufferGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail,
+        Math.PI,
+        Math.PI
+      );
+
+      this.movieGeometry.scale(-1, 1, 1);
+
+      this.movieMaterial = new THREE.MeshBasicMaterial({
+        map: this.videoTexture
+      });
+      this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
+      this.scene.add(this.movieScreen);
     } else if (projection === 'EAC' || projection === 'EAC_LR') {
       const makeScreen = (mapMatrix, scaleMatrix) => {
         // "Continuity correction?": because of discontinuous faces and aliasing,
         // we truncate the 2-pixel-wide strips on all discontinuous edges,
         const contCorrect = 2;
 
-        this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
+        this.movieGeometry = new THREE.BoxBufferGeometry(256, 256, 256);
         this.movieMaterial = new THREE.ShaderMaterial({
           side: THREE.BackSide,
           uniforms: {
@@ -405,25 +412,25 @@ void main() {
           }
         }
 
-        this.movieGeometry.faceVertexUvs[0] = [];
+        const uvs = this.movieGeometry.getAttribute('uv');
 
-        this.movieGeometry.faceVertexUvs[0][0] = [ right[2], right[1], right[3] ];
-        this.movieGeometry.faceVertexUvs[0][1] = [ right[1], right[0], right[3] ];
+        uvs.setXYZ(0, right[2], right[1], right[3]);
+        uvs.setXYZ(1, right[1], right[0], right[3]);
 
-        this.movieGeometry.faceVertexUvs[0][2] = [ left[2], left[1], left[3] ];
-        this.movieGeometry.faceVertexUvs[0][3] = [ left[1], left[0], left[3] ];
+        uvs.setXYZ(2, left[2], left[1], left[3]);
+        uvs.setXYZ(3, left[1], left[0], left[3]);
 
-        this.movieGeometry.faceVertexUvs[0][4] = [ top[2], top[1], top[3] ];
-        this.movieGeometry.faceVertexUvs[0][5] = [ top[1], top[0], top[3] ];
+        uvs.setXYZ(4, top[2], top[1], top[3]);
+        uvs.setXYZ(5, top[1], top[0], top[3]);
 
-        this.movieGeometry.faceVertexUvs[0][6] = [ bottom[2], bottom[1], bottom[3] ];
-        this.movieGeometry.faceVertexUvs[0][7] = [ bottom[1], bottom[0], bottom[3] ];
+        uvs.setXYZ(6, bottom[2], bottom[1], bottom[3]);
+        uvs.setXYZ(7, bottom[1], bottom[0], bottom[3]);
 
-        this.movieGeometry.faceVertexUvs[0][8] = [ front[2], front[1], front[3] ];
-        this.movieGeometry.faceVertexUvs[0][9] = [ front[1], front[0], front[3] ];
+        uvs.setXYZ(8, front[2], front[1], front[3]);
+        uvs.setXYZ(9, front[1], front[0], front[3]);
 
-        this.movieGeometry.faceVertexUvs[0][10] = [ back[2], back[1], back[3] ];
-        this.movieGeometry.faceVertexUvs[0][11] = [ back[1], back[0], back[3] ];
+        uvs.setXYZ(10, back[2], back[1], back[3]);
+        uvs.setXYZ(11, back[1], back[0], back[3]);
 
         this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
         this.movieScreen.position.set(position.x, position.y, position.z);
@@ -595,8 +602,9 @@ void main() {
       this.omniController.update(this.camera);
     }
 
-    if (this.effect) {
-      this.effect.render(this.scene, this.camera);
+    // WebXR has animation loop but if that's not available we simulate that instead
+    if (this.webVREffect) {
+      this.webVREffect.render(this.scene, this.camera);
     }
 
     if (window.navigator.getGamepads) {
@@ -629,8 +637,8 @@ void main() {
     const width = this.player_.currentWidth();
     const height = this.player_.currentHeight();
 
-    if (this.effect) {
-      this.effect.setSize(width, height, false);
+    if (this.webVREffect) {
+      this.webVREffect.setSize(width, height, false);
     }
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -755,6 +763,7 @@ void main() {
           this.initImmersiveVR();
           this.initXRPolyfill(displays);
         } else {
+          // fallback to older WebVR if WebXR immersive session is not available
           this.initVRPolyfill(displays);
         }
         window.navigator.xr.setSession = (session) => {
@@ -763,13 +772,14 @@ void main() {
         };
       });
     } else {
+      // fallback to older WebVR if WebXR Device API is not available
       this.initVRPolyfill(displays);
     }
   }
 
   initVRPolyfill(displays) {
-    this.effect = new VREffect(this.renderer);
-    this.effect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
+    this.webVREffect = new VREffect(this.renderer);
+    this.webVREffect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.initXRPolyfill(displays);
   }
 
@@ -1038,9 +1048,9 @@ void main() {
       this.canvasPlayerControls = null;
     }
 
-    if (this.effect) {
-      this.effect.dispose();
-      this.effect = null;
+    if (this.webVREffect) {
+      this.webVREffect.dispose();
+      this.webVREffect = null;
     }
 
     window.removeEventListener('resize', this.handleResize_, true);
@@ -1099,10 +1109,6 @@ void main() {
   }
 
   polyfillVersion() {
-    return WebVRPolyfill.version;
-  }
-
-  polyfillVersionXR() {
     return WebXRPolyfill.version;
   }
 }
