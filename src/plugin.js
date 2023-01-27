@@ -754,13 +754,15 @@ void main() {
           document.body.appendChild(this.vrButton);
           this.initImmersiveVR();
           this.initXRPolyfill(displays);
+        } else {
+          this.initVRPolyfill(displays);
         }
         window.navigator.xr.setSession = (session) => {
           this.currentSession = session;
           this.renderer.xr.setSession(this.currentSession);
         };
       });
-
+    } else {
       this.initVRPolyfill(displays);
     }
   }
