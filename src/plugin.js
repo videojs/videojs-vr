@@ -671,7 +671,7 @@ void main() {
     this.videoTexture.generateMipmaps = false;
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
-    this.videoTexture.format = THREE.RGBFormat;
+    this.videoTexture.format = THREE.RGBAFormat;
 
     this.changeProjection_(this.currentProjection_);
 
