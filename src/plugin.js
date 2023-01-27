@@ -244,7 +244,7 @@ class VR extends Plugin {
       this.movieScreen.rotation.y = -Math.PI;
 
       this.scene.add(this.movieScreen);
-    } else if (projection === '180' || projection === '180_LR' || projection === '180_TB' || projection === '180_MONO') {
+    } else if (projection === '180' || projection === '180_LR' || projection === '180_TB') {
       this.movieGeometry = new THREE.SphereBufferGeometry(
         256,
         this.options_.sphereDetail,
@@ -257,21 +257,19 @@ class VR extends Plugin {
       this.movieGeometry.scale(-1, 1, 1);
       let uvs = this.movieGeometry.getAttribute('uv');
 
-      if (projection !== '180_MONO') {
-        if (projection !== '180_TB') {
-          for (let i = 0; i < uvs.count; i++) {
-            let xTransform = uvs.getX(i);
+      if (projection !== '180_TB') {
+        for (let i = 0; i < uvs.count; i++) {
+          let xTransform = uvs.getX(i);
 
-            xTransform *= 0.5;
-            uvs.setX(i, xTransform);
-          }
-        } else {
-          for (let i = 0; i < uvs.count; i++) {
-            let yTransform = uvs.getY(i);
+          xTransform *= 0.5;
+          uvs.setX(i, xTransform);
+        }
+      } else {
+        for (let i = 0; i < uvs.count; i++) {
+          let yTransform = uvs.getY(i);
 
-            yTransform *= 0.5;
-            uvs.setY(i, yTransform);
-          }
+          yTransform *= 0.5;
+          uvs.setY(i, yTransform);
         }
       }
 
@@ -317,6 +315,22 @@ class VR extends Plugin {
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       // display in right eye only
       this.movieScreen.layers.set(2);
+      this.scene.add(this.movieScreen);
+    } else if (projection === '180_MONO') {
+      this.movieGeometry = new THREE.SphereBufferGeometry(
+        256,
+        this.options_.sphereDetail,
+        this.options_.sphereDetail,
+        Math.PI,
+        Math.PI
+      );
+
+      this.movieGeometry.scale(-1, 1, 1);
+
+      this.movieMaterial = new THREE.MeshBasicMaterial({
+        map: this.videoTexture
+      });
+      this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.scene.add(this.movieScreen);
     } else if (projection === 'EAC' || projection === 'EAC_LR') {
       const makeScreen = (mapMatrix, scaleMatrix) => {
