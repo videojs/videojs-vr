@@ -14,7 +14,7 @@ import OmnitoneController from './omnitone-controller';
 
 // WebXR related imports
 import WebXRPolyfill from 'webxr-polyfill';
-import {VRButton} from '../node_modules/three/examples/jsm/webxr/VRButton';
+import {VRButton} from '../vendor/three/VRButton.js';
 import {XRControllerModelFactory} from '../node_modules/three/examples/jsm/webxr/XRControllerModelFactory';
 import {BoxLineGeometry} from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry';
 
@@ -137,7 +137,7 @@ class VR extends Plugin {
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
       this.movieGeometry = new THREE.SphereBufferGeometry(256, this.options_.sphereDetail, this.options_.sphereDetail);
-      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.position.set(position.x, position.y, position.z);
@@ -174,7 +174,7 @@ class VR extends Plugin {
         }
       }
 
-      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.scale.x = -1;
@@ -206,7 +206,7 @@ class VR extends Plugin {
         }
       }
 
-      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.scale.x = -1;
@@ -216,7 +216,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '360_CUBE') {
       this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
-      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       const left = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
       const right = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1)];
@@ -283,8 +283,7 @@ class VR extends Plugin {
       }
 
       this.movieMaterial = new THREE.MeshBasicMaterial({
-        map: this.videoTexture,
-        overdraw: true
+        map: this.videoTexture
       });
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       // display in left eye only
@@ -320,8 +319,7 @@ class VR extends Plugin {
       }
 
       this.movieMaterial = new THREE.MeshBasicMaterial({
-        map: this.videoTexture,
-        overdraw: true
+        map: this.videoTexture
       });
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       // display in right eye only
@@ -335,7 +333,7 @@ class VR extends Plugin {
 
         this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
         this.movieMaterial = new THREE.ShaderMaterial({
-          overdraw: true, side: THREE.BackSide,
+          side: THREE.BackSide,
           uniforms: {
             mapped: {value: this.videoTexture},
             mapMatrix: {value: mapMatrix},
