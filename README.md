@@ -303,7 +303,6 @@ This project is a conglomeration of a few amazing open source libraries.
 
 * [VideoJS](http://www.videojs.com)
 * [Three.js](http://threejs.org)
-* [webvr-polyfill](https://github.com/borismus/webvr-polyfill)
 * [webxr-polyfill](https://github.com/immersive-web/webxr-polyfill)
 * [Omnitone](https://googlechrome.github.io/omnitone)
 

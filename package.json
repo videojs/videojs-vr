@@ -88,7 +88,6 @@
     "global": "^4.4.0",
     "three": "0.129.0",
     "video.js": "^6 || ^7",
-    "webvr-polyfill": "0.10.12",
     "webxr-polyfill": "^2.0.3"
   },
   "devDependencies": {
