@@ -139,10 +139,6 @@ class VR extends Plugin {
       this.movieScreen.scale.x = -1;
       this.movieScreen.quaternion.setFromAxisAngle({x: 0, y: 1, z: 0}, -Math.PI / 2);
       this.scene.add(this.movieScreen);
-
-      const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.7);
-
-      this.scene.add(ambient);
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
       this.movieGeometry = new THREE.SphereBufferGeometry(
@@ -298,6 +294,7 @@ class VR extends Plugin {
           xTransform *= 0.5;
           xTransform += 0.5;
           uvs.setX(i, xTransform);
+          uvs.setY(i, xTransform);
         }
       } else {
         for (let i = 0; i < uvs.count; i++) {
@@ -467,6 +464,11 @@ void main() {
       }
     }
 
+    // Add some lighting to see the immersive controls
+    const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.7);
+
+    this.scene.add(ambient);
+
     this.currentProjection_ = projection;
 
   }
@@ -634,11 +636,21 @@ void main() {
   }
 
   handleResize_() {
-    const width = this.player_.currentWidth();
-    const height = this.player_.currentHeight();
+    let width = this.player_.currentWidth();
+    let height = this.player_.currentHeight();
 
     if (this.webVREffect) {
       this.webVREffect.setSize(width, height, false);
+    } else if (this.currentSession) {
+      width = window.innerWidth / 2;
+      height = window.innerHeight;
+    }
+
+    if (width < 300) {
+      width = 300;
+    }
+    if (height < 300) {
+      height = 300;
     }
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
