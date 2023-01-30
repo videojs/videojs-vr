@@ -294,7 +294,6 @@ class VR extends Plugin {
           xTransform *= 0.5;
           xTransform += 0.5;
           uvs.setX(i, xTransform);
-          uvs.setY(i, xTransform);
         }
       } else {
         for (let i = 0; i < uvs.count; i++) {
