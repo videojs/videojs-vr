@@ -210,84 +210,48 @@ class VR extends Plugin {
 
       const uvs = this.movieGeometry.getAttribute('uv');
 
-      const left = [new THREE.Vector2(0, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1)];
-      const right = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1)];
-      const front = [new THREE.Vector2(0.666, 0.5), new THREE.Vector2(1, 0.5), new THREE.Vector2(1, 1), new THREE.Vector2(0.666, 1)];
+      const front = [new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 1), new THREE.Vector2(0, 1), new THREE.Vector2(0, 0.5)];
+      const right = [new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.333, 1), new THREE.Vector2(0.333, 0.5)];
+      const top = [new THREE.Vector2(1, 1), new THREE.Vector2(0.666, 1), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(1, 0.5)];
       const bottom = [new THREE.Vector2(0, 0), new THREE.Vector2(0.333, 0), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0, 0.5)];
-      const top = [new THREE.Vector2(0.333, 0), new THREE.Vector2(0.666, 0), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5)];
-      const back = [new THREE.Vector2(0.666, 0), new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5)];
+      const back = [new THREE.Vector2(0.666, 0), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.333, 0.5), new THREE.Vector2(0.333, 0)];
+      const left = [new THREE.Vector2(1, 0), new THREE.Vector2(1, 0.5), new THREE.Vector2(0.666, 0.5), new THREE.Vector2(0.666, 0) ];
 
-      // this.movieGeometry.faceVertexUvs[0][0] = [ right[2], right[1], right[3] ];
-      uvs.setXY(0, right[2].x, right[2].y);
-      uvs.setXY(1, right[1].x, right[1].y);
-      uvs.setXY(2, right[3].x, right[3].y);
-      uvs.setXY(3, right[0].x, right[0].y);
+      // LEFT
+      uvs.setXY(0, left[2].x, left[2].y);
+      uvs.setXY(1, left[1].x, left[1].y);
+      uvs.setXY(2, left[3].x, left[3].y);
+      uvs.setXY(3, left[0].x, left[0].y);
 
-      // this.movieGeometry.faceVertexUvs[0][1] = [ right[1], right[0], right[3] ];
-      uvs.setXY(4, right[1].x, right[1].y);
-      uvs.setXY(5, right[0].x, right[0].y);
-      uvs.setXY(6, right[3].x, right[3].y);
-      uvs.setXY(7, right[2].x, right[2].y);
+      // BACK
+      uvs.setXY(4, back[2].x, back[2].y);
+      uvs.setXY(5, back[1].x, back[1].y);
+      uvs.setXY(6, back[3].x, back[3].y);
+      uvs.setXY(7, back[0].x, back[0].y);
 
-      // this.movieGeometry.faceVertexUvs[0][2] = [ left[2], left[1], left[3] ];
-      uvs.setXY(8, left[2].x, left[2].y);
-      uvs.setXY(9, left[1].x, left[1].y);
-      uvs.setXY(10, left[3].x, left[3].y);
-      uvs.setXY(11, left[0].x, left[0].y);
+      // TOP/UP
+      uvs.setXY(8, top[2].x, top[2].y);
+      uvs.setXY(9, top[1].x, top[1].y);
+      uvs.setXY(10, top[3].x, top[3].y);
+      uvs.setXY(11, top[0].x, top[0].y);
 
-      // this.movieGeometry.faceVertexUvs[0][3] = [ left[1], left[0], left[3] ];
-      uvs.setXY(12, left[1].x, left[1].y);
-      uvs.setXY(13, left[0].x, left[0].y);
-      uvs.setXY(14, left[3].x, left[3].y);
-      uvs.setXY(15, left[2].x, left[2].y);
+      // BOTTOM/DOWN
+      uvs.setXY(12, bottom[2].x, bottom[2].y);
+      uvs.setXY(13, bottom[1].x, bottom[1].y);
+      uvs.setXY(14, bottom[3].x, bottom[3].y);
+      uvs.setXY(15, bottom[0].x, bottom[0].y);
 
-      // this.movieGeometry.faceVertexUvs[0][4] = [ top[2], top[1], top[3] ];
-      uvs.setXY(16, top[2].x, top[2].y);
-      uvs.setXY(17, top[1].x, top[1].y);
-      uvs.setXY(18, top[3].x, top[3].y);
-      uvs.setXY(19, top[0].x, top[0].y);
+      // FRONT
+      uvs.setXY(16, front[2].x, front[2].y);
+      uvs.setXY(17, front[1].x, front[1].y);
+      uvs.setXY(18, front[3].x, front[3].y);
+      uvs.setXY(19, front[0].x, front[0].y);
 
-      // this.movieGeometry.faceVertexUvs[0][5] = [ top[1], top[0], top[3] ];
-      uvs.setXY(20, top[1].x, top[1].y);
-      uvs.setXY(21, top[0].x, top[0].y);
-      uvs.setXY(22, top[3].x, top[3].y);
-      uvs.setXY(23, top[2].x, top[2].y);
-
-      // this.movieGeometry.faceVertexUvs[0][6] = [ bottom[2], bottom[1], bottom[3] ];
-      uvs.setXY(24, bottom[2].x, bottom[2].y);
-      uvs.setXY(25, bottom[1].x, bottom[1].y);
-      uvs.setXY(26, bottom[3].x, bottom[3].y);
-      uvs.setXY(27, bottom[0].x, bottom[0].y);
-
-      // this.movieGeometry.faceVertexUvs[0][7] = [ bottom[1], bottom[0], bottom[3] ];
-      uvs.setXY(28, bottom[1].x, bottom[1].y);
-      uvs.setXY(29, bottom[0].x, bottom[0].y);
-      uvs.setXY(30, bottom[3].x, bottom[3].y);
-      uvs.setXY(31, bottom[2].x, bottom[2].y);
-
-      // this.movieGeometry.faceVertexUvs[0][8] = [ front[2], front[1], front[3] ];
-      uvs.setXY(32, front[2].x, front[2].y);
-      uvs.setXY(33, front[1].x, front[1].y);
-      uvs.setXY(34, front[3].x, front[3].y);
-      uvs.setXY(35, front[0].x, front[0].y);
-
-      // this.movieGeometry.faceVertexUvs[0][9] = [ front[1], front[0], front[3] ];
-      uvs.setXY(36, front[1].x, front[1].y);
-      uvs.setXY(37, front[0].x, front[0].y);
-      uvs.setXY(38, front[3].x, front[3].y);
-      uvs.setXY(39, front[2].x, front[2].y);
-
-      // this.movieGeometry.faceVertexUvs[0][10] = [ back[2], back[1], back[3] ];
-      uvs.setXY(40, back[2].x, back[2].y);
-      uvs.setXY(41, back[1].x, back[1].y);
-      uvs.setXY(42, back[3].x, back[3].y);
-      uvs.setXY(43, back[0].x, back[0].y);
-
-      // this.movieGeometry.faceVertexUvs[0][11] = [ back[1], back[0], back[3] ];
-      uvs.setXY(44, back[1].x, back[1].y);
-      uvs.setXY(45, back[0].x, back[0].y);
-      uvs.setXY(46, back[3].x, back[3].y);
-      uvs.setXY(47, back[2].x, back[2].y);
+      // RIGHT
+      uvs.setXY(20, right[2].x, right[2].y);
+      uvs.setXY(21, right[1].x, right[1].y);
+      uvs.setXY(22, right[3].x, right[3].y);
+      uvs.setXY(23, right[0].x, right[0].y);
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.position.set(position.x, position.y, position.z);
