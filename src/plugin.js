@@ -29,6 +29,7 @@ const defaults = {
   omnitoneOptions: {},
   projection: 'AUTO',
   sphereDetail: 32,
+  sphereRadius: 3.0,
   disableTogglePlay: false
 };
 
@@ -130,7 +131,7 @@ class VR extends Plugin {
       }
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
-      this.movieGeometry = new THREE.SphereBufferGeometry(256, this.options_.sphereDetail, this.options_.sphereDetail);
+      this.movieGeometry = new THREE.SphereBufferGeometry(this.options_.sphereRadius, this.options_.sphereDetail, this.options_.sphereDetail);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
@@ -142,7 +143,7 @@ class VR extends Plugin {
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail
       );
@@ -175,7 +176,7 @@ class VR extends Plugin {
 
       // Right eye view
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail
       );
@@ -260,7 +261,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '180' || projection === '180_LR' || projection === '180_TB') {
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
@@ -297,7 +298,7 @@ class VR extends Plugin {
 
       // Right eye view
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
@@ -332,7 +333,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '180_MONO') {
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
@@ -647,7 +648,16 @@ void main() {
         }
       }
     }
-    this.camera.getWorldDirection(this.cameraVector);
+
+    if (this.renderer.xr.isPresenting === true) {
+      const cameraVector = new THREE.Vector3();
+      const xrCamera = this.renderer.xr.getCamera(this.camera);
+
+      xrCamera.getWorldDirection(cameraVector);
+      this.holodeck.rotation.y = -cameraVector.x * (Math.PI / 2);
+      this.buttonPlayPause.quaternion.copy(xrCamera.quaternion);
+      this.buttonPlayPause.lookAt(xrCamera.position);
+    }
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   }
@@ -914,6 +924,7 @@ void main() {
 
       controller.add(line.clone());
       controller.userData.selectPressed = false;
+      controller.userData.index = i;
       this.scene.add(controller);
 
       controllers.push(controller);
@@ -927,19 +938,68 @@ void main() {
     return controllers;
   }
 
+  createText(message, height) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    let metrics = null;
+    const textHeight = 100;
+
+    context.font = 'normal ' + textHeight + 'px serif';
+    metrics = context.measureText(message);
+    const textWidth = metrics.width;
+
+    canvas.width = textWidth;
+    canvas.height = textHeight;
+    context.font = 'normal ' + textHeight + 'px serif';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = '#ffffff';
+    context.fillText(message, textWidth / 2, textHeight / 2);
+
+    const texture = new THREE.Texture(canvas);
+
+    texture.needsUpdate = true;
+
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      map: texture,
+      transparent: true
+    });
+    const geometry = new THREE.PlaneGeometry(
+      (height * textWidth) / textHeight,
+      height
+    );
+    const plane = new THREE.Mesh(geometry, material);
+
+    return plane;
+  }
+
+  makeButtonMesh(x, y, z, color) {
+
+    const geometry = new THREE.BoxGeometry(x, y, z);
+    const material = new THREE.MeshPhongMaterial({ color });
+    const buttonMesh = new THREE.Mesh(geometry, material);
+
+    buttonMesh.castShadow = true;
+    buttonMesh.receiveShadow = true;
+    return buttonMesh;
+
+  }
+
   initShuttleControls() {
     this.holodeck = new THREE.LineSegments(new BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }));
     this.holodeck.geometry.translate(0, 3, 0);
 
-    const geometry = new THREE.IcosahedronBufferGeometry(0.1, 2);
+    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.05);
 
     this.scene.add(this.holodeck);
 
     // Play/Pause
     this.buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0x00ffff}));
     this.buttonPlayPause.position.x = -0.4;
-    this.buttonPlayPause.position.y = -2.0;
-    this.buttonPlayPause.position.z = -4.0;
+    this.buttonPlayPause.position.y = -0.5;
+    this.buttonPlayPause.position.z = -1.4;
     this.buttonPlayPause.buttonid = 'playpause';
     this.buttonPlayPause.visible = false;
     this.holodeck.add(this.buttonPlayPause);
@@ -947,11 +1007,19 @@ void main() {
     // ExitVR
     this.buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xff0000}));
     this.buttonExit.position.x = 0.4;
-    this.buttonExit.position.y = -2.0;
-    this.buttonExit.position.z = -4.0;
+    this.buttonExit.position.y = -0.5;
+    this.buttonExit.position.z = -1.4;
     this.buttonExit.buttonid = 'exit';
     this.buttonExit.visible = false;
     this.holodeck.add(this.buttonExit);
+
+    this.resetButton = this.makeButtonMesh(0.2, 0.1, 0.01, 0x8f5c7d);
+    const resetButtonText = this.createText('EXIT', 0.06);
+
+    this.resetButton.add(resetButtonText);
+    resetButtonText.position.set(0, 0, 0.0051);
+    this.resetButton.position.set(0, -0.06, 0);
+    this.holodeck.add(this.resetButton);
 
     this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide}));
     this.highlight.scale.set(1.1, 1.1, 1.1);
@@ -1030,8 +1098,30 @@ void main() {
       controller.addEventListener('selectend', onSelectEnd);
       controller.addEventListener('squeezestart', onSelectStart);
       controller.addEventListener('squeezeend', onSelectEnd);
+      controller.addEventListener('disconnected', onControllerDisconnected);
     });
 
+    function onControllerDisconnected() {
+      const index = this.userData.index;
+
+      if (self.controllers) {
+        const obj = (index === 0) ? self.controllers[0] : self.controllers[1];
+
+        if (obj) {
+          if (obj.controller) {
+            const controller = obj.controller;
+
+            while (controller.children.length > 0) {
+              controller.remove(controller.children[0]);
+            }
+            self.scene.remove(controller);
+          }
+          if (obj.grip) {
+            self.scene.remove(obj.grip);
+          }
+        }
+      }
+    }
   }
 
   render() {
