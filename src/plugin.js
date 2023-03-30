@@ -1064,7 +1064,7 @@ void main() {
 
     const geometry = new this.RoundedRectangle(0.3, 0.3, 0.05, 5.0);
 
-    const texture = new THREE.TextureLoader().load('img/foo.png');
+    const texture = new THREE.TextureLoader().load('img/controls_pause.png');
 
     texture.repeat.set(1, 1);
 
