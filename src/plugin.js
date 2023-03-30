@@ -655,8 +655,8 @@ void main() {
 
       xrCamera.getWorldDirection(cameraVector);
       this.holodeck.rotation.y = -cameraVector.x * (Math.PI / 2);
-      this.buttonPlayPause.quaternion.copy(xrCamera.quaternion);
-      this.buttonPlayPause.lookAt(xrCamera.position);
+      this.controls.quaternion.copy(xrCamera.quaternion);
+      this.controls.lookAt(xrCamera.position);
     }
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
@@ -975,6 +975,60 @@ void main() {
     return plane;
   }
 
+  RoundedRectangle(width, height, radius, sectors) {
+    const wi = width / 2 - radius;
+    const hi = height / 2 - radius;
+    const w2 = width / 2;
+    const h2 = height / 2;
+    const ul = radius / width;
+    const ur = (width - radius) / width;
+    const vl = radius / height;
+    const vh = (height - radius) / height;
+
+    const triangles = [
+      -wi, -h2, 0, wi, -h2, 0, wi, h2, 0,
+      -wi, -h2, 0, wi, h2, 0, -wi, h2, 0,
+      -w2, -hi, 0, -wi, -hi, 0, -wi, hi, 0,
+      -w2, -hi, 0, -wi, hi, 0, -w2, hi, 0,
+      wi, -hi, 0, w2, -hi, 0, w2, hi, 0,
+      wi, -hi, 0, w2, hi, 0, wi, hi, 0
+    ];
+
+    const uvs = [
+      ul, 0, ur, 0, ur, 1,
+      ul, 0, ur, 1, ul, 1,
+      0, vl, ul, vl, ul, vh,
+      0, vl, ul, vh, 0, vh,
+      ur, vl, 1, vl, 1, vh,
+      ur, vl, 1, vh, ur, vh
+    ];
+
+    let phia = 0;
+    let phib; let xc; let yc; let uc; let vc; let cosa; let sina; let cosb; let sinb;
+
+    for (let i = 0; i < sectors * 4; i++) {
+      phib = Math.PI * 2 * (i + 1) / (4 * sectors);
+      cosa = Math.cos(phia);
+      sina = Math.sin(phia);
+      cosb = Math.cos(phib);
+      sinb = Math.sin(phib);
+      xc = i < sectors || i >= 3 * sectors ? wi : -wi;
+      yc = i < 2 * sectors ? hi : -hi;
+      triangles.push(xc, yc, 0, xc + radius * cosa, yc + radius * sina, 0, xc + radius * cosb, yc + radius * sinb, 0);
+      uc = i < sectors || i >= 3 * sectors ? ur : ul;
+      vc = i < 2 * sectors ? vh : vl;
+      uvs.push(uc, vc, uc + ul * cosa, vc + vl * sina, uc + ul * cosb, vc + vl * sinb);
+      phia = phib;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(triangles), 3));
+    geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+
+    return geometry;
+  }
+
   makeButtonMesh(x, y, z, color) {
 
     const geometry = new THREE.BoxGeometry(x, y, z);
@@ -988,40 +1042,51 @@ void main() {
   }
 
   initShuttleControls() {
-    this.holodeck = new THREE.LineSegments(new BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }));
+    this.holodeck = new THREE.LineSegments(new BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.MeshBasicMaterial({
+      opacity: 0,
+      transparent: true
+    }));
     this.holodeck.geometry.translate(0, 3, 0);
-
-    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.05);
 
     this.scene.add(this.holodeck);
 
-    // Play/Pause
-    this.buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0x00ffff}));
+    const controlsGeometry = new this.RoundedRectangle(1.2, 0.4, 0.05, 5.0);
+
+    this.controls = new THREE.Mesh(controlsGeometry, new THREE.MeshLambertMaterial({
+      color: 0x000044
+    }));
+    this.controls.position.x = -0.4;
+    this.controls.position.y = -0.5;
+    this.controls.position.z = -1.5;
+    this.controls.visible = false;
+
+    this.holodeck.add(this.controls);
+
+    const geometry = new this.RoundedRectangle(0.3, 0.3, 0.05, 5.0);
+
+    const texture = new THREE.TextureLoader().load('img/foo.png');
+
+    texture.repeat.set(1, 1);
+
+    this.buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ map: texture, color: 0x00ffff, side: THREE.DoubleSide}));
     this.buttonPlayPause.position.x = -0.4;
-    this.buttonPlayPause.position.y = -0.5;
-    this.buttonPlayPause.position.z = -1.4;
+    this.buttonPlayPause.position.z = 0.1;
     this.buttonPlayPause.buttonid = 'playpause';
-    this.buttonPlayPause.visible = false;
-    this.holodeck.add(this.buttonPlayPause);
+    this.controls.add(this.buttonPlayPause);
 
     // ExitVR
-    this.buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xff0000}));
+    this.buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+      color: 0xff0000
+    }));
     this.buttonExit.position.x = 0.4;
-    this.buttonExit.position.y = -0.5;
-    this.buttonExit.position.z = -1.4;
+    this.buttonExit.position.z = 0.1;
     this.buttonExit.buttonid = 'exit';
-    this.buttonExit.visible = false;
-    this.holodeck.add(this.buttonExit);
+    this.controls.add(this.buttonExit);
 
-    this.resetButton = this.makeButtonMesh(0.2, 0.1, 0.01, 0x8f5c7d);
-    const resetButtonText = this.createText('EXIT', 0.06);
-
-    this.resetButton.add(resetButtonText);
-    resetButtonText.position.set(0, 0, 0.0051);
-    this.resetButton.position.set(0, -0.06, 0);
-    this.holodeck.add(this.resetButton);
-
-    this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide}));
+    this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.BackSide
+    }));
     this.highlight.scale.set(1.1, 1.1, 1.1);
     this.highlight.visible = false;
     this.scene.add(this.highlight);
@@ -1081,16 +1146,14 @@ void main() {
     function onSelectStart() {
       this.children[0].scale.z = 10;
       this.userData.selectPressed = true;
-      self.buttonExit.visible = true;
-      self.buttonPlayPause.visible = true;
+      self.controls.visible = true;
     }
 
     function onSelectEnd() {
       this.children[0].scale.z = 0;
       self.highlight.visible = false;
       this.userData.selectPressed = false;
-      self.buttonExit.visible = false;
-      self.buttonPlayPause.visible = false;
+      self.controls.visible = false;
     }
 
     this.controllers.forEach((controller) => {
