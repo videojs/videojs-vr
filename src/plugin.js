@@ -29,6 +29,7 @@ const defaults = {
   omnitoneOptions: {},
   projection: 'AUTO',
   sphereDetail: 32,
+  sphereRadius: 254.0,
   disableTogglePlay: false
 };
 
@@ -130,7 +131,7 @@ class VR extends Plugin {
       }
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
-      this.movieGeometry = new THREE.SphereBufferGeometry(256, this.options_.sphereDetail, this.options_.sphereDetail);
+      this.movieGeometry = new THREE.SphereBufferGeometry(this.options_.sphereRadius, this.options_.sphereDetail, this.options_.sphereDetail);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
@@ -142,7 +143,7 @@ class VR extends Plugin {
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail
       );
@@ -175,7 +176,7 @@ class VR extends Plugin {
 
       // Right eye view
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail
       );
@@ -260,7 +261,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '180' || projection === '180_LR' || projection === '180_TB') {
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
@@ -297,7 +298,7 @@ class VR extends Plugin {
 
       // Right eye view
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
@@ -332,7 +333,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '180_MONO') {
       this.movieGeometry = new THREE.SphereBufferGeometry(
-        256,
+        this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
         Math.PI,
@@ -606,6 +607,14 @@ void main() {
     }
   }
 
+  seekBack10_() {
+    this.player_.currentTime(this.player_.currentTime() - 10);
+  }
+
+  seekForward10_() {
+    this.player_.currentTime(this.player_.currentTime() + 10);
+  }
+
   animate_() {
     if (!this.initialized_) {
       return;
@@ -647,7 +656,16 @@ void main() {
         }
       }
     }
-    this.camera.getWorldDirection(this.cameraVector);
+
+    if (this.renderer.xr.isPresenting === true) {
+      const cameraVector = new THREE.Vector3();
+      const xrCamera = this.renderer.xr.getCamera(this.camera);
+
+      xrCamera.getWorldDirection(cameraVector);
+      this.holodeck.rotation.y = -cameraVector.x * (Math.PI / 2);
+      this.controls.quaternion.copy(xrCamera.quaternion);
+      this.controls.lookAt(xrCamera.position);
+    }
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
   }
@@ -914,6 +932,7 @@ void main() {
 
       controller.add(line.clone());
       controller.userData.selectPressed = false;
+      controller.userData.index = i;
       this.scene.add(controller);
 
       controllers.push(controller);
@@ -927,33 +946,174 @@ void main() {
     return controllers;
   }
 
-  initShuttleControls() {
-    this.holodeck = new THREE.LineSegments(new BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }));
-    this.holodeck.geometry.translate(0, 3, 0);
+  createText(message, height) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    let metrics = null;
+    const textHeight = 100;
 
-    const geometry = new THREE.IcosahedronBufferGeometry(0.1, 2);
+    context.font = 'normal ' + textHeight + 'px serif';
+    metrics = context.measureText(message);
+    const textWidth = metrics.width;
+
+    canvas.width = textWidth;
+    canvas.height = textHeight;
+    context.font = 'normal ' + textHeight + 'px serif';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = '#ffffff';
+    context.fillText(message, textWidth / 2, textHeight / 2);
+
+    const texture = new THREE.Texture(canvas);
+
+    texture.needsUpdate = true;
+
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      map: texture,
+      transparent: true
+    });
+    const geometry = new THREE.PlaneGeometry(
+      (height * textWidth) / textHeight,
+      height
+    );
+    const plane = new THREE.Mesh(geometry, material);
+
+    return plane;
+  }
+
+  RoundedRectangle(width, height, radius, sectors) {
+    const wi = width / 2 - radius;
+    const hi = height / 2 - radius;
+    const w2 = width / 2;
+    const h2 = height / 2;
+    const ul = radius / width;
+    const ur = (width - radius) / width;
+    const vl = radius / height;
+    const vh = (height - radius) / height;
+
+    const triangles = [
+      -wi, -h2, 0, wi, -h2, 0, wi, h2, 0,
+      -wi, -h2, 0, wi, h2, 0, -wi, h2, 0,
+      -w2, -hi, 0, -wi, -hi, 0, -wi, hi, 0,
+      -w2, -hi, 0, -wi, hi, 0, -w2, hi, 0,
+      wi, -hi, 0, w2, -hi, 0, w2, hi, 0,
+      wi, -hi, 0, w2, hi, 0, wi, hi, 0
+    ];
+
+    const uvs = [
+      ul, 0, ur, 0, ur, 1,
+      ul, 0, ur, 1, ul, 1,
+      0, vl, ul, vl, ul, vh,
+      0, vl, ul, vh, 0, vh,
+      ur, vl, 1, vl, 1, vh,
+      ur, vl, 1, vh, ur, vh
+    ];
+
+    let phia = 0;
+    let phib; let xc; let yc; let uc; let vc; let cosa; let sina; let cosb; let sinb;
+
+    for (let i = 0; i < sectors * 4; i++) {
+      phib = Math.PI * 2 * (i + 1) / (4 * sectors);
+      cosa = Math.cos(phia);
+      sina = Math.sin(phia);
+      cosb = Math.cos(phib);
+      sinb = Math.sin(phib);
+      xc = i < sectors || i >= 3 * sectors ? wi : -wi;
+      yc = i < 2 * sectors ? hi : -hi;
+      triangles.push(xc, yc, 0, xc + radius * cosa, yc + radius * sina, 0, xc + radius * cosb, yc + radius * sinb, 0);
+      uc = i < sectors || i >= 3 * sectors ? ur : ul;
+      vc = i < 2 * sectors ? vh : vl;
+      uvs.push(uc, vc, uc + ul * cosa, vc + vl * sina, uc + ul * cosb, vc + vl * sinb);
+      phia = phib;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(triangles), 3));
+    geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+
+    return geometry;
+  }
+
+  makeButtonMesh(x, y, z, color) {
+
+    const geometry = new THREE.BoxGeometry(x, y, z);
+    const material = new THREE.MeshPhongMaterial({ color });
+    const buttonMesh = new THREE.Mesh(geometry, material);
+
+    buttonMesh.castShadow = true;
+    buttonMesh.receiveShadow = true;
+    return buttonMesh;
+
+  }
+
+  initShuttleControls() {
+    this.holodeck = new THREE.LineSegments(new BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.MeshBasicMaterial({
+      opacity: 0,
+      transparent: true
+    }));
+    this.holodeck.geometry.translate(0, 3, 0);
 
     this.scene.add(this.holodeck);
 
-    // Play/Pause
-    this.buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0x00ffff}));
-    this.buttonPlayPause.position.x = -0.4;
-    this.buttonPlayPause.position.y = -2.0;
-    this.buttonPlayPause.position.z = -4.0;
-    this.buttonPlayPause.buttonid = 'playpause';
-    this.buttonPlayPause.visible = false;
-    this.holodeck.add(this.buttonPlayPause);
+    const controlsGeometry = new this.RoundedRectangle(2.4, 0.6, 0.05, 5.0);
+
+    this.controls = new THREE.Mesh(controlsGeometry, new THREE.MeshLambertMaterial({ color: 0x000000 }));
+    this.controls.position.x = -0.0;
+    this.controls.position.y = -1.0;
+    this.controls.position.z = -3.0;
+    this.controls.buttonid = 'controls';
+    this.controls.visible = false;
+    this.holodeck.add(this.controls);
+
+    const buttonGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.05);
 
     // ExitVR
-    this.buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xff0000}));
-    this.buttonExit.position.x = 0.4;
-    this.buttonExit.position.y = -2.0;
-    this.buttonExit.position.z = -4.0;
-    this.buttonExit.buttonid = 'exit';
-    this.buttonExit.visible = false;
-    this.holodeck.add(this.buttonExit);
+    const textureExitImmersive = new THREE.TextureLoader().load('img/controls_exitimmersive.png');
 
-    this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide}));
+    textureExitImmersive.repeat.set(1, 1);
+    this.buttonExit = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureExitImmersive, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonExit.position.x = -0.8;
+    this.buttonExit.position.z = 0.1;
+    this.buttonExit.buttonid = 'exit';
+    this.controls.add(this.buttonExit);
+
+    // Rewind 10 secs
+    const textureBack10 = new THREE.TextureLoader().load('img/controls_back10.png');
+
+    textureBack10.repeat.set(1, 1);
+    this.buttonBack10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureBack10, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonBack10.position.x = -0.1;
+    this.buttonBack10.position.z = 0.1;
+    this.buttonBack10.buttonid = 'back10';
+    this.controls.add(this.buttonBack10);
+
+    // Play/Pause toggle
+    const texturePlayPause = new THREE.TextureLoader().load('img/controls_pause.png');
+
+    texturePlayPause.repeat.set(1, 1);
+    this.buttonPlayPause = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: texturePlayPause, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonPlayPause.position.x = 0.4;
+    this.buttonPlayPause.position.z = 0.1;
+    this.buttonPlayPause.buttonid = 'playpause';
+    this.controls.add(this.buttonPlayPause);
+
+    // Forward 10 secs
+    const textureForward10 = new THREE.TextureLoader().load('img/controls_forward10.png');
+
+    textureForward10.repeat.set(1, 1);
+    this.buttonForward10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureForward10, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonForward10.position.x = 0.9;
+    this.buttonForward10.position.z = 0.1;
+    this.buttonForward10.buttonid = 'forward10';
+    this.controls.add(this.buttonForward10);
+
+    this.highlight = new THREE.Mesh(buttonGeometry, new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.BackSide
+    }));
     this.highlight.scale.set(1.1, 1.1, 1.1);
     this.highlight.visible = false;
     this.scene.add(this.highlight);
@@ -976,8 +1136,19 @@ void main() {
             this.togglePlay_();
             break;
 
+          case 'back10':
+            this.seekBack10_();
+            break;
+
+          case 'forward10':
+            this.seekForward10_();
+            break;
+
+          case 'controller':
+            // TODO: drag move controller bar?
+            break;
+
           case 'exit':
-          default:
             this.vrButton.click();
             if (this.currentSession) {
               this.currentSession.end();
@@ -1013,16 +1184,14 @@ void main() {
     function onSelectStart() {
       this.children[0].scale.z = 10;
       this.userData.selectPressed = true;
-      self.buttonExit.visible = true;
-      self.buttonPlayPause.visible = true;
+      self.controls.visible = true;
     }
 
     function onSelectEnd() {
       this.children[0].scale.z = 0;
       self.highlight.visible = false;
       this.userData.selectPressed = false;
-      self.buttonExit.visible = false;
-      self.buttonPlayPause.visible = false;
+      self.controls.visible = false;
     }
 
     this.controllers.forEach((controller) => {
@@ -1030,8 +1199,30 @@ void main() {
       controller.addEventListener('selectend', onSelectEnd);
       controller.addEventListener('squeezestart', onSelectStart);
       controller.addEventListener('squeezeend', onSelectEnd);
+      controller.addEventListener('disconnected', onControllerDisconnected);
     });
 
+    function onControllerDisconnected() {
+      const index = this.userData.index;
+
+      if (self.controllers) {
+        const obj = (index === 0) ? self.controllers[0] : self.controllers[1];
+
+        if (obj) {
+          if (obj.controller) {
+            const controller = obj.controller;
+
+            while (controller.children.length > 0) {
+              controller.remove(controller.children[0]);
+            }
+            self.scene.remove(controller);
+          }
+          if (obj.grip) {
+            self.scene.remove(obj.grip);
+          }
+        }
+      }
+    }
   }
 
   render() {
