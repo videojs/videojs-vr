@@ -11,7 +11,7 @@ jobs:
       should-skip-job: ${{steps.skip-check.outputs.should_skip}}
     steps:
       - id: skip-check
-        uses: fkirc/skip-duplicate-actions@v2.1.0
+        uses: fkirc/skip-duplicate-actions@v5.3.0
         with:
           github_token: ${{github.token}}
 
@@ -28,10 +28,10 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
     - name: checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Cache dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           ~/.npm
@@ -42,7 +42,7 @@ jobs:
           ${{runner.os}}-
 
     - name: read node version from .nvmrc
-      run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+      run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
       shell: bash
       id: nvm
 
@@ -59,7 +59,7 @@ jobs:
       if: ${{startsWith(matrix.os, 'ubuntu') && !env.BROWSER_STACK_USERNAME}}
 
     - name: setup node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: '${{steps.nvm.outputs.NVMRC}}'
 
@@ -72,6 +72,6 @@ jobs:
       run: npm i --prefer-offline --no-audit
 
     - name: run npm test
-      uses: GabrielBB/xvfb-action@v1
+      uses: coactions/setup-xvfb@v1
       with:
         run: npm run test
