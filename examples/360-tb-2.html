@@ -1,0 +1,32 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-vr Demo</title>
+   <link href="../node_modules/video.js/dist/video-js.css" rel="stylesheet">
+   <link href="../dist/videojs-vr.css" rel="stylesheet">
+</head>
+<body>
+  <video width="640" height="300" id="videojs-vr-player" class="video-js vjs-default-skin" controls playsinline>
+    <source src="../samples/cc_oceanside_beach.mp4\
+'
+" type="video/mp4">
+  </video>
+  <ul>
+    <li><a href="../">return to main example</a></li>
+  </ul>
+  <script src="../node_modules/video.js/dist/video.js"></script>
+  <script src="../dist/videojs-vr.js"></script>
+  <script>
+    (function(window, videojs) {
+      var player = window.player = videojs('videojs-vr-player');
+      player.mediainfo = player.mediainfo || {};
+      player.mediainfo.projection = '360';
+
+      // AUTO is the default and looks at mediainfo
+      var vr = window.vr = player.vr({projection: '360_TB', debug: true, forceCardboard: false});
+    }(window, window.videojs));
+  </script>
+</body>
+</html>
