@@ -74,4 +74,13 @@ QUnit.test('playback', function(assert) {
   };
 
   this.player.on('timeupdate', onTimeupdate);
+
+  this.player.on([
+    'playing',
+    'error',
+    'play',
+    'timeupdate'
+  ], (e) => {
+    console.log(`Test 3 ${e.type}`);
+  })
 });
