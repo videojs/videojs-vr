@@ -53,8 +53,7 @@
     "update-changelog": "conventional-changelog -p videojs -i CHANGELOG.md -s",
     "watch": "npm-run-all -p watch:*",
     "watch:js": "npm run build:js -- -w",
-    "watch:css": "npm run build:css -- -w",
-    "prepare": "husky install"
+    "watch:css": "npm run build:css -- -w"
   },
   "keywords": [
     "videojs",
