@@ -57,20 +57,11 @@ QUnit.test('registers itself with video.js', function(assert) {
 QUnit.test('playback', function(assert) {
   const done = assert.async();
 
-  console.log(`Eagle ${this.player.canPlayType('video/mp4;avc1.640028,mp4a.40.2')}`);
-  console.log(`Ocean ${this.player.canPlayType('video/mp4;avc1.42C01E,mp4a.40.2')}`);
-
-  this.player.src({src: '/samples/video_180_lefteyeonly.mp4', type: 'video/mp4'});
+  this.player.src({src: '/samples/eagle-360.mp4', type: 'video/mp4'});
   this.player.mediainfo = {projection: '360'};
 
   // AUTO is the default and looks at mediainfo
   this.vr = this.player.vr({projection: 'AUTO', debug: true});
-
-  this.player.play().then(function() {
-    console.log('play promise fulfilled')
-  }).catch(function(error) {
-    console.log(error);
-  });
 
   const onTimeupdate = () => {
     if (this.player.currentTime() > 0) {
@@ -81,11 +72,4 @@ QUnit.test('playback', function(assert) {
   };
 
   this.player.on('timeupdate', onTimeupdate);
-
-  this.player.on([
-    'error',
-    'timeupdate'
-  ], (e) => {
-    console.log(`With plugin: ${e.type} ${this.player.currentTime()}`);
-  })
 });
