@@ -63,7 +63,11 @@ QUnit.test('playback', function(assert) {
   // AUTO is the default and looks at mediainfo
   this.vr = this.player.vr({projection: 'AUTO', debug: true});
 
-  this.player.play();
+  this.player.play().then(function() {
+    console.log('play promise fulfilled')
+  }).catch(function(error) {
+    console.log(error);
+  });
 
   const onTimeupdate = () => {
     if (this.player.currentTime() > 0) {
@@ -81,6 +85,6 @@ QUnit.test('playback', function(assert) {
     'play',
     'timeupdate'
   ], (e) => {
-    console.log(`Test 3 ${e.type} ${this.player.currentTime()}`);
+    console.log(`With plugin: ${e.type} ${this.player.currentTime()}`);
   })
 });
