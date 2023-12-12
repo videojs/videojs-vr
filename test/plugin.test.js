@@ -81,6 +81,6 @@ QUnit.test('playback', function(assert) {
     'play',
     'timeupdate'
   ], (e) => {
-    console.log(`Test 3 ${e.type}`);
+    console.log(`Test 3 ${e.type} ${this.player.currentTime()}`);
   })
 });
