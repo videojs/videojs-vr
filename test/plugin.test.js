@@ -72,4 +72,6 @@ QUnit.test('playback', function(assert) {
   };
 
   this.player.on('timeupdate', onTimeupdate);
+
+  this.player.play();
 });
