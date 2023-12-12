@@ -60,7 +60,7 @@ QUnit.test('playback', function(assert) {
   console.log(`Eagle ${this.player.canPlayType('video/mp4;avc1.640028,mp4a.40.2')}`);
   console.log(`Ocean ${this.player.canPlayType('video/mp4;avc1.42C01E,mp4a.40.2')}`);
 
-  this.player.src({src: 'samples/eagle-360.mp4', type: 'video/mp4'});
+  this.player.src({src: '/samples/eagle-360.mp4', type: 'video/mp4'});
   this.player.mediainfo = {projection: '360'};
 
   // AUTO is the default and looks at mediainfo
@@ -83,9 +83,7 @@ QUnit.test('playback', function(assert) {
   this.player.on('timeupdate', onTimeupdate);
 
   this.player.on([
-    'playing',
     'error',
-    'play',
     'timeupdate'
   ], (e) => {
     console.log(`With plugin: ${e.type} ${this.player.currentTime()}`);
