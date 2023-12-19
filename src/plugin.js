@@ -1067,7 +1067,7 @@ void main() {
 
     this.scene.add(this.holodeck);
 
-    const controlsGeometry = new this.RoundedRectangle(2.4, 0.6, 0.05, 5.0);
+    const controlsGeometry = this.RoundedRectangle(2.4, 0.6, 0.05, 5.0);
 
     this.controls = new THREE.Mesh(controlsGeometry, new THREE.MeshLambertMaterial({ color: 0x000000 }));
     this.controls.position.x = -0.0;
