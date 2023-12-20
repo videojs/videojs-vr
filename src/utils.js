@@ -41,6 +41,7 @@ export const validProjections = [
   'equirectangular',
   '180',
   '180_LR',
+  '180_TB',
   '180_MONO'
 ];
 

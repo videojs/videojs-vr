@@ -38,6 +38,7 @@ Maintenance Status: Stable
   - [`projection`](#projection)
     - [`'180'`](#180)
     - [`'180_LR'`](#180_lr)
+    - [`'180_TB'`](#180_tb)
     - [`'180_MONO'`](#180_mono)
     - [`'360'`, `'Sphere'`, or `'equirectangular'`](#360-sphere-or-equirectangular)
     - [`'Cube'` or `'360_CUBE'`](#cube-or-360_cube)
@@ -73,7 +74,11 @@ The most recent versions of:
 * Mobile
   * Chrome on Android
   * Safari on iOS
-
+* Headsets
+  * Meta Quest Browser
+  * Rift (via Chrome browser)
+  * WebXR plug-in (Chrome/Firefox)
+  
 ## Caveats
 * HLS captions on safari will not be visible as they are located inside of the shadowRoot in the video element and we cannot get access to them.
 
@@ -218,6 +223,10 @@ The video is half sphere and the user should not be able to look behind themselv
 Used for side-by-side 180 videos
 The video is half sphere and the user should not be able to look behind themselves
 
+#### `'180_TB'`
+Used for top/bottom 180 videos
+The video is half sphere and the user should not be able to look behind themselves
+
 #### `'180_MONO'`
 Used for monoscopic 180 videos
 The video is half sphere and the user should not be able to look behind themselves
@@ -294,7 +303,7 @@ This project is a conglomeration of a few amazing open source libraries.
 
 * [VideoJS](http://www.videojs.com)
 * [Three.js](http://threejs.org)
-* [webvr-polyfill](https://github.com/borismus/webvr-polyfill)
+* [webxr-polyfill](https://github.com/immersive-web/webxr-polyfill)
 * [Omnitone](https://googlechrome.github.io/omnitone)
 
 ## Support ##
