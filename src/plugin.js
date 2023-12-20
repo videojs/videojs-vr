@@ -806,7 +806,7 @@ void main() {
         if (supportsImmersiveVR) {
           // We support WebXR show the enter VRButton
           this.vrButton = VRButton.createButton(this.renderer);
-          document.body.appendChild(this.vrButton);
+          this.player_.el_.appendChild(this.vrButton);
           this.initImmersiveVR();
           this.initXRPolyfill(displays);
 
@@ -1247,9 +1247,10 @@ void main() {
   }
 
   addCardboardButton_() {
-    if (!this.player_.controlBar.getChild('CardboardButton')) {
-      this.player_.controlBar.addChild('CardboardButton', {});
-    }
+    // Not using the cardboard button in favour of three.js's vrbutton.
+    // if (!this.player_.controlBar.getChild('CardboardButton')) {
+    //   this.player_.controlBar.addChild('CardboardButton', {});
+    // }
   }
 
   getVideoEl_() {
