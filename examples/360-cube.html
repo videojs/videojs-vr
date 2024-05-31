@@ -3,27 +3,47 @@
 <head>
   <meta charset="utf-8">
   <title>videojs-vr Demo</title>
-   <link href="../node_modules/video.js/dist/video-js.css" rel="stylesheet">
-   <link href="../dist/videojs-vr.css" rel="stylesheet">
+  <link href="../node_modules/video.js/dist/video-js.css" rel="stylesheet">
+  <link href="../dist/videojs-vr.css" rel="stylesheet">
 </head>
 <body>
-  <video width="640" height="300" id="videojs-vr-player" class="video-js vjs-default-skin" controls playsinline>
-    <source src="../samples/doisethup_cubemap.mp4" type="video/mp4">
-  </video>
-  <ul>
-    <li><a href="../">return to main example</a></li>
-  </ul>
-  <script src="../node_modules/video.js/dist/video.js"></script>
-  <script src="../dist/videojs-vr.js"></script>
-  <script>
-    (function(window, videojs) {
-      var player = window.player = videojs('videojs-vr-player');
-      player.mediainfo = player.mediainfo || {};
-      player.mediainfo.projection = '360_CUBE';
+<video width="640" height="300" id="videojs-vr-player" class="video-js vjs-default-skin" controls playsinline>
+  <source src="../samples/doisethup_cubemap.mp4" type="video/mp4">
+</video>
+<ul>
+  <li><a href="../">return to main example</a></li>
+</ul>
+<script src="../node_modules/video.js/dist/video.js"></script>
+<script src="../dist/videojs-vr.js"></script>
+<script>
+  (function (window, videojs) {
+    var player = window.player = videojs('videojs-vr-player');
+    player.mediainfo = player.mediainfo || {};
+    player.mediainfo.projection = '360_CUBE';
 
-      // AUTO is the default and looks at mediainfo
-      var vr = window.vr = player.vr({projection: 'AUTO', debug: true, forceCardboard: false});
-    }(window, window.videojs));
-  </script>
+    // AUTO is the default and looks at mediainfo
+    var vr = window.vr = player.vr({projection: 'AUTO', debug: true, forceCardboard: false});
+
+    const videoSourceParam = window.location.search.substring(1);
+    if (videoSourceParam) {
+      if (videoSourceParam.indexOf(".mpd") !== -1) {
+        player.src({
+          type: 'application/dash+xml',
+          src: videoSourceParam
+        });
+      } else if (videoSourceParam.indexOf(".m3u8") !== -1) {
+        player.src({
+          type: 'application/vnd.apple.mpegurl',
+          src: videoSourceParam
+        });
+      } else {
+        player.src({
+          type: 'video.mp4',
+          src: videoSourceParam
+        });
+      }
+    }
+  }(window, window.videojs));
+</script>
 </body>
 </html>

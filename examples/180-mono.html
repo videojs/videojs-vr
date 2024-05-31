@@ -22,8 +22,8 @@
     player.mediainfo.projection = '180_MONO';
 
     var vr = window.vr = player.vr({projection: '180_MONO', debug: true, forceCardboard: false});
-    const videoSourceParam = window.location.search.substring(1);
 
+    const videoSourceParam = window.location.search.substring(1);
     if (videoSourceParam) {
       if (videoSourceParam.indexOf(".mpd") !== -1) {
         player.src({
