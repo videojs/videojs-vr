@@ -1,3 +1,10 @@
+<a name="1.10.2"></a>
+## [1.10.2](https://github.com/videojs/videojs-vr/compare/v1.10.0...v1.10.1) (2024-05-28)
+
+### Chores
+
+* adding WebXR layers
+
 <a name="1.10.1"></a>
 ## [1.10.1](https://github.com/videojs/videojs-vr/compare/v1.10.0...v1.10.1) (2022-08-16)
 
