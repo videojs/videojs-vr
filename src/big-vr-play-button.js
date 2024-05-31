@@ -32,10 +32,12 @@ class BigVrPlayButton extends BigPlayButton {
 
             session.updateRenderState({layers: [layer]});
           } else {
+            const isTopBottom = player.mediainfo.projection.indexOf('TB') !== -1;
+
             const layer = xrMediaFactory.createEquirectLayer(video, {
               space: refSpace,
               centralHorizontalAngle: (is360) ? Math.PI * 2 : Math.PI,
-              layout: 'stereo'
+              layout: (isTopBottom) ? 'stereo-top-bottom' : 'stereo-left-right'
             });
 
             session.updateRenderState({layers: [layer]});
