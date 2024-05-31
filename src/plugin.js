@@ -16,6 +16,7 @@ import WebXRPolyfill from 'webxr-polyfill';
 import {VRButton} from '../vendor/three/VRButton.js';
 import {XRControllerModelFactory} from '../node_modules/three/examples/jsm/webxr/XRControllerModelFactory';
 import {BoxLineGeometry} from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry';
+// import XRMediaBinding from 'webxr-layers-polyfill';
 
 // import controls so they get registered with videojs
 import './cardboard-button';

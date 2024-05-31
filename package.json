@@ -88,7 +88,8 @@
     "global": "^4.4.0",
     "three": "^0.149.0",
     "video.js": "^6 || ^7",
-    "webxr-polyfill": "^2.0.3"
+    "webxr-polyfill": "^2.0.3",
+    "webxr-layers-polyfill": "~1.1.0"
   },
   "devDependencies": {
     "@videojs/generator-helpers": "^3.0.1",
