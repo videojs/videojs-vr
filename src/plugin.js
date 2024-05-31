@@ -29,7 +29,7 @@ const defaults = {
   omnitoneOptions: {},
   projection: 'AUTO',
   sphereDetail: 32,
-  sphereRadius: 3.0,
+  sphereRadius: 254.0,
   disableTogglePlay: false
 };
 
@@ -607,6 +607,14 @@ void main() {
     }
   }
 
+  seekBack10_() {
+    this.player_.currentTime(this.player_.currentTime() - 10);
+  }
+
+  seekForward10_() {
+    this.player_.currentTime(this.player_.currentTime() + 10);
+  }
+
   animate_() {
     if (!this.initialized_) {
       return;
@@ -1050,40 +1058,59 @@ void main() {
 
     this.scene.add(this.holodeck);
 
-    const controlsGeometry = new this.RoundedRectangle(1.2, 0.4, 0.05, 5.0);
+    const controlsGeometry = new this.RoundedRectangle(2.4, 0.6, 0.05, 5.0);
 
-    this.controls = new THREE.Mesh(controlsGeometry, new THREE.MeshLambertMaterial({
-      color: 0x000044
-    }));
-    this.controls.position.x = -0.4;
-    this.controls.position.y = -0.5;
-    this.controls.position.z = -1.5;
+    this.controls = new THREE.Mesh(controlsGeometry, new THREE.MeshLambertMaterial({ color: 0x000000 }));
+    this.controls.position.x = -0.0;
+    this.controls.position.y = -1.0;
+    this.controls.position.z = -3.0;
+    this.controls.buttonid = 'controls';
     this.controls.visible = false;
-
     this.holodeck.add(this.controls);
 
-    const geometry = new this.RoundedRectangle(0.3, 0.3, 0.05, 5.0);
-
-    const texture = new THREE.TextureLoader().load('img/foo.png');
-
-    texture.repeat.set(1, 1);
-
-    this.buttonPlayPause = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ map: texture, color: 0x00ffff, side: THREE.DoubleSide}));
-    this.buttonPlayPause.position.x = -0.4;
-    this.buttonPlayPause.position.z = 0.1;
-    this.buttonPlayPause.buttonid = 'playpause';
-    this.controls.add(this.buttonPlayPause);
+    const buttonGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.05);
 
     // ExitVR
-    this.buttonExit = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
-      color: 0xff0000
-    }));
-    this.buttonExit.position.x = 0.4;
+    const textureExitImmersive = new THREE.TextureLoader().load('img/controls_exitimmersive.png');
+
+    textureExitImmersive.repeat.set(1, 1);
+    this.buttonExit = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureExitImmersive, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonExit.position.x = -0.8;
     this.buttonExit.position.z = 0.1;
     this.buttonExit.buttonid = 'exit';
     this.controls.add(this.buttonExit);
 
-    this.highlight = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+    // Rewind 10 secs
+    const textureBack10 = new THREE.TextureLoader().load('img/controls_back10.png');
+
+    textureBack10.repeat.set(1, 1);
+    this.buttonBack10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureBack10, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonBack10.position.x = -0.1;
+    this.buttonBack10.position.z = 0.1;
+    this.buttonBack10.buttonid = 'back10';
+    this.controls.add(this.buttonBack10);
+
+    // Play/Pause toggle
+    const texturePlayPause = new THREE.TextureLoader().load('img/controls_pause.png');
+
+    texturePlayPause.repeat.set(1, 1);
+    this.buttonPlayPause = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: texturePlayPause, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonPlayPause.position.x = 0.4;
+    this.buttonPlayPause.position.z = 0.1;
+    this.buttonPlayPause.buttonid = 'playpause';
+    this.controls.add(this.buttonPlayPause);
+
+    // Forward 10 secs
+    const textureForward10 = new THREE.TextureLoader().load('img/controls_forward10.png');
+
+    textureForward10.repeat.set(1, 1);
+    this.buttonForward10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureForward10, color: 0xffffff, side: THREE.DoubleSide}));
+    this.buttonForward10.position.x = 0.9;
+    this.buttonForward10.position.z = 0.1;
+    this.buttonForward10.buttonid = 'forward10';
+    this.controls.add(this.buttonForward10);
+
+    this.highlight = new THREE.Mesh(buttonGeometry, new THREE.MeshBasicMaterial({
       color: 0xffffff,
       side: THREE.BackSide
     }));
@@ -1109,8 +1136,19 @@ void main() {
             this.togglePlay_();
             break;
 
+          case 'back10':
+            this.seekBack10_();
+            break;
+
+          case 'forward10':
+            this.seekForward10_();
+            break;
+
+          case 'controller':
+            // TODO: drag move controller bar?
+            break;
+
           case 'exit':
-          default:
             this.vrButton.click();
             if (this.currentSession) {
               this.currentSession.end();
