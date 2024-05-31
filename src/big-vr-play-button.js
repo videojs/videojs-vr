@@ -20,22 +20,26 @@ class BigVrPlayButton extends BigPlayButton {
       if (player) {
         const video = player.tech({IWillNotUseThisInPlugins: true}).el();
 
-        if (player.mediainfo && player.mediainfo.projection && player.mediainfo.projection.indexOf('MONO') !== -1) {
-          const layer = xrMediaFactory.createEquirectLayer(video, {
-            space: refSpace,
-            centralHorizontalAngle: Math.PI,
-            layout: 'mono'
-          });
+        if (player.mediainfo && player.mediainfo.projection) {
+          const is360 = player.mediainfo.projection.indexOf('360') !== -1;
 
-          session.updateRenderState({layers: [layer]});
-        } else {
-          const layer = xrMediaFactory.createEquirectLayer(video, {
-            space: refSpace,
-            centralHorizontalAngle: Math.PI * 2,
-            layout: 'stereo'
-          });
+          if (player.mediainfo.projection.indexOf('MONO') !== -1) {
+            const layer = xrMediaFactory.createEquirectLayer(video, {
+              space: refSpace,
+              centralHorizontalAngle: (is360) ? Math.PI * 2 : Math.PI,
+              layout: 'mono'
+            });
 
-          session.updateRenderState({layers: [layer]});
+            session.updateRenderState({layers: [layer]});
+          } else {
+            const layer = xrMediaFactory.createEquirectLayer(video, {
+              space: refSpace,
+              centralHorizontalAngle: (is360) ? Math.PI * 2 : Math.PI,
+              layout: 'stereo'
+            });
+
+            session.updateRenderState({layers: [layer]});
+          }
         }
       }
     });
