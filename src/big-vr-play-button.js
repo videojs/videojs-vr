@@ -1,6 +1,5 @@
 import videojs from 'video.js';
 import window from 'global/window';
-import XRMediaBinding from 'webxr-layers-polyfill';
 
 let xrMediaFactory = null;
 
@@ -14,7 +13,7 @@ class BigVrPlayButton extends BigPlayButton {
   async onSessionStarted(session) {
     await window.navigator.xr.setSession(session);
 
-    xrMediaFactory = new XRMediaBinding(session);
+    xrMediaFactory = new global.XRMediaBinding(session);
     session.requestReferenceSpace('local').then((refSpace) => {
       const layer = xrMediaFactory.createEquirectLayer(videojs.getAllPlayers()[0].tech({ IWillNotUseThisInPlugins: true }).el(), {space: refSpace, centralHorizontalAngle: Math.PI, layout: 'mono'});
 

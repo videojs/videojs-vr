@@ -16,7 +16,7 @@ import WebXRPolyfill from 'webxr-polyfill';
 import {VRButton} from '../vendor/three/VRButton.js';
 import {XRControllerModelFactory} from '../node_modules/three/examples/jsm/webxr/XRControllerModelFactory';
 import {BoxLineGeometry} from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry';
-// import XRMediaBinding from 'webxr-layers-polyfill';
+import WebXRLayersPolyfill from 'webxr-layers-polyfill';
 
 // import controls so they get registered with videojs
 import './cardboard-button';
@@ -84,6 +84,7 @@ class VR extends Plugin {
     }
 
     this.polyfill_ = new WebXRPolyfill();
+    this.polyfillLayers_ = new WebXRLayersPolyfill();
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
