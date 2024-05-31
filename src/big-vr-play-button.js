@@ -16,7 +16,7 @@ class BigVrPlayButton extends BigPlayButton {
 
     xrMediaFactory = new XRMediaBinding(session);
     session.requestReferenceSpace('local').then((refSpace) => {
-      const layer = xrMediaFactory.createEquirectLayer(videojs.getPlayer().getVideoEl_(), {space: refSpace, centralHorizontalAngle: Math.PI, layout: 'mono'});
+      const layer = xrMediaFactory.createEquirectLayer(videojs.getAllPlayers()[0].tech({ IWillNotUseThisInPlugins: true }).el(), {space: refSpace, centralHorizontalAngle: Math.PI, layout: 'mono'});
 
       session.updateRenderState({ layers: [ layer ] });
     });
