@@ -14,9 +14,7 @@ class BigVrPlayButton extends BigPlayButton {
   async onSessionStarted(session) {
     await window.navigator.xr.setSession(session);
 
-    this.log('KJSL: Adding WebXR Layers');
     xrMediaFactory = new XRMediaBinding(session);
-
     session.requestReferenceSpace('local').then((refSpace) => {
       const layer = xrMediaFactory.createEquirectLayer(videojs.getPlayer().getVideoEl_(), {space: refSpace, centralHorizontalAngle: Math.PI, layout: 'mono'});
 
