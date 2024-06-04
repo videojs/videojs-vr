@@ -31,6 +31,7 @@ class BigVrPlayButton extends BigPlayButton {
             });
 
             session.updateRenderState({layers: [layer]});
+            player.isUsingLayers = true;
           } else {
             const isTopBottom = player.mediainfo.projection.indexOf('TB') !== -1;
 
@@ -41,6 +42,7 @@ class BigVrPlayButton extends BigPlayButton {
             });
 
             session.updateRenderState({layers: [layer]});
+            player.isUsingLayers = true;
           }
         }
       }

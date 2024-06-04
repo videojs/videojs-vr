@@ -30,7 +30,7 @@
     });
 
     const videoSourceParam = window.location.search.substring(1);
-    if (videoSourceParam) {
+    if (videoSourceParam && videoSourceParam.startsWith("http")) {
       if (videoSourceParam.indexOf(".mpd") !== -1) {
         player.src({
           type: 'application/dash+xml',

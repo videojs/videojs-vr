@@ -1228,6 +1228,10 @@ void main() {
   }
 
   render() {
+    if (this.player_.isUsingLayers) {
+      return;
+    }
+
     if (this.controllers) {
       const self = this;
 
