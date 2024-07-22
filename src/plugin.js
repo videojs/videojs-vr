@@ -809,15 +809,6 @@ void main() {
           document.body.appendChild(this.vrButton);
           this.initImmersiveVR();
           this.initXRPolyfill(displays);
-
-          // key or pointer click toogle playback
-          document.body.addEventListener('keydown', () => {
-            this.togglePlay_();
-          });
-          document.body.addEventListener('click', () => {
-            this.togglePlay_();
-          });
-
         } else {
           // fallback to older WebVR if WebXR immersive session is not available
           this.initVRPolyfill(displays);

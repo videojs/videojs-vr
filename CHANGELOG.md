@@ -1,3 +1,10 @@
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.0.0) (2024-07-22)
+
+### Chores
+
+* revisting clean exit immersive and 180 projection
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.0.0) (2023-02-15)
 
