@@ -1,7 +1,7 @@
 {
   "name": "videojs-vr",
   "version": "2.1.0",
-  "description": "A plugin to add 360 and VR video support to video.js.",
+  "description": "A plugin to add VR/XR video support to video.js.",
   "author": {
     "name": "James Broberg",
     "email": "james.broberg@metacdn.com"

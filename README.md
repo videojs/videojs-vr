@@ -9,7 +9,7 @@ https://videojs-vr.netlify.com
 
 [![NPM](https://nodei.co/npm/videojs-vr.png?downloads=true&downloadRank=true)](https://nodei.co/npm/videojs-vr/)
 
-A video.js plugin that turns a video element into a HTML5 Panoramic 360 video player. Project video onto different shapes. Optionally supports Oculus Rift, HTC Vive and the GearVR.
+A video.js plugin that turns a video element into a HTML5 Panoramic VR/XR immersive capable video player. Project video onto different shapes depending on the underlying format. Optionally supports Meta Quest and other VR/XR capable HMDs.
 
 Lead Maintainer: Brandon Casey [@brandonocasey](https://github.com/brandonocasey)
 
@@ -29,7 +29,7 @@ Maintenance Status: Stable
   - [Optional integration with videojs-errors](#optional-integration-with-videojs-errors)
 - [Setting a global projection](#setting-a-global-projection)
   - [Passing a projection on a source by source basis](#passing-a-projection-on-a-source-by-source-basis)
-- [Oculus Rift and HTC Vive Support](#oculus-rift-and-htc-vive-support)
+- [Meta Quest and other HMD support](#meta-quest-and-other-hmd-support)
 - [Accessing the Camera Position](#accessing-the-camera-position)
 - [Accessing THREE.js objects](#accessing-threejs-objects)
 - [Options](#options)
@@ -68,7 +68,7 @@ npm i videojs-vr
 ## Browser Support
 The most recent versions of:
 * Desktop
-  * Chrome
+  * Chrome (recommended for HMD support)
   * Firefox
   * Safari
 * Mobile
@@ -85,7 +85,7 @@ The most recent versions of:
 ## Projection support
 Currently we only support:
 * Projections
-  * Spherical Videos, via the 360/equirectangular projection
+  * Spherical Videos, via the 180/360/equirectangular projection
   * 360 cube videos
 * Mappings
   * Monoscopic (single video pane)
@@ -173,12 +173,12 @@ player.vr({projection: 'AUTO'});
 // or player.vr(); since 'AUTO' is the default
 ```
 
-## Oculus Rift and HTC Vive Support
-This project leverages the [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js) libraries to create a 'responsive VR' experience across multiple devices.
+## Meta Quest and other HMD support
+This project leverages the [webxr-polyfill](https://github.com/immersive-web/webxr-polyfill), [webxr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js) libraries to create a 'responsive XR/VR' experience across multiple devices.
 
-Oculus Rift and HTC Vive playback requires Firefox >= 55, experimental WebVR-enabled builds of Chromium, or via Chrome by enabling webvr in `chrome://flags`. Go to [WebVR.info](http://www.webvr.info) for more info.
+Rift, Meta Quest (with Quest Link cable) and other compatible HMDs on desktop require a Chrome build of 79 or higher. We recommend the latest stable Chrome. Go to [immersiveweb.dev](https://immersiveweb.dev/) for more info.
 
-GearVR playback requires the latest Samsung Internet for Gear VR with WebVR support enabled. Go [here](https://webvr.rocks/samsung_internet) for more info.
+Meta Quest/Pro users running in standalone mode should use the Meta Quest browser to access the immersive modes, It is downloadable from the Meta Quest Store. We recommend using the latest available version.
 
 ## Accessing the Camera Position
 The Three.js rotation values are exposed under the property `cameraVector` on the `vr` plugin namespace.
