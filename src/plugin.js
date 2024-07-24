@@ -131,8 +131,8 @@ class VR extends Plugin {
       }
       return this.changeProjection_('NONE');
     } else if (projection === '360') {
-      this.movieGeometry = new THREE.SphereBufferGeometry(this.options_.sphereRadius, this.options_.sphereDetail, this.options_.sphereDetail);
-      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
+      this.movieGeometry = new THREE.SphereGeometry(this.options_.sphereRadius, this.options_.sphereDetail, this.options_.sphereDetail);
+      this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, overdraw: true, side: THREE.BackSide });
 
       this.movieScreen = new THREE.Mesh(this.movieGeometry, this.movieMaterial);
       this.movieScreen.position.set(position.x, position.y, position.z);
@@ -142,7 +142,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
     } else if (projection === '360_LR' || projection === '360_TB') {
       // Left eye view
-      this.movieGeometry = new THREE.SphereBufferGeometry(
+      this.movieGeometry = new THREE.SphereGeometry(
         this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail
@@ -175,7 +175,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      this.movieGeometry = new THREE.SphereBufferGeometry(
+      this.movieGeometry = new THREE.SphereGeometry(
         this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail
@@ -206,7 +206,7 @@ class VR extends Plugin {
       this.movieScreen.layers.set(2);
       this.scene.add(this.movieScreen);
     } else if (projection === '360_CUBE') {
-      this.movieGeometry = new THREE.BoxBufferGeometry(256, 256, 256);
+      this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
       this.movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.BackSide });
 
       const uvs = this.movieGeometry.getAttribute('uv');
@@ -260,7 +260,7 @@ class VR extends Plugin {
 
       this.scene.add(this.movieScreen);
     } else if (projection === '180' || projection === '180_LR' || projection === '180_TB') {
-      this.movieGeometry = new THREE.SphereBufferGeometry(
+      this.movieGeometry = new THREE.SphereGeometry(
         this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
@@ -297,7 +297,7 @@ class VR extends Plugin {
       this.scene.add(this.movieScreen);
 
       // Right eye view
-      this.movieGeometry = new THREE.SphereBufferGeometry(
+      this.movieGeometry = new THREE.SphereGeometry(
         this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
@@ -332,7 +332,7 @@ class VR extends Plugin {
       this.movieScreen.layers.set(2);
       this.scene.add(this.movieScreen);
     } else if (projection === '180_MONO') {
-      this.movieGeometry = new THREE.SphereBufferGeometry(
+      this.movieGeometry = new THREE.SphereGeometry(
         this.options_.sphereRadius,
         this.options_.sphereDetail,
         this.options_.sphereDetail,
@@ -353,9 +353,9 @@ class VR extends Plugin {
         // we truncate the 2-pixel-wide strips on all discontinuous edges,
         const contCorrect = 2;
 
-        this.movieGeometry = new THREE.BoxBufferGeometry(256, 256, 256);
+        this.movieGeometry = new THREE.BoxGeometry(256, 256, 256);
         this.movieMaterial = new THREE.ShaderMaterial({
-          side: THREE.BackSide,
+          overdraw: true, side: THREE.BackSide,
           uniforms: {
             mapped: {value: this.videoTexture},
             mapMatrix: {value: mapMatrix},
