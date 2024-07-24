@@ -174,11 +174,11 @@ player.vr({projection: 'AUTO'});
 ```
 
 ## Meta Quest and other HMD support
-This project leverages the [webxr-polyfill](https://github.com/immersive-web/webxr-polyfill), [webxr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js) libraries to create a 'responsive XR/VR' experience across multiple devices.
+This project leverages the [webxr-polyfill](https://github.com/immersive-web/webxr-polyfill), [webvr-polyfill](https://github.com/borismus/webvr-polyfill) and [three.js](https://github.com/mrdoob/three.js) libraries to create a 'responsive XR/VR' experience across multiple devices.
 
 Rift, Meta Quest (with Quest Link cable) and other compatible HMDs on desktop require a Chrome build of 79 or higher. We recommend the latest stable Chrome. Go to [immersiveweb.dev](https://immersiveweb.dev/) for more info.
 
-Meta Quest/Pro users running in standalone mode should use the Meta Quest browser to access the immersive modes, It is downloadable from the Meta Quest Store. We recommend using the latest available version.
+Meta Quest/Pro users running in standalone mode should use the Meta Quest browser to access the immersive modes. It is downloadable from the Meta Quest Store. We recommend using the latest available version.
 
 ## Accessing the Camera Position
 The Three.js rotation values are exposed under the property `cameraVector` on the `vr` plugin namespace.
