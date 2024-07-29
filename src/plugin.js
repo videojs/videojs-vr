@@ -33,6 +33,10 @@ const defaults = {
   disableTogglePlay: false
 };
 
+const POLYFILL_CONFIG = {
+  cardboard: false
+};
+
 const errors = {
   'web-vr-out-of-date': {
     headline: '360 is out of date',
@@ -82,7 +86,7 @@ class VR extends Plugin {
       return;
     }
 
-    this.polyfill_ = new WebXRPolyfill();
+    this.polyfill_ = new WebXRPolyfill(POLYFILL_CONFIG);
 
     this.handleVrDisplayActivate_ = videojs.bind(this, this.handleVrDisplayActivate_);
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
@@ -772,7 +776,8 @@ void main() {
       devicePixelRatio: window.devicePixelRatio,
       alpha: false,
       clearColor: 0xffffff,
-      antialias: true
+      antialias: true,
+      powerPreference: 'high-performance'
     });
 
     const webglContext = this.renderer.getContext('webgl');
