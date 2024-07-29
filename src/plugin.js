@@ -18,14 +18,12 @@ import {XRControllerModelFactory} from '../node_modules/three/examples/jsm/webxr
 import {BoxLineGeometry} from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry';
 
 // import controls so they get registered with videojs
-import './cardboard-button';
 import './big-vr-play-button';
 
 // Default options for the plugin.
 const defaults = {
   debug: false,
   omnitone: false,
-  forceCardboard: false,
   omnitoneOptions: {},
   projection: 'AUTO',
   sphereDetail: 32,
@@ -548,48 +546,9 @@ void main() {
       return;
     }
     this.vrDisplay.requestPresent([{source: this.renderedCanvas}]).then(() => {
-      if (!this.vrDisplay.cardboardUI_ || !videojs.browser.IS_IOS) {
+      if (!videojs.browser.IS_IOS) {
         return;
       }
-
-      // webvr-polyfill/cardboard ui only watches for click events
-      // to tell that the back arrow button is pressed during cardboard vr.
-      // but somewhere along the line these events are silenced with preventDefault
-      // but only on iOS, so we translate them ourselves here
-      let touches = [];
-      const iosCardboardTouchStart_ = (e) => {
-        for (let i = 0; i < e.touches.length; i++) {
-          touches.push(e.touches[i]);
-        }
-      };
-
-      const iosCardboardTouchEnd_ = (e) => {
-        if (!touches.length) {
-          return;
-        }
-
-        touches.forEach((t) => {
-          const simulatedClick = new window.MouseEvent('click', {
-            screenX: t.screenX,
-            screenY: t.screenY,
-            clientX: t.clientX,
-            clientY: t.clientY
-          });
-
-          this.renderedCanvas.dispatchEvent(simulatedClick);
-        });
-
-        touches = [];
-      };
-
-      this.renderedCanvas.addEventListener('touchstart', iosCardboardTouchStart_);
-      this.renderedCanvas.addEventListener('touchend', iosCardboardTouchEnd_);
-
-      this.iosRevertTouchToClick_ = () => {
-        this.renderedCanvas.removeEventListener('touchstart', iosCardboardTouchStart_);
-        this.renderedCanvas.removeEventListener('touchend', iosCardboardTouchEnd_);
-        this.iosRevertTouchToClick_ = null;
-      };
     });
   }
 
@@ -759,13 +718,6 @@ void main() {
     this.player_.addChild('BigVrPlayButton', {}, this.bigPlayButtonIndex_);
     this.player_.bigPlayButton = this.player_.getChild('BigVrPlayButton');
 
-    // mobile devices, or cardboard forced to on
-    if (this.options_.forceCardboard ||
-        videojs.browser.IS_ANDROID ||
-        videojs.browser.IS_IOS) {
-      this.addCardboardButton_();
-    }
-
     // if ios remove full screen toggle
     if (videojs.browser.IS_IOS && this.player_.controlBar && this.player_.controlBar.fullscreenToggle) {
       this.player_.controlBar.fullscreenToggle.hide();
@@ -862,7 +814,6 @@ void main() {
       // so, we want to add the button if we're not polyfilled.
       if (!this.vrDisplay.isPolyfilled) {
         this.log('Real HMD found using VRControls', this.vrDisplay);
-        this.addCardboardButton_();
 
         // We use VRControls here since we are working with an HMD
         // and we only want orientation controls.
@@ -1259,12 +1210,6 @@ void main() {
     this.renderer.render(this.scene, this.camera);
   }
 
-  addCardboardButton_() {
-    if (!this.player_.controlBar.getChild('CardboardButton')) {
-      this.player_.controlBar.addChild('CardboardButton', {});
-    }
-  }
-
   getVideoEl_() {
     return this.player_.el().getElementsByTagName('video')[0];
   }
@@ -1307,11 +1252,6 @@ void main() {
 
     if (this.player_.getChild('BigVrPlayButton')) {
       this.player_.removeChild('BigVrPlayButton');
-    }
-
-    // remove the cardboard button
-    if (this.player_.getChild('CardboardButton')) {
-      this.player_.controlBar.removeChild('CardboardButton');
     }
 
     // show the fullscreen again
