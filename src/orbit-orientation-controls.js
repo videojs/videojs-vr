@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import OrbitControls from '../vendor/three/OrbitControls.js';
-import DeviceOrientationControls from '../vendor/three/DeviceOrientationControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+// import DeviceOrientationControls from '../vendor/three/DeviceOrientationControls.js';
 
 /**
  * Convert a quaternion to an angle
@@ -53,7 +53,7 @@ class OrbitOrientationControls {
 
     // if orientation is supported
     if (options.orientation) {
-      this.orientation = new DeviceOrientationControls(this.object);
+      // this.orientation = new DeviceOrientationControls(this.object);
     }
 
     // if projection is not full view
