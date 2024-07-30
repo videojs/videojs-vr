@@ -69,31 +69,8 @@ class DeviceOrientationControls extends EventDispatcher {
     this.connect = function () {
 
       onScreenOrientationChangeEvent(); // run once on load
-
-      // iOS 13+
-
-      if ( window.DeviceOrientationEvent !== undefined && typeof window.DeviceOrientationEvent.requestPermission === 'function' ) {
-
-        window.DeviceOrientationEvent.requestPermission().then( function ( response ) {
-
-          if ( response == 'granted' ) {
-
-            window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent );
-            window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent );
-          }
-
-        } ).catch( function ( error ) {
-
-          console.error( 'THREE.DeviceOrientationControls: Unable to use DeviceOrientation API:', error );
-
-        } );
-
-      } else {
-
-        window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent );
-        window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent );
-
-      }
+      window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent );
+      window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent );
 
       scope.enabled = true;
 
