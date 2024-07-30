@@ -10,6 +10,7 @@ import OrbitOrientationContols from './orbit-orientation-controls.js';
 import * as utils from './utils';
 import CanvasPlayerControls from './canvas-player-controls';
 import OmnitoneController from './omnitone-controller';
+import { DeviceOrientationControls } from '../vendor/three/DeviceOrientationControls.js';
 
 // WebXR related imports
 import WebXRPolyfill from 'webxr-polyfill';
@@ -611,7 +612,7 @@ void main() {
     }
 
     // WebXR has animation loop but if that's not available we simulate that instead
-    if (this.webVREffect) {
+    if (this.webVREffect && this.webVREffect.isPresenting) {
       this.webVREffect.render(this.scene, this.camera);
     }
 
@@ -648,6 +649,18 @@ void main() {
     }
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
+    if (this.orbitcontrols.update()) {
+      this.renderer.render(this.scene, this.camera);
+      if (this.webVREffect) {
+        this.webVREffect.isPresenting = false;
+      }
+    } else if (this.webVREffect) {
+      // this.controls3d.orbit.target.setX(this.camera.quaternion.x);
+      // this.controls3d.orbit.target.setY(this.camera.quaternion.y);
+      // this.controls3d.orbit.target.setZ(this.camera.quaternion.z);
+      this.controls3d.orbit.update();
+      this.webVREffect.isPresenting = true;
+    }
   }
 
   handleResize_() {
@@ -686,6 +699,7 @@ void main() {
     this.reset();
 
     this.camera = new THREE.PerspectiveCamera(70, this.player_.currentWidth() / this.player_.currentHeight(), 1, 2000);
+    this.orbitcontrols = new DeviceOrientationControls(this.camera);
     this.camera.layers.enable(1);
 
     // Store vector representing the direction in which the camera is looking, in world space.
@@ -1206,7 +1220,6 @@ void main() {
         self.renderController(controller);
       });
     }
-
     this.renderer.render(this.scene, this.camera);
   }
 
