@@ -822,6 +822,7 @@ void main() {
     this.webVREffect = new VREffect(this.renderer);
     this.webVREffect.setSize(this.player_.currentWidth(), this.player_.currentHeight(), false);
     this.initXRPolyfill(displays);
+    this.webVREffect.isPresenting = true;
   }
 
   initXRPolyfill(displays) {
