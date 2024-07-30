@@ -91,6 +91,7 @@ class VR extends Plugin {
     this.handleVrDisplayDeactivate_ = videojs.bind(this, this.handleVrDisplayDeactivate_);
     this.handleResize_ = videojs.bind(this, this.handleResize_);
     this.animate_ = videojs.bind(this, this.animate_);
+    this.handleUserActive_ = videojs.bind(this, this.handleUserActive_);
 
     this.setProjection(this.options_.projection);
 
@@ -515,7 +516,7 @@ void main() {
     // if we have videojs-errors use it
     if (this.videojsErrorsSupport_) {
       this.player_.error(errorObj);
-    // if we don't have videojs-errors just use a normal player error
+      // if we don't have videojs-errors just use a normal player error
     } else {
       // strip any html content from the error message
       // as it is not supported outside of videojs-errors
@@ -562,6 +563,12 @@ void main() {
     }
     this.vrDisplay.exitPresent();
 
+  }
+
+  handleUserActive_() {
+    if (this.webVREffect) {
+      this.webVREffect.isPresenting = true;
+    }
   }
 
   requestAnimationFrame(fn) {
@@ -659,7 +666,6 @@ void main() {
       // this.controls3d.orbit.target.setY(this.camera.quaternion.y);
       // this.controls3d.orbit.target.setZ(this.camera.quaternion.z);
       this.controls3d.orbit.update();
-      this.webVREffect.isPresenting = true;
     }
   }
 
@@ -878,6 +884,7 @@ void main() {
     window.addEventListener('resize', this.handleResize_, true);
     window.addEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     window.addEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
+    window.addEventListener('pointerdown', this.handleUserActive_, true);
 
     // For iOS we need permission for the device orientation data, this will pop up an 'Allow'
     // eslint-disable-next-line
@@ -1119,29 +1126,29 @@ void main() {
         this.highlight.visible = true;
         if (controller.userData.selectPressed) {
           switch (rayTargets[0].object.buttonid) {
-          case 'playpause':
-            this.togglePlay_();
-            break;
+            case 'playpause':
+              this.togglePlay_();
+              break;
 
-          case 'back10':
-            this.seekBack10_();
-            break;
+            case 'back10':
+              this.seekBack10_();
+              break;
 
-          case 'forward10':
-            this.seekForward10_();
-            break;
+            case 'forward10':
+              this.seekForward10_();
+              break;
 
-          case 'controller':
-            // TODO: drag move controller bar?
-            break;
+            case 'controller':
+              // TODO: drag move controller bar?
+              break;
 
-          case 'exit':
-            this.vrButton.click();
-            if (this.currentSession) {
-              this.currentSession.end();
-              this.player_.pause();
-            }
-            break;
+            case 'exit':
+              this.vrButton.click();
+              if (this.currentSession) {
+                this.currentSession.end();
+                this.player_.pause();
+              }
+              break;
           }
           controller.userData.selectPressed = false;
         }
@@ -1257,6 +1264,7 @@ void main() {
     window.removeEventListener('vrdisplaypresentchange', this.handleResize_, true);
     window.removeEventListener('vrdisplayactivate', this.handleVrDisplayActivate_, true);
     window.removeEventListener('vrdisplaydeactivate', this.handleVrDisplayDeactivate_, true);
+    window.removeEventListener('pointerdown', this.handleUserActive_, true);
 
     // re-add the big play button to player
     if (!this.player_.getChild('BigPlayButton')) {
