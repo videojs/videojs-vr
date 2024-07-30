@@ -42,6 +42,14 @@ button {
     cursor: move;
   }
 
+  .vjs-default-skin {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
   .vjs-button-vr{
     .vjs-icon-placeholder {
       height:30px;
