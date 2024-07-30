@@ -17,6 +17,14 @@ button {
   font-style: bold !important;
 }
 
+.vjs-default-skin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
 .video-js {
   .vjs-big-vr-play-button {
     width: 100px;
@@ -40,14 +48,6 @@ button {
 
   canvas {
     cursor: move;
-  }
-
-  .vjs-default-skin {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
   }
 
   .vjs-button-vr{
