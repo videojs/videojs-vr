@@ -1066,7 +1066,7 @@ void main() {
     const buttonGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.05);
 
     // ExitVR
-    const textureExitImmersive = new THREE.TextureLoader().load('img/controls_exitimmersive.png');
+    const textureExitImmersive = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_exitimmersive.png');
 
     textureExitImmersive.repeat.set(1, 1);
     this.buttonExit = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureExitImmersive, color: 0xffffff, side: THREE.DoubleSide}));
@@ -1076,7 +1076,7 @@ void main() {
     this.controls.add(this.buttonExit);
 
     // Rewind 10 secs
-    const textureBack10 = new THREE.TextureLoader().load('img/controls_back10.png');
+    const textureBack10 = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_back10.png');
 
     textureBack10.repeat.set(1, 1);
     this.buttonBack10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureBack10, color: 0xffffff, side: THREE.DoubleSide}));
@@ -1086,7 +1086,7 @@ void main() {
     this.controls.add(this.buttonBack10);
 
     // Play/Pause toggle
-    const texturePlayPause = new THREE.TextureLoader().load('img/controls_pause.png');
+    const texturePlayPause = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_pause.png');
 
     texturePlayPause.repeat.set(1, 1);
     this.buttonPlayPause = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: texturePlayPause, color: 0xffffff, side: THREE.DoubleSide}));
@@ -1096,7 +1096,7 @@ void main() {
     this.controls.add(this.buttonPlayPause);
 
     // Forward 10 secs
-    const textureForward10 = new THREE.TextureLoader().load('img/controls_forward10.png');
+    const textureForward10 = new THREE.TextureLoader().load('../dist/videojs-vr-ux/img/controls_forward10.png');
 
     textureForward10.repeat.set(1, 1);
     this.buttonForward10 = new THREE.Mesh(buttonGeometry, new THREE.MeshLambertMaterial({ map: textureForward10, color: 0xffffff, side: THREE.DoubleSide}));
@@ -1127,29 +1127,29 @@ void main() {
         this.highlight.visible = true;
         if (controller.userData.selectPressed) {
           switch (rayTargets[0].object.buttonid) {
-            case 'playpause':
-              this.togglePlay_();
-              break;
+          case 'playpause':
+            this.togglePlay_();
+            break;
 
-            case 'back10':
-              this.seekBack10_();
-              break;
+          case 'back10':
+            this.seekBack10_();
+            break;
 
-            case 'forward10':
-              this.seekForward10_();
-              break;
+          case 'forward10':
+            this.seekForward10_();
+            break;
 
-            case 'controller':
-              // TODO: drag move controller bar?
-              break;
+          case 'controller':
+            // TODO: drag move controller bar?
+            break;
 
-            case 'exit':
-              this.vrButton.click();
-              if (this.currentSession) {
-                this.currentSession.end();
-                this.player_.pause();
-              }
-              break;
+          case 'exit':
+            this.vrButton.click();
+            if (this.currentSession) {
+              this.currentSession.end();
+              this.player_.pause();
+            }
+            break;
           }
           controller.userData.selectPressed = false;
         }

@@ -41,6 +41,7 @@
     "build": "npm-run-all -s clean -p build:*",
     "build:js": "rollup -c scripts/rollup.config.js",
     "build:css": "sass --no-source-map src/plugin.scss dist/videojs-vr.css",
+    "build:ui": "copyfiles -u 1 src/img/*.png dist/videojs-vr-ux",
     "build:lang": "vjslang --dir dist/lang",
     "clean": "shx rm -rf ./dist ./test/dist && shx mkdir -p ./dist ./test/dist",
     "lint": "vjsstandard",
@@ -54,6 +55,7 @@
     "watch": "npm-run-all -p watch:*",
     "watch:js": "npm run build:js -- -w",
     "watch:css": "npm run build:css -- -w",
+    "watch:ui": "npm run build:ui -- -w",
     "prepare": "husky install"
   },
   "keywords": [
@@ -92,6 +94,7 @@
   },
   "devDependencies": {
     "@videojs/generator-helpers": "^3.0.1",
+    "copyfiles": "^2.4.1",
     "husky": "^8.0.3",
     "karma": "^6.3.4",
     "lint-staged": "^13.1.0",
