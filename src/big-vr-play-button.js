@@ -28,8 +28,8 @@ class BigVrPlayButton extends BigPlayButton {
       const sessionInit = {optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']};
       const self = this;
 
-      window.navigator.xr.requestSession('immersive-vr', sessionInit).then(self.onSessionStarted).catch((error) => {
-        self.log('immersive-vr not supported ' + error);
+      window.navigator.xr.requestSession('immersive-vr', sessionInit).then(self.onSessionStarted).catch(_ => {
+        // eslint-disable-next-line no-console, max-len
       });
     }
     super.handleClick(event);
