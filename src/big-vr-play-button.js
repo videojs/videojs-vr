@@ -29,7 +29,7 @@ class BigVrPlayButton extends BigPlayButton {
       const self = this;
 
       window.navigator.xr.requestSession('immersive-vr', sessionInit).then(self.onSessionStarted).catch(_ => {
-        // eslint-disable-next-line no-console, max-len
+        // immersive-vr not supported
       });
     }
     super.handleClick(event);
