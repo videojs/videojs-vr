@@ -24,13 +24,14 @@ class BigVrPlayButton extends BigPlayButton {
       });
     }
 
-    if (window.navigator.xr) {
+    if (window.navigator.xr && window.navigator.xr.requestSession) {
       const sessionInit = {optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']};
       const self = this;
 
-      window.navigator.xr.requestSession('immersive-vr', sessionInit).then(self.onSessionStarted).catch();
+      window.navigator.xr.requestSession('immersive-vr', sessionInit).then(self.onSessionStarted).catch((error) => {
+        self.log('immersive-vr not supported ' + error);
+      });
     }
-
     super.handleClick(event);
   }
 }
