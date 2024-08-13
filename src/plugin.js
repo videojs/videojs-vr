@@ -675,7 +675,13 @@ void main() {
     let height = this.player_.currentHeight();
 
     if (this.webVREffect) {
-      this.webVREffect.setSize(width, height, false);
+      try {
+        if (this.webVREffect.getVRDisplay()) {
+          this.webVREffect.setSize(width, height, false);
+        }
+      } catch (error) {
+        videojs.log.error('videojs-vr: resize: ' + error);
+      }
     } else if (this.currentSession) {
       width = window.innerWidth / 2;
       height = window.innerHeight;
