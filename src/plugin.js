@@ -657,7 +657,7 @@ void main() {
     }
 
     this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
-    if (this.orbitcontrols.update()) {
+    if (this.orbitcontrols && this.orbitcontrols.update()) {
       this.renderer.render(this.scene, this.camera);
       if (this.webVREffect) {
         this.webVREffect.isPresenting = false;
@@ -708,11 +708,18 @@ void main() {
     this.defaultProjection_ = projection;
   }
 
+  isAndroidNativeCardboardSupport() {
+    return (/android/i.test(window.navigator.userAgent));
+  }
+
   init() {
     this.reset();
 
     this.camera = new THREE.PerspectiveCamera(70, this.player_.currentWidth() / this.player_.currentHeight(), 1, 2000);
-    this.orbitcontrols = new DeviceOrientationControls(this.camera);
+
+    if (!this.isAndroidNativeCardboardSupport) {
+      this.orbitcontrols = new DeviceOrientationControls(this.camera);
+    }
     this.camera.layers.enable(1);
 
     // Store vector representing the direction in which the camera is looking, in world space.
