@@ -1,3 +1,10 @@
+<a name="2.1.2"></a>
+# [2.1.2](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.1.2) (2024-08-18)
+
+### Chores
+
+* Android can use built in cardaboard faetaure, else use the gyro if avaiable and permmision allow it
+  
 <a name="2.1.1"></a>
 # [2.1.1](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.1.1) (2024-08-17)
 
@@ -6,7 +13,7 @@
 * rollback THREE.js as this introduced a noticable gamma/brightness increase, adding gyro support, moved 
 * immersive controller images into base64
 
-* <a name="2.1.0"></a>
+<a name="2.1.0"></a>
 # [2.1.0](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.1.0) (2024-07-22)
 
 ### Chores
