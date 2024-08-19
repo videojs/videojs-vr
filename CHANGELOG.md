@@ -1,5 +1,12 @@
 <a name="2.1.0"></a>
-# [2.1.0](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.0.0) (2024-07-22)
+# [2.1.1](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.1.1) (2024-07-22)
+
+### Chores
+
+* rollback THREE.js as this introduced a noticable gamma/brightness increase, adding gyro support inplace of acardboar
+
+* <a name="2.1.0"></a>
+# [2.1.0](https://github.com/videojs/videojs-vr/compare/v1.10.1...v2.1.0) (2024-07-22)
 
 ### Chores
 
