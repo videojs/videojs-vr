@@ -1,6 +1,6 @@
 # VR
 
-https://videojs-vr.netlify.com
+https://videojs-vr.netlify.app
 
 [![Build Status](https://travis-ci.org/videojs/videojs-vr.svg?branch=master)](https://travis-ci.org/videojs/videojs-vr)
 [![Greenkeeper badge](https://badges.greenkeeper.io/videojs/videojs-vr.svg)](https://greenkeeper.io/)
