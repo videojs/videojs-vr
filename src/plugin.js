@@ -659,7 +659,8 @@ void main() {
       devicePixelRatio: window.devicePixelRatio,
       alpha: false,
       clearColor: 0xffffff,
-      antialias: true
+      antialias: true,
+      powerPreference: 'high-performance'
     });
 
     const webglContext = this.renderer.getContext('webgl');
