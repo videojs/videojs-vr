@@ -23,7 +23,13 @@ const defaults = {
   omnitoneOptions: {},
   projection: 'AUTO',
   sphereDetail: 32,
-  disableTogglePlay: false
+  disableTogglePlay: false,
+  threeRendererOptions:{
+    devicePixelRatio: window.devicePixelRatio,
+    alpha: false,
+    clearColor: 0xffffff,
+    antialias: true
+  },
 };
 
 const errors = {
@@ -655,12 +661,10 @@ void main() {
     }
 
     this.camera.position.set(0, 0, 0);
-    this.renderer = new THREE.WebGLRenderer({
-      devicePixelRatio: window.devicePixelRatio,
-      alpha: false,
-      clearColor: 0xffffff,
-      antialias: true
-    });
+
+    const rendererOptions =this.options_.threeRendererOptions;
+
+    this.renderer = new THREE.WebGLRenderer(rendererOptions);
 
     const webglContext = this.renderer.getContext('webgl');
     const oldTexImage2D = webglContext.texImage2D;
